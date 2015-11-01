@@ -1,0 +1,570 @@
+<?php
+
+/*
+* Implements hook_menu
+* https://www.drupal.org/node/1517824 
+*
+*/
+
+use Drupal\eventbrite_sboc\Helper\EBConsts;
+use Drupal\eventbrite_sboc\Helper\EBOAuth;
+use Drupal\eventbrite_sboc\Helper\EBEvents;
+use Drupal\eventbrite_sboc\Helper\EBAttendees;
+
+/**
+* Implements hook_menu
+*
+* Returns array
+*/
+function eventbrite_sboc_menu(){
+  $items = array();
+  
+  $items[EBConsts::EBS_ADMINMENUROOT] = array(
+    'title' => t('Eventbrite for SBOC'),
+    'description' => 'Eventbrite SBOC Integration Module',
+    'type' => MENU_NORMAL_ITEM,
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('_eventbrite_sboc_form_oauth_credentials',),
+    'access arguments' => array(0),
+    'file' => 'admin_ui.oauth.inc',
+	  'file path' => drupal_get_path('module', 'eventbrite_sboc'). '/inc',
+	  'weight' => 0,	
+  );
+  
+  $items[EBConsts::EBS_ADMINMENUROOT. '/oauth'] = array(
+    // Access callback, page callback, and theme callback will be inherited
+    // from 'admin/config/system/eventbrite_sboc' (a.k.a admin root = EBS_ADMINMENUROOT)
+    // if not overriden here!
+    'title' => t('Oauth Setup'),
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'access arguments' => array(0),
+    'weight' => 0,
+  );
+  
+  
+  $items[EBConsts::EBS_ADMINMENUROOT. '/oauth/credentials'] = array(
+    'title' => t('Manage Credentials'),
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'weight' => 0,
+  );
+  
+  $items[EBConsts::EBS_ADMINMENUROOT. '/oauth/authorize'] = array(
+    'title' => t('Authorize Application'),
+    'type' => MENU_LOCAL_TASK,
+    'page callback' => '_eventbrite_sboc_init_oauth_sequence',
+    'access arguments' => array(EBConsts::EBS_ADMINISTER_ATTENDEES_MODULE,),
+    'weight' => 1,
+  );
+  
+  $items[EBConsts::EBS_ADMINMENUROOT. '/event'] = array(
+    'title' => t('Event Setup'),
+    'type' => MENU_LOCAL_TASK,
+    'page callback' => '_eventbrite_sboc_event_info',
+    'access arguments' => array(EBConsts::EBS_ADMINISTER_ATTENDEES_MODULE,),
+    'file' => 'admin_ui.event.inc',
+	  'file path' => drupal_get_path('module', 'eventbrite_sboc'). '/inc',
+    'weight' => 1,
+  );
+  
+  $items[EBConsts::EBS_ADMINMENUROOT. '/event/info'] = array(
+    'title' => t('Event'),
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'weight' => 0,
+  );
+  
+  $items[EBConsts::EBS_ADMINMENUROOT. '/event/orders'] = array(
+    'title' => t('Orders'),
+    'type' => MENU_LOCAL_TASK,
+    'page callback' => 'drupal_get_form',
+//     'page arguments' => array('459088098',),
+    'page arguments' => array('_eventbrite_sboc_form_select_order',),
+    'access arguments' => array(EBConsts::EBS_ADMINISTER_ATTENDEES_MODULE,),
+    'file' => 'admin_ui.event.inc',
+	  'file path' => drupal_get_path('module', 'eventbrite_sboc'). '/inc',
+    'weight' => 1,
+  );
+  
+  $items[EBConsts::EBS_ADMINMENUROOT. '/event/orders/%order'] = array(
+    'title' => t('Order View'),
+    'type' => MENU_CALLBACK,
+    'page callback' => '_eventbrite_sboc_display_order',
+    'page arguments' => array(6),
+    'access arguments' => array(EBConsts::EBS_ADMINISTER_ATTENDEES_MODULE,),
+    'weight' => 1,
+  );
+  
+  $items[EBConsts::EBS_ADMINMENUROOT. '/event/attendees'] = array(
+    'title' => t('Attendees'),         
+    'type' => MENU_LOCAL_TASK, 
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('_eventbrite_sboc_form_select_attendee_order',),
+//     'page arguments' => array('https://www.eventbriteapi.com/v3/orders/459146160',), 
+    'access arguments' => array(EBConsts::EBS_ADMINISTER_ATTENDEES_MODULE,),
+    'file' => 'admin_ui.event.inc',
+	  'file path' => drupal_get_path('module', 'eventbrite_sboc'). '/inc',
+    'weight' => 2,
+  );
+  
+  $items[EBConsts::EBS_ADMINMENUROOT. '/event/attendees/%attendee_order'] = array(
+    'title' => t('Attendee Order'),         
+    'type' => MENU_CALLBACK, 
+    'page callback' => '_eventbrite_sboc_display_order',
+    'page arguments' => array(6),
+    'access arguments' => array(EBConsts::EBS_ADMINISTER_ATTENDEES_MODULE,),
+    'weight' => 2,
+  );
+  
+  $items[EBConsts::EBS_ADMINMENUROOT. '/event/attendees/op1'] = array(
+    'title' => t('Attendees Op1'),
+    'type' => MENU_LOCAL_ACTION,    
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('_eventbrite_sboc_test',),
+    'access arguments' => array(0),
+    'weight' => 0,
+  );
+  
+  $items[EBConsts::EBS_ADMINMENUROOT. '/oauthcallback'] = array(
+    'title' => t('OAuth Callback'),
+    'type' => MENU_CALLBACK,    
+    'page callback' => '_eventbrite_sboc_oauth_callback',
+    'access arguments' => array(0),
+    'weight' => 0,
+  );
+  
+  // Webhook call back
+  $items[EBConsts::EBS_URL_WEBHOOK_ORDER_PLACED] = array(
+    'title' => t('Eventbrite Webhook Callback'),
+    'type' => MENU_CALLBACK,    
+    'page callback' => '_eventbrite_sboc_webhook_callback',
+    'access callback' => '_eventbrite_sboc_webhook_access_check',
+    'weight' => 0,
+  );
+  
+  $items[EBConsts::EBS_URL_OAUTH_FLOW_SUCCESS] = array(
+    'title' => t('Eventbrite OAuth Flow Success'),
+    'type' => MENU_CALLBACK,
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('_eventbrite_sboc_oauth_success'),
+    'access arguments' => array(0),
+    'file' => 'admin_ui.oauth.inc',
+	  'file path' => drupal_get_path('module', 'eventbrite_sboc'). '/inc',
+    'weight' => 0,
+  );
+  
+  $items[EBConsts::EBS_URL_OAUTH_FLOW_FAILURE] = array(
+    'title' => t('Eventbrite OAuth Flow Failure'),
+    'type' => MENU_CALLBACK,
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('_eventbrite_sboc_oauth_failure'),
+    'access arguments' => array(0),
+    'file' => 'admin_ui.oauth.inc',
+	  'file path' => drupal_get_path('module', 'eventbrite_sboc'). '/inc',
+    'weight' => 0,
+  );
+  
+  return $items;
+}
+
+/**
+* Implements hook_oauth2_clients
+*
+* Returns array
+*/
+function eventbrite_sboc_oauth2_clients(){
+  $oauth2_clients = array();
+  $client_id = variable_get(EBConsts::EBS_CONFIG_CONSUMER_KEY, '');
+  $client_secret = variable_get(EBConsts::EBS_CONFIG_CONSUMER_SECRET, '');
+  $oauth2_clients[EBConsts::EBS_OAUTH2_SETTINGS_LABEL] = array(
+    'token_endpoint' => EBConsts::EBS_EVENTBRITEOAUTH . '/token',
+    'auth_flow' => 'server-side',
+    'client_id' => $client_id,
+    'client_secret' => $client_secret,
+    'authorization_endpoint' => EBConsts::EBS_EVENTBRITEOAUTH . '/authorize',
+    'redirect_uri' => EBConsts::EBS_APPLICATIONDOMAIN. EBConsts::EBS_APPLICATIONCALLBACKURL,
+  );
+
+  return $oauth2_clients;
+} 
+
+/**
+* Implements hook_help
+* 
+* @param string $path
+* @param string $arg
+*
+* Returns array
+*/
+function eventbrite_sboc_help($path, $arg){
+  $output = '';
+  
+  switch($path){
+		case 'admin/help#eventbrite_sboc':
+		  $output = '<p>'. '</p>';
+		  break;		
+	  default:
+	    break;
+	}
+	
+  return $output;
+}
+
+/**
+* Implements hook_cronapi
+* 
+* @param none
+*
+* Returns n/a
+*/
+function eventbrite_sboc_cronapi(){
+  $items = array();
+  
+  $items[EBConsts::EBS_CRON_JOB_KEY1] = array(
+    'title' => t(EBConsts::EBS_CRONJOB_TITLE),
+    'callback' => '_eventbrite_sboc_cron_job_config_queue',
+    'tags' => array('eventbrite_sboc'),
+    'scheduler' => array(
+      'name' => 'crontab',
+      'crontab' => array(
+        'rules' => array(EBConsts::EBS_CRONRULE_DEFAULT,),
+      ),
+    ),
+  );
+  
+  return $items;
+}
+
+/**
+* Implements hook_cronapi
+* 
+* @param String $cron_key
+*
+* Returns n/a
+*/
+function _eventbrite_sboc_cron_job_config_queue(){
+  $data = new \StdClass;
+  $data->saveChangedOnly = TRUE; 
+  $queue = DrupalQueue::get(EBConsts::EBS_QUEUE_PROCESS_CHANGED_RECORDS);
+  $queue->createItem($data);
+}
+
+/**
+* Implements hook_queue_info
+* 
+* @param none
+*
+* Returns array
+*/
+function eventbrite_sboc_cron_queue_info(){
+  $queues = array();
+  
+  $queues[EBConsts::EBS_QUEUE_PROCESS_CHANGED_RECORDS] = array(
+    'worker callback' => '_eventbrite_sboc_process_cron_queue',
+    'time' => 120,
+  );
+   
+  return $queues;
+}
+
+
+/**
+* Cron Quere worker callback
+* 
+* @param Object $data
+*
+* Returns n/a
+*/
+function _eventbrite_sboc_process_cron_queue($data){
+  watchdog(EBConsts::EBS_APPNAME, '$data->saveChangedOnly = @value', array('@value' => $data->saveChangedOnly,), WATCHDOG_INFO);
+  _eventbrite_sboc_cron_update_attendees($data->saveChangedOnly);
+}
+
+/**
+* Processes attendee records when invoked from Cron
+*
+* @param Boolean $save_changed_only
+*
+* Return n/a
+*/
+function _eventbrite_sboc_cron_update_attendees($save_changed_only = FALSE){
+  try{
+    $ev = _eventbrite_sboc_init_event();
+    $do = new DateTime();
+    // e.g. P10D  Period of 10 Days 
+    // bof: Set interval
+    $days = variable_get(EBConsts::EBS_CONFIG_CHANGED_SINCE_DAYS, EBConsts::EBS_CONFIG_DEFAULT_CHANGED_SINCE_DAYS);
+    $interval_days = format_string('P@interval_daysD', array('@interval_days' => $days,));
+    $dur = new DateInterval($interval_days);
+    $do->sub($dur);
+    // eof: Set interval
+    $date_param = $do->format(EBConsts::EBS_EBDATEFORMAT);
+    // $params = array('changed_since' => $date_param,);
+    $params = array(EBConsts::EBS_CONFIG_PARAM_CHANGED_SINCE => $date_param,);
+    $eba = new EBAttendees($ev);
+    $attendees = $eba->loadAttendeesFromResource($params);
+    _eventbrite_sboc_invoke_save($attendees, $save_changed_only);
+    watchdog(EBConsts::EBS_APPNAME, 'Count: @count', array('@count' => count($attendees),), WATCHDOG_INFO);
+    dpm($attendees); 
+  }catch(Exception $e){
+    watchdog_exception(EBConsts::EBS_APPNAME, $e);
+  }
+}
+
+/**
+* Display/Edit EB info
+* 
+* @param n/a
+*
+* Returns string (Rendered form markup)
+*/
+function _eventbrite_sboc_event_info(){
+  $event_setup_form = drupal_get_form('_eventbrite_sboc_form_event_setup');
+  $mark_up = drupal_render($event_setup_form); 
+  
+  $evt = _eventbrite_sboc_init_event();
+  $evt_info = $evt->getEventInfo();
+
+  $event_info_form = drupal_get_form('_eventbrite_sboc_form_event_info', $evt_info);
+  $mark_up .= drupal_render($event_info_form);
+  
+  return $mark_up;
+}
+
+/**
+* Initlaizes OAuth2 sequence (customized for Eventbrite)
+* 
+* @param string $settings_label
+*
+* Returns array of Attendee objects
+*/
+function _eventbrite_sboc_init_oauth_sequence(){
+  $consumer_key = variable_get(EBConsts::EBS_CONGIFG_EB_CLIENT_ID, '');
+  $consumer_secret = variable_get(EBConsts::EBS_CONFIG_CONSUMER_SECRET, '');
+  $eb = new EBOauth($consumer_key, $consumer_secret);
+  $eb->getEBAccessAuthorization();
+}
+
+/**
+* Initalizes Event object so dependent objects are able to access data via Eventbrite API
+* 
+* @param none
+*
+* Returns object (EBEvent class)
+*/
+function _eventbrite_sboc_init_event(){
+  $ev = null;
+  try{
+    $client_id = variable_get(EBConsts::EBS_CONFIG_CONSUMER_KEY, '');
+    $client_secret = variable_get(EBConsts::EBS_CONFIG_CONSUMER_SECRET, '');
+    $eb_oauth = new EBOauth($client_id, $client_secret); 
+    $event_id = variable_get(EBConsts::EBS_CONFIG_EVENT_ID, '');
+    $ev = new EBEvents($eb_oauth, $event_id);   
+  }catch (Exception $e) {
+    watchdog_exception(EBConsts::EBS_APPNAME, $e);
+  }  
+  
+  return $ev;
+}
+
+/**
+* Callback function to retrieve access code sent from Eventbrite API
+* 
+* @param none
+*
+* Returns n/a
+*/
+function _eventbrite_sboc_oauth_callback(){
+  $client_id = variable_get(EBConsts::EBS_CONFIG_CONSUMER_KEY, '');
+  $client_secret = variable_get(EBConsts::EBS_CONFIG_CONSUMER_SECRET, '');
+  $eb = new EBOauth($client_id, $client_secret); 
+  $eb->getEBAccessToken($_GET['code']);
+}
+
+/**
+* Interacts with modules that have implementd hook_ebattendees_save
+* 
+* @param array $attendees (array(Object1, Object2, ObjectN))
+*
+* Returns array of Attendee objects
+*/
+function _eventbrite_sboc_invoke_save($attendees, $save_changed_only = FALSE){
+  $retval = array();
+  foreach(module_implements('ebattendees_save') as $module){
+    $function = $module. '_'. 'ebattendees_save';
+    $retval[$function] = $function($attendees, $save_changed_only);
+  }
+  
+  return $retval;
+}
+
+/**
+* Interacts with modules that have implementd hook_ebattendees_save
+* 
+* @param array $attendees (array(Object1, Object2, ObjectN))
+*
+* Returns array of Attendee objects
+*/
+function _eventbrite_sboc_invoke_save_withvalues($attendees, $values){
+  $retval = array();
+  foreach(module_implements('ebattendees_save_withvalues') as $module){
+    $function = $module. '_'. 'ebattendees_save_withvalues';
+    $retval[$function] = $function($attendees, $values);
+  }
+  
+  return $retval;
+}
+
+/**
+* Interacts with modules that have implemented hook_ebattendees_mail
+* 
+* @param array $attendees (array(Object1, Object2, ObjectN))
+*
+* Returns array of Attendee objects
+*/
+function _eventbrite_sboc_invoke_mail($attendees){
+  $retval = array();
+  foreach(module_implements('ebattendees_mail') as $module){
+    $function = $module. '_'. 'ebattendees_mail';
+    $retval[$function] = $function($attendees);
+  }
+  
+  return $retval;
+}
+
+/**
+* Calls builder function to display data entry form
+*   Redirects to display page
+*
+* @param Array $form
+* @param Array &$form_state
+*
+* Return n/a
+*/
+function _eventbrite_sboc_submit_order_num($form, &$form_state){
+  $order_num = check_plain($form_state['values']['ebs_order_num']);
+  drupal_goto('/'. EBConsts::EBS_ADMINMENUROOT. "/event/orders/{$order_num}");
+}
+
+/**
+* Calls builder function to display data entry form
+*   Redirects to display page
+*
+* @param Array $form
+* @param Array &$form_state
+*
+* Return n/a
+*/
+function _eventbrite_sboc_submit_attendee_order_num($form, &$form_state){
+  $order_num = check_plain($form_state['values']['ebs_attendee_order_num']);
+  drupal_goto('/'. EBConsts::EBS_ADMINMENUROOT. "/event/attendees/{$order_num}");
+}
+
+/**
+* Autoloader function called by menu router item
+*
+* @param string $order_num
+*
+* Return n/a
+*/
+function order_load($order_num){
+  return _eventbrite_sboc_fetch_order($order_num, '');
+}
+
+/**
+* Autoloader function called by menu router item
+*
+* @param string $order_num
+*
+* Return n/a
+*/
+function attendee_order_load($order_num){
+  return _eventbrite_sboc_fetch_order($order_num);
+}
+
+
+
+function _eventbrite_sboc_display_order($order){
+  dpm($order, 'Order & Attendee');  
+  return 'This is a test: '. __FUNCTION__;
+}
+
+/**
+* Fetches order object via EB API
+*
+* @param string $order_num
+* @param string $expansion (default attendees,event)
+*
+* Return Object $order or FALSE
+*/
+function _eventbrite_sboc_fetch_order($order_num, $expansion = EBConsts::EBS_ORDER_EXPANSIONS_ATTENDEES){
+  $order_num = check_plain($order_num);
+  $retval = FALSE;  
+  try{
+    $ev = _eventbrite_sboc_init_event();
+    $retval = $ev->getOrderByNumber($order_num, $expansion);
+  }catch(Exception $e){
+    watchdog_exception(EBConsts::EBS_APPNAME, $e);
+    $retval = FALSE;
+  }
+  return $retval;
+}
+
+
+/**
+* Helper function to retrieve Eventbrite attendee records from an order
+* 
+* @param string $url - a url typically supplied by Eventbrite via its wehhook API
+*
+* Returns array of Attendee objects
+*/
+function _eventbrite_sboc_order($url){
+  $attendees = array();
+  try{
+    $ev = _eventbrite_sboc_init_event();
+    //$expansions = 'attendees,event';
+    $order = $ev->getOrderByUrl($url, EBConsts::EBS_ORDER_EXPANSIONS);  
+    $eba = new EBAttendees($ev);
+    $attendees = $eba->loadAttendeesFromArray($order->attendees);
+  }catch(Exception $e){
+    watchdog_exception(EBConsts::EBS_APPNAME, $e);  
+  }
+  
+  return $attendees;
+}
+
+/**
+* Callback function to validate access to url resource which is the value of 
+* EBConsts::EBS_WEBHOOK_ORDER_PLACED
+* See class EBConsts
+*
+* Returns boolean
+*/
+function _eventbrite_sboc_webhook_access_check(){
+   // Check url
+   return TRUE;
+}
+
+/**
+* Callback function to handle Eventbrite 'Order complete' webhook calls 
+*/
+function _eventbrite_sboc_webhook_callback(){
+  $attendees = array();
+  try{
+    $input_json = file_get_contents(EBConsts::EBS_PHP_INPUT_STREAM);
+    $input_json_array = json_decode($input_json, TRUE);    
+//     if (!empty($input_json_array['api_url'])){
+//       $url = $input_json_array['api_url'];
+    if (!empty($input_json_array[EBConsts::EBS_JSON_PARAM_API_URL])){      
+      $url = $input_json_array[EBConsts::EBS_JSON_PARAM_API_URL];
+      watchdog(EBConsts::EBS_APPNAME, '$url = @url', array('@url' => $url,), WATCHDOG_INFO);
+      $attendees = _eventbrite_sboc_order($url);
+      watchdog(EBConsts::EBS_APPNAME, 'Attendee count = @rec_count | Order path = @url', 
+        array('@rec_count' => count($attendees), '@url' => $url,), WATCHDOG_INFO);
+      if (!empty($attendees)){
+        _eventbrite_sboc_invoke_save($attendees);
+        _eventbrite_sboc_invoke_mail($attendees);
+      }
+    }
+  }catch(Exception $e){
+    watchdog_exception(EBConsts::EBS_APPNAME, $e);  
+  }
+}

@@ -1,0 +1,12 @@
+<?php
+
+/*
+* Implements hook_uninstall
+*/
+function eventbrite_sboc_uninstall(){
+  variable_del('ebs_consumer_key');
+  variable_del('ebs_consumer_secret');
+  variable_del('ebs_authtoken');
+  variable_del('ebs_authtoken_type');
+}
+

@@ -1,0 +1,9 @@
+
+div[id ^= "edit"]{
+  padding: 0;
+}
+
+div[id ^= "edit"] div.description {
+  margin: 1px 0;
+  color: #733E3E;
+}

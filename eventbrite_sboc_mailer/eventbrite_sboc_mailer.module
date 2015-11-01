@@ -1,0 +1,189 @@
+<?php
+
+use Drupal\eventbrite_sboc\Helper\EBConsts;
+use Drupal\eventbrite_sboc\Helper\EBAttendees;
+use Drupal\eventbrite_sboc\Helper\MandrillEmailMgr;
+
+/**
+* Implements hook_menu
+* 
+* Returns array 
+*/
+function eventbrite_sboc_mailer_menu(){
+  $items = array();
+  
+  return $items;
+}
+
+/**
+* Implements hook_help
+*
+* @param string $path 
+* @param string $arg
+*
+* Returns string (Help text) 
+*/
+function eventbrite_sboc_mailer_help($path, $arg){
+  $output = '';
+  
+  switch($path){
+		case 'admin/help#eventbrite_sboc_mailer':
+		  $output = '<p>'. '</p>';
+		  break;		
+	  default:
+	    break;
+	}
+	
+  return $output;
+}
+
+/**
+* Implements hook_mail
+*
+* @param string $path 
+* @param string $arg
+*
+* Returns string (Help text) 
+*/
+function eventbrite_sboc_mailer_mail($key, &$message, $params){
+  // Good place to load a node entity for message body and subject
+  switch($key){
+		case EBConsts::EBS_SBOCATTENDEES_MAIL_KEY:
+		  $message['subject'] = (!empty($params['subject']) ? $params['subject'] : EBConsts::EBS_TESTSUBJECT);
+      $message['body'] = (!empty($params['body']) ? $params['body']: EBConsts::EBS_TESTBODY);
+		  break;		
+	  default:
+	    break;
+	}
+	
+}
+
+/**
+* Implements hook_mail
+*
+* @param string $path 
+* @param string $arg
+*
+* Returns string (Help text) 
+*/
+function eventbrite_sboc_mailer_mandrill_mail_alter(&$mandrill_params, $message){
+  if (isset($message['params']['mail_object'])){
+     $mo = $message['params']['mail_object'];  
+     $mo->setGlobalMergeVars($mandrill_params, $message);
+     $mo->setMergeVars($mandrill_params, $message);
+     $_SESSION['attendee'] = $message['params']['attendee'];
+  }
+  /*** bof: Taken from mandrill_template.module ***/
+  $template_map = mandrill_template_map_load_by_mailsystem($message['id'], $message['module']);
+  if ($template_map) {
+//     $mandrill_params['function'] = 'mandrill_template_sender';
+    $mandrill_params['function'] = 'eventbrite_sboc_mailer_mandrill_template_sender';
+    $mandrill_params['args'] = array(
+      'template_id' => $template_map->template_id,
+      'template_content' => array(
+         array(
+           'name' => $template_map->main_section,
+           'content' => $message['body'],
+         ),
+      ),
+    );
+  }
+  if (isset($message['mandrill_template_content'])) {
+    $message['mandrill_template_content']+= $mandrill_params['args']['template_content'];
+//     $mandrill_params['args']['template_content'];
+  }
+  /*** eof: Taken from mandrill_template.module ***/
+}
+
+/**
+ * Send a templated Mandrill message.
+ *
+ * This function checks for appropriate settings in the message, then uses the
+ * template API call to send the message if the settings are valid.
+ *
+ * @param array $message
+ *   Mandrill message to send.
+ * @param string $template_id
+ *   Name of the template to use.
+ * @param array $template_content
+ *   Associative array mapping template regions and content.
+ *
+ * @return array
+ *   Message response.
+ */
+function eventbrite_sboc_mailer_mandrill_template_sender($message, $template_id, $template_content) {
+  watchdog(EBConsts::EBS_APPNAME_MAIL, 'Insude: '. __FUNCTION__, array(), WATCHDOG_INFO);;
+  if ($mailer = mandrill_get_api_object()) {
+    watchdog(EBConsts::EBS_APPNAME_MAIL, 'Insude: if ($mailer = mandrill_get_api_object())', array(), WATCHDOG_INFO);;
+    return $mailer->messages->sendTemplate($template_id, $template_content, $message);
+  }
+  return NULL;
+}
+
+/**
+* Implements hook_mail
+*
+* @param array result 
+*
+* Returns string (Help text) 
+*/
+function eventbrite_sboc_mailer_mandrill_mailsend_result($result) {
+  // can we use session data to match the response with the attendee making the request? 
+  if (!empty($_SESSION['attendee']) && is_object($_SESSION['attendee'])){
+    $a = $_SESSION['attendee'];
+    if (!empty($result['status'])) {
+       $a->emailSendDate = date(EBConsts::EBS_MYSQLDATEFORMAT, REQUEST_TIME);
+       $a->emailSent = (int)(drupal_strtolower($result['status']) == EBConsts::EBS_EMAILSENT_STATUS_SUCCESS);
+       if (function_exists('_eventbrite_sboc_invoke_save_withvalues')){
+         $values = array('email_send_date' => $a->emailSendDate, 'email_sent' => $a->emailSent,);
+         $a = _eventbrite_sboc_invoke_save_withvalues(array($a), $values);
+       }
+    }
+  }
+  unset($_SESSION['attendee']);
+}
+
+/**
+* Implements hook_ebattendees_mail
+*
+* @param array $attendees
+*
+* Returns array
+*/
+function eventbrite_sboc_mailer_ebattendees_mail($attendees){
+  $message = _eventbrite_sboc_load_message(1);
+ 
+  $mail = new MandrillEmailMgr($attendees);
+  $mail->params['subject'] = $message['subject'];
+  // $mail->params['body'] = 'This is sample body text for: <br /><br /><b>*|first_name|*</b>';
+  // $mail->params['body'] .= '<br /><b>*|last_name|*</b> <br /><b>*|attendee_id|*</b>';
+  $mail->params['body'] =  $message['body'];
+  $mail->send();
+  
+  return $attendees;
+}
+
+/**
+ * Load a node containing the message to be sent via email
+ *
+ * This function checks loads a message node via entity_metadata_wrapper
+ *
+ * @param int $message_id
+ *   Unique identifiere of message to be sent
+ *
+ * @return array
+ *   Formatted as array('subject' => 'Subject Text', 'body' => 'Body Text',)
+ */
+function _eventbrite_sboc_load_message($message_id){
+  $retval = array('subject' => 'Email Subject', 'body' => 'Body of email',);
+  
+  try{
+    $mw = entity_metadata_wrapper('node', $message_id);
+    $retval['subject'] = (!empty($mw->title->value()) ? $mw->title->value() : $retval['subject']); 
+    $retval['body'] = (!empty($mw->body->value()) ? $mw->body->value() : $retval['body']); 
+  }catch(Exception $e){
+    watchdog_exception(EBConsts::EBS_APPNAME_MAIL, $e);  
+  }
+  
+  return $retval;
+}

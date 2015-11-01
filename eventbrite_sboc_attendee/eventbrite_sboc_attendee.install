@@ -1,0 +1,243 @@
+<?php
+
+// Table schema
+
+/*
+* Implements hook_schema
+*/
+
+function eventbrite_sboc_attendee_schema(){
+  $schema = array();
+  
+  $schema['eventbrite_sboc_attendees'] = array(
+    'description' => 'Attendee registration records imported from Eventbrite',
+    'fields' => array(
+      'eid' => array(
+        'description' => "The primary identifier for records in this table",
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'uid' => array(
+        'description' => "Foreign Key - Drupal User Id",
+        'type' => 'int',
+        'unsigned' => TRUE,
+      ),
+      'event_id' => array(
+        'description' => "The primary identifier for an Eventbrite event",
+        'type' => 'varchar',
+        'length' => 20,
+        'not null' => TRUE,
+      ),
+      'attendee_id' => array(
+        'description' => "Eventbrite Attendee Id",
+        'type' => 'varchar',
+        'length' => 20,
+        'not null' => TRUE,
+      ),
+      'order_id' => array(
+        'description' => "Eventbrite Order Id",
+        'type' => 'varchar',
+        'length' => 20,
+        'not null' => TRUE,
+      ),
+      'ticket_class_id' => array(
+        'description' => "Eventbrite Ticket Class Id",
+        'type' => 'varchar',
+        'length' => 20,
+        'not null' => TRUE,
+      ),
+      'create_date' => array(
+        'description' => "Date and time attendee record was created in this table", 
+        'type' => 'datetime',
+        'mysql_type' => 'DATETIME',
+        'pgsql_type' => 'timestamp without time zone', 
+        'sqlite_type' => 'VARCHAR', 
+        'sqlsrv_type' => 'smalldatetime',		   
+        'not null' => TRUE,
+      ),
+      'email_address' => array(
+        'description' => "Email address of registrant",
+        'type' => 'varchar',
+        'length' => 100,
+        'not null' => TRUE,
+      ),
+      'last_name' => array(
+        'description' => "Last name of attendee",
+        'type' => 'varchar',
+        'length' => 50,
+        'not null' => TRUE,
+      ),
+      'first_name' => array(
+        'description' => "First name of attendee",
+        'type' => 'varchar',
+        'length' => 50,
+        'not null' => TRUE,
+      ),
+      'category' => array(
+        'description' => "Category attendee will compete in",
+        'type' => 'varchar',
+        'length' => 2,
+        'not null' => TRUE,
+      ),
+      'category_nid' => array(
+        'description' => "Foreign Key - Category Node Id",
+        'type' => 'int',
+        'unsigned' => TRUE,
+      ),
+      'order_type' => array(
+        'description' => "Type of order (e.g. Paypal)",
+        'type' => 'varchar',
+        'length' => 50,
+        'not null' => TRUE,
+      ),
+      'email_sent' => array(
+        'description' => "Indicates status of first email contact",
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'email_send_date' => array(
+        'description' => "Date email was sent",
+        'type' => 'datetime',
+        'mysql_type' => 'DATETIME',
+        'pgsql_type' => 'timestamp without time zone', 
+        'sqlite_type' => 'VARCHAR', 
+        'sqlsrv_type' => 'smalldatetime',		   
+      ),
+      'reg_type' => array(
+        'description' => "Registration type (e.g. Premium, Standard, Unspecified)",
+        'type' => 'varchar',
+        'length' => 30,
+        'default' => 'Unspecified',
+      ),
+      'region_name' => array(
+        'description' => "Region name  (e.g. Toronto, Mississauga etc.)",
+        'type' => 'varchar',
+        'length' => 100,
+        'not null' => TRUE,
+      ),
+      'region_nid' => array(
+        'description' => "Foreign Key - Region Node Id",
+        'type' => 'int',
+        'unsigned' => TRUE,
+      ),
+      'contestant_last_name' => array(
+        'description' => "Contestant’s last name",
+        'type' => 'varchar',
+        'length' => 50,
+      ),
+      'contestant_first_name' => array(
+        'description' => "Contestant’s first name",
+        'type' => 'varchar',
+        'length' => 50,
+      ),
+      'gender' => array(
+        'description' => "Contestant’s gender -- allowed values M/F",
+        'type' => 'varchar',
+        'length' => 2,
+      ),
+      'grade' => array(
+        'description' =>  "Contestant’s Grade",
+        'type' => 'varchar',
+        'length' => 3,
+      ),
+      'school' => array(
+        'description' => "Contestant’s school",
+        'type' => 'varchar',
+        'length' => 255,
+      ),
+      'year_of_birth' => array(
+        'description' => "Contestant’s Year Of Birth",
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'month_of_birth' => array(
+        'description' => "Contestant’s Month Of Birth",
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'day_of_birth' => array(
+        'description' => "Contestant’s Day Of Birth",
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'home_address_line_1' => array(
+        'description' => "Contestant’s Home Address Line 1",
+        'type' => 'varchar',
+        'length' => 255,
+      ),
+      'home_address_line_2' => array(
+        'description' => "Contestant’s Home Address Line 2",
+        'type' => 'varchar',
+        'length' => 255,
+      ),
+      'home_city' => array(
+        'description' => "Contestant’s Home City",
+        'type' => 'varchar',
+        'length' => 100,
+      ),
+      'home_prov_state' => array(
+        'description' => "Contestant’s Home Province or State - default: ’ON’ = Ontario",
+        'type' => 'varchar',
+        'length' => 3,
+      ),
+      'home_postal_zip' => array(
+        'description' => "Contestant’s Home Postal or Zip Code",
+        'type' => 'varchar',
+        'length' => 20,
+      ),
+      'home_phone_1' => array(
+        'description' => "Contestant’s Home Phone 1",
+        'type' => 'varchar',
+        'length' => 20,
+      ),
+      'home_phone_2' => array(
+        'description' => "Contestant’s Home Phone 2",
+        'type' => 'varchar',
+        'length' => 20,
+      ),
+      'change_date' => array(
+        'description' => "Date and time attendee record was updated in this table",
+        'type' => 'datetime',
+        'mysql_type' => 'DATETIME',
+        'pgsql_type' => 'timestamp without time zone', 
+        'sqlite_type' => 'VARCHAR', 
+        'sqlsrv_type' => 'smalldatetime',		   
+      ),
+      'email_consent' => array(
+        'description' => "Flag indicating consent to be contacted by email",
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 1,
+      ),      
+      'additional_info' => array(
+        'description' => "Additional Notes",
+        'type' => 'text',
+        'length' => 2500,
+      ),
+     ),  
+    'primary key' => array('eid'),
+    'indexes' => array(
+      'eventbrite_sboc_attendee_id' => array('attendee_id'), 
+      'eventbrite_sboc_event_id' => array('event_id'),
+	    'eventbrite_sboc_order_id' => array('order_id'),
+	    'eventbrite_sboc_attendees_reg_type' => array('reg_type'),
+	    'eventbrite_sboc_attendees_region_name' => array('region_name'),
+	    'eventbrite_sboc_attendees_email_address' => array('email_address'),
+	    'eventbrite_sboc_attendees_change_date' => array('change_date'),
+	    'eventbrite_sboc_attendees_create_date' => array('create_date'),
+	    'eventbrite_sboc_attendees_ticket_class_id' => array('ticket_class_id'),
+	    'eventbrite_sboc_attendees_uid' => array('uid'),	
+	    'eventbrite_sboc_attendees_category_nid' => array('category_nid'),  
+	    'eventbrite_sboc_attendees_region_nid' => array('region_nid'),  
+    ), 
+  );
+  
+  return $schema;
+}

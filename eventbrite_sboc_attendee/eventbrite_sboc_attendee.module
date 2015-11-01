@@ -1,0 +1,298 @@
+<?php
+
+use Drupal\eventbrite_sboc\Helper\EBConsts;
+use Drupal\eventbrite_sboc\Helper\EBAttendees;
+use Drupal\eventbrite_sboc\Helper\SBOCDBMgr;
+use Drupal\eventbrite_sboc\Helper\EBSBOCDrupalUser;
+
+/**
+* Implements hook_menu
+* 
+* Returns array 
+*/
+function eventbrite_sboc_attendee_menu(){
+  $items = array();
+  
+  return $items;
+}
+
+/**
+* Implements hook_help
+*
+* @param string $path 
+* @param string $arg
+*
+* Returns string (Help text) 
+*/
+function eventbrite_sboc_attendee_help($path, $arg){
+  $output = '';
+  
+  switch($path){
+		case 'admin/help#eventbrite_sboc_attendee':
+		  $output = '<p>'. '</p>';
+		  break;		
+	  default:
+	    break;
+	}
+	
+  return $output;
+}
+
+/**
+* Implements hook_ebattendees_save
+*
+* @param array $attendees
+*
+* Returns array of Attendee objects
+*/
+function eventbrite_sboc_attendee_ebattendees_save(array $attendees, $save_changed_only=FALSE){  
+  /*
+  if (count($attendees) == 0){
+    return $attendees;
+  }
+  */
+  try{
+    $db = new SBOCDBMgr(EBConsts::EBS_ENTITY_TYPE_ATTENDEE, $attendees, $save_changed_only);
+    $attendees = $db->save();
+    // Are we making too many assumptions here? Creating a user account without confirmation 
+    // the attendee record was correctly written to the database
+    $eba = new EBAttendees(NULL);
+    $attendees = $eba->mapEBAttendeeEntitytoEBAttendee($attendees);
+    _eventbrite_sboc_create_user_login($attendees);
+    _eventbrite_sboc_link_to_region($attendees);
+  }catch(Exception $e){
+    watchdog_exception(EBConsts::EBS_APP_NAME_MAIN, $e);  
+  }
+  return $attendees;
+}
+
+
+/**
+* Implements hook_ebattendees_save_withvalues
+*
+* @param array $attendees
+*
+* Returns array of Attendee objects
+*/
+function eventbrite_sboc_attendee_ebattendees_save_withvalues(array $attendees, $values){   
+  try{
+    $db = new SBOCDBMgr(EBConsts::EBS_ENTITY_TYPE_NAME, $attendees);
+    $attendees = $db->saveWithValues($values);
+    $eba = new EBAttendees(NULL);
+    $attendees = $eba->mapEBAttendeeEntitytoEBAttendee($attendees);
+    _eventbrite_sboc_create_user_login($attendees);
+    _eventbrite_sboc_link_to_region($attendees);
+  }catch(Exception $e){
+    watchdog_exception(EBConsts::EBS_APP_NAME_MAIN, $e);  
+  }
+  return $attendees;
+}
+
+/**
+* Implements load callback as delcared in entity_info array 
+*    See hook_entity_info
+*
+* @param integer $attendee_id
+* @param boolean $reset (default = FALSE)
+*
+*/
+function eventbrite_sboc_attendee_attendees_load($attendee_id, $reset = FALSE){
+
+}
+
+/**
+* This function creates a user login from the attendee information 1 per order number
+* Does not attempt to create a new user for the same email address
+*
+* @param array $attendees
+*   An array of attendee objects
+*
+* Returns Object $user
+*/
+function _eventbrite_sboc_create_user_login(array $attendees){
+  // Must have at least one attenee passed to constructor
+  $u = NULL;
+  $ret_val = array();
+  try{
+//     $u = new EBSBOCDrupalUser(current($attendees));
+    foreach($attendees as $id => $attendee){
+      if (!$u) {
+        $u = new EBSBOCDrupalUser($attendee);
+      }
+      $u->attendee = $attendee;
+      if ($u->createUser()){
+        $u->userMailNotify();
+      }
+      // user is expected to be a valid user object at all times
+      $aw = entity_metadata_wrapper(EBConsts::EBS_ENTITY_TYPE_NAME, $attendee->attendeeId); 
+      $aw->uid = $u->user->uid;
+      $aw->save();
+      $ret_val[$attendee->attendeeId] = $u->user;
+    } 
+  }catch(Exception $e){
+    watchdog_exception(EBConsts::EBS_APP_NAME_MAIN, $e);  
+  } 
+   
+  return $ret_val;
+}
+
+function _eventbrite_sboc_link_to_region(array $attendees){
+  // Must have at least one attenee passed to constructor
+  $db = new SBOCDBMgr();
+  try{
+    foreach($attendees as $id => $attendee){
+      $region_nid = $db->getRegionNodeId($attendee->regionName);
+      $aw = entity_metadata_wrapper(EBConsts::EBS_ENTITY_TYPE_NAME, $attendee->attendeeId); 
+      $aw->region_nid = $region_nid;
+      $aw->save();
+    } 
+  }catch(Exception $e){
+    watchdog_exception(EBConsts::EBS_APP_NAME_MAIN, $e);  
+  } 
+   
+  return $attendees;
+}
+
+/**
+* Implements hook_entity_info
+*
+* Returns array 
+*
+*/
+function eventbrite_sboc_attendee_entity_info(){
+  $items = array();
+  
+  $items[EBConsts::EBS_ENTITY_TYPE_ATTENDEE] = array(
+    'label' => t('Eventbrite SBOC Attendees'),
+    'base table' => 'eventbrite_sboc_attendees',
+//     'module' => 'eventbrite_sboc_attendees',
+    'module' => EBConsts::EBS_APPNAME_ATTENDEES,
+    'entity class' => 'EBAttendeeEntity',
+    'controller class' => 'EBAttendeeEntityController', 
+    'views controller class' => 'EntityDefaultViewsController',
+    'load hook' => 'eventbrite_sboc_attendee_attendees_load',
+    'entity keys' => array(
+      'id' => EBConsts::EBS_FIELDS_ENTITY_KEY, 
+     ),
+    'static cache' => TRUE,
+    'label callback' => 'entity_class_label',
+  );
+  
+  return $items;
+}
+
+/**
+* Implements hook_entity_property_info
+*
+* @params none
+*
+* Returns array 
+*/
+
+function eventbrite_sboc_attendee_entity_property_info(){
+  
+  // Let's pull in the huge array from an include file rather than  
+  // overcrowding this file
+  $module_path = drupal_get_path('module', EBConsts::EBS_APPNAME);
+  include_once($module_path. '/'. EBConsts::EBS_ENTITY_PROPS_FILE);
+  
+  return $propinfo;
+}
+
+
+/**
+* Implements hook_entity_property_info_alter
+*
+* @params Array $info
+*
+* Returns array 
+*/
+function eventbrite_sboc_attendee_entity_property_info_alter(&$info){
+  $properties = &$info[EBConsts::EBS_ENTITY_TYPE_ATTENDEE]['properties'];
+  $properties['uid'] = array(
+    'label' => 'Enrollee',
+    'type' => 'user',
+    'description' => t('Reference to the enrolled user'),
+    'setter callback' => 'entity_property_verbatim_set',
+    'schema field' => 'uid',
+  );
+  $properties['category_nid'] = array(
+    'label' => 'Category',
+    'type' => 'node',
+    'description' => t("Reference to content specific to the competitor's category"),
+    'setter callback' => 'entity_property_verbatim_set',
+    'schema field' => 'category_nid',
+  );
+  $properties['region_nid'] = array(
+    'label' => 'Region',
+    'type' => 'node',
+    'description' => t("Reference to node containing region information"),
+    'setter callback' => 'entity_property_verbatim_set',
+    'schema field' => 'region_nid',
+  );
+}
+
+/**
+* Test function to load attendee records by first loading attendee ids associated with
+* a specific record
+*
+* @param string $attendee_id
+*   A string representing the unique attendee id received through the Eventbrite API
+*   Drupal's Entity system expects a numeric (int) value as the id: See hook_entity_info
+*
+* Returns string
+*/
+function _eventbrite_sboc_attendee_test_load($order_id){
+  $db = new SBOCDBMgr();
+  $eba = new EBAttendees(NULL);
+  $ids = $db->loadOrders(array($order_id));
+  $attendees = $db->loadAttendees($ids);  
+  $attendees = $eba->mapEBAttendeeEntitytoEBAttendee($attendees);
+  dpm($attendees, 'After $eba->mapEBAttendeeEntitytoEBAttendee()');
+  _eventbrite_sboc_create_user_login($attendees);
+  $attendees = _eventbrite_sboc_link_to_region($attendees);
+  dpm($attendees, 'After _eventbrite_sboc_link_to_region()');
+}
+
+$module_path = drupal_get_path('module', EBConsts::EBS_APPNAME);
+include_once($module_path. '/'. EBConsts::EBS_ENTITY_CLASS_FILE);
+
+/*
+* Extending Entity base class to represent our new entity
+*/
+
+/*
+class EBAttendeeEntity extends Entity{
+  protected function defaultLabel(){
+    return $entity->event_id. '-'. $entity->attendee_id; 
+  }
+  
+  protected function defaultUri(){
+    return array('path' => 'ebattendee/' . $this->identifier());
+  }
+}
+*/
+
+/*
+* Extending the EntityAPIController for the Attendee entity.
+*/
+/*
+class EBAttendeeEntityController extends EntityAPIController{
+   public function save($entity){
+     $retval = parent::save($entity);
+     return $retval;
+   }
+   
+   protected function realLoad($ids, $conditions){
+     $dba = new SBOCDBMgr();
+     $attendees_ids = $dba->legacyLoadAttendees($ids);
+     return $attendees_ids;
+   }
+   
+   public function load($ids = array(), $conditions = array()){
+     $attendee_ids = $this->realLoad($ids, $conditions);
+     $retval = parent::load($attendee_ids, $conditions);
+     return $retval;
+   }
+}
+*/

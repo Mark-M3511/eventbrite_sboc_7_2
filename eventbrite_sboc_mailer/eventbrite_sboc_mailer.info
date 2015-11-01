@@ -1,0 +1,18 @@
+;Header Info
+name = Eventbrite SBOC Mail
+description = Manage SBOC email notifications to attendees
+package = Eventbrite SBOC
+core = 7.x
+
+;Configuration Page
+configure = admin/config/system/eventbrite_sboc
+
+;Dependencies
+dependencies[] = eventbrite_sboc
+dependencies[] = mandrill
+
+;Version Info
+version = '7.x-1.0-alpha4'
+
+;Project Update Info
+;project status url = 'http://dev1508.holbrookgoodman.com/'
