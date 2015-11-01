@@ -165,7 +165,6 @@ function eventbrite_sboc_attendee_entity_info(){
   $items[EBConsts::EBS_ENTITY_TYPE_ATTENDEE] = array(
     'label' => t('Eventbrite SBOC Attendees'),
     'base table' => 'eventbrite_sboc_attendees',
-//     'module' => 'eventbrite_sboc_attendees',
     'module' => EBConsts::EBS_APPNAME_ATTENDEES,
     'entity class' => 'EBAttendeeEntity',
     'controller class' => 'EBAttendeeEntityController', 
