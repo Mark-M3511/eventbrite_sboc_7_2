@@ -302,8 +302,7 @@ function _eventbrite_sboc_cron_update_attendees($save_changed_only = FALSE){
     $eba = new EBAttendees($ev);
     $attendees = $eba->loadAttendeesFromResource($params);
     _eventbrite_sboc_invoke_save($attendees, $save_changed_only);
-    watchdog(EBConsts::EBS_APPNAME, 'Count: @count', array('@count' => count($attendees),), WATCHDOG_INFO);
-    dpm($attendees); 
+    watchdog(EBConsts::EBS_APPNAME, 'Count: @count', array('@count' => count($attendees),), WATCHDOG_INFO); 
   }catch(Exception $e){
     watchdog_exception(EBConsts::EBS_APPNAME, $e);
   }
@@ -521,9 +520,11 @@ function _eventbrite_sboc_order($url){
   try{
     $ev = _eventbrite_sboc_init_event();
     //$expansions = 'attendees,event';
-    $order = $ev->getOrderByUrl($url, EBConsts::EBS_ORDER_EXPANSIONS);  
-    $eba = new EBAttendees($ev);
-    $attendees = $eba->loadAttendeesFromArray($order->attendees);
+    $order = $ev->getOrderByUrl($url, EBConsts::EBS_ORDER_EXPANSIONS); 
+    if (is_array($order->attendees) && !empty($order->attendees)){
+      $eba = new EBAttendees($ev);
+      $attendees = $eba->loadAttendeesFromArray($order->attendees);
+    }  
   }catch(Exception $e){
     watchdog_exception(EBConsts::EBS_APPNAME, $e);  
   }
@@ -544,15 +545,13 @@ function _eventbrite_sboc_webhook_access_check(){
 }
 
 /**
-* Callback function to handle Eventbrite 'Order complete' webhook calls 
+* Callback function to handle Eventbrite 'order.placed' webhook calls 
 */
 function _eventbrite_sboc_webhook_callback(){
   $attendees = array();
   try{
     $input_json = file_get_contents(EBConsts::EBS_PHP_INPUT_STREAM);
-    $input_json_array = json_decode($input_json, TRUE);    
-//     if (!empty($input_json_array['api_url'])){
-//       $url = $input_json_array['api_url'];
+    $input_json_array = json_decode($input_json, TRUE); 
     if (!empty($input_json_array[EBConsts::EBS_JSON_PARAM_API_URL])){      
       $url = $input_json_array[EBConsts::EBS_JSON_PARAM_API_URL];
       watchdog(EBConsts::EBS_APPNAME, '$url = @url', array('@url' => $url,), WATCHDOG_INFO);

@@ -46,11 +46,6 @@ function eventbrite_sboc_attendee_help($path, $arg){
 * Returns array of Attendee objects
 */
 function eventbrite_sboc_attendee_ebattendees_save(array $attendees, $save_changed_only=FALSE){  
-  /*
-  if (count($attendees) == 0){
-    return $attendees;
-  }
-  */
   try{
     $db = new SBOCDBMgr(EBConsts::EBS_ENTITY_TYPE_ATTENDEE, $attendees, $save_changed_only);
     $attendees = $db->save();
@@ -113,8 +108,8 @@ function _eventbrite_sboc_create_user_login(array $attendees){
   // Must have at least one attenee passed to constructor
   $u = NULL;
   $ret_val = array();
+//   watchdog(EBConsts::EBS_APPNAME, 'Entered: _eventbrite_sboc_create_user_login', array(), WATCHDOG_INFO);
   try{
-//     $u = new EBSBOCDrupalUser(current($attendees));
     foreach($attendees as $id => $attendee){
       if (!$u) {
         $u = new EBSBOCDrupalUser($attendee);
@@ -123,6 +118,7 @@ function _eventbrite_sboc_create_user_login(array $attendees){
       if ($u->createUser()){
         $u->userMailNotify();
       }
+//       watchdog(EBConsts::EBS_APPNAME, 'User id = !uid', array('!uid' => $u->user->uid,), WATCHDOG_INFO);
       // user is expected to be a valid user object at all times
       $aw = entity_metadata_wrapper(EBConsts::EBS_ENTITY_TYPE_NAME, $attendee->attendeeId); 
       $aw->uid = $u->user->uid;
