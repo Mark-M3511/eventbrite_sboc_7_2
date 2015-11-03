@@ -28,6 +28,7 @@ class EBConsts{
   const EBS_CONFIG_CHANGED_SINCE_DAYS = 'ebs_changed_since_days';
   const EBS_CONFIG_DEFAULT_CHANGED_SINCE_DAYS = 7;
   const EBS_CONFIG_PARAM_CHANGED_SINCE = 'changed_since';
+  const EBS_CONFIG_EMAIL_MESSAGE_NODE_ID = 'ebs_email_msg_node_id';
   // webhook json api data
   const EBS_JSON_PARAM_API_URL = 'api_url';
   // Title
@@ -39,6 +40,7 @@ class EBConsts{
   // db table
   const EBS_DBTABLE_ATTENDEES = 'eventbrite_sboc_attendees';  
   // entity name
+  const EBS_ENTITY_CLASS_NAME = 'EBAttendeeEntity';
   const EBS_ENTITY_TYPE_NAME = 'eventbrite_sboc_attendee';
   const EBS_ENTITY_TYPE_ATTENDEE = self::EBS_ENTITY_TYPE_NAME;
   // urls & endpoints   
@@ -84,6 +86,7 @@ class EBConsts{
   const EBS_TESTSUBJECT = 'What is your real subject?';
   const EBS_TESTBODY = 'Howdy, buddy <b>*|FIRST_NAME|* *|LAST_NAME|*</b> !!';
   const EBS_EMAILSENT_STATUS_SUCCESS = 'sent';
+  const EBS_EMAIL_NODE_ID = 1;
   // Eventbrite DB Fields
   const EBS_FIELDS_EID = 'eid';
   const EBS_FIELDS_EVENT_ID = 'event_id';

@@ -151,12 +151,13 @@ function eventbrite_sboc_mailer_mandrill_mailsend_result($result) {
 * Returns array
 */
 function eventbrite_sboc_mailer_ebattendees_mail($attendees){
-  $message = _eventbrite_sboc_load_message(1);
+  // $mail->params['body'] = 'This is sample body text for: <br /><br /><b>*|first_name|*</b>';
+  // $mail->params['body'] .= '<br /><b>*|last_name|*</b> <br /><b>*|attendee_id|*</b>';
+  $nid = variable_get(EBConsts::EBS_CONFIG_EMAIL_MESSAGE_NODE_ID, EBConsts::EBS_EMAIL_NODE_ID);
+  $message = _eventbrite_sboc_load_message($nid);
  
   $mail = new MandrillEmailMgr($attendees);
   $mail->params['subject'] = $message['subject'];
-  // $mail->params['body'] = 'This is sample body text for: <br /><br /><b>*|first_name|*</b>';
-  // $mail->params['body'] .= '<br /><b>*|last_name|*</b> <br /><b>*|attendee_id|*</b>';
   $mail->params['body'] =  $message['body'];
   $mail->send();
   
@@ -180,7 +181,7 @@ function _eventbrite_sboc_load_message($message_id){
   try{
     $mw = entity_metadata_wrapper('node', $message_id);
     $retval['subject'] = (!empty($mw->title->value()) ? $mw->title->value() : $retval['subject']); 
-    $retval['body'] = (!empty($mw->body->value()) ? $mw->body->value() : $retval['body']); 
+    $retval['body'] = (!empty($mw->body->value()) ? $mw->body->value->value() : $retval['body']); 
   }catch(Exception $e){
     watchdog_exception(EBConsts::EBS_APPNAME_MAIL, $e);  
   }

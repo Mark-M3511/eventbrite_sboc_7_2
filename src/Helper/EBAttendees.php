@@ -172,9 +172,16 @@ class EBAttendees{
   
   function mapEBAttendeeEntitytoEBAttendee(array $attendees){
     foreach($attendees as $attendee){
+      $r = (empty($r) ? new \ReflectionClass($attendee) : $r);
+      // If for any reason we have a class without properties
+      // go to the top of the loop
+      // ***** bof: Check instance
+      if (count($r->getProperties()) == 0){
+        continue; 
+      }
+      // ***** eof: Check instance
       $a = new EBAttendee();
       $a->eventId = $attendee->event_id;
-      $r = (empty($r) ? new \ReflectionObject($attendee) : $r);
       if ($r->hasProperty('uid')){
         $a->uid = $attendee->uid;
       }
