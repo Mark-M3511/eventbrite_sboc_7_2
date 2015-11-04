@@ -350,6 +350,34 @@ class SBOCDBMgr implements iDBMgr{
     return $ret_val;
   }
   
+  /**
+  * Returns a node ids and Node titles for email message content type
+  *
+  * @param none
+  *
+  * Returns array
+  */
+  public function getEmailMessages(){
+    $ret_val = $node_ids = array();
+    try{
+      $q = new \EntityFieldQuery();
+      $q->entityCondition('entity_type', 'node');
+      $q->entityCondition('bundle', 'email_message');
+      $q->propertyCondition('status', 1, '=');
+      $result = $q->execute();
+      if (!empty($result['node'])){
+        $node_ids = array_keys($result['node']);
+        $nodes = node_load_multiple($node_ids);
+        foreach($nodes as $node){
+          $ret_val[$node->nid] = check_plain($node->title);
+        }
+      }
+    }catch(Exception $e){
+      watchdog_exception(__CLASS__. '~'. __METHOD__, $e);
+    }
+    return $ret_val;
+  }
+  
   
   /**
   * Returns an associative arary of field names and values to be used in INSERT/UPDATE/MERGE operations
