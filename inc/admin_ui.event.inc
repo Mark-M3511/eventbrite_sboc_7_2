@@ -28,12 +28,10 @@ function _eventbrite_sboc_form_event_setup($form, &$form_state){
     '#required' => TRUE,
   );
   
-  $dbmgr = new SBOCDBMgr();
-  
   $form['ebs_event_setup'][EBConsts::EBS_CONFIG_EMAIL_MESSAGE_NODE_ID] = array(
     '#type' => 'select',
     '#title' => t('Email Message'),
-    '#options' => $dbmgr->getEmailMessages(),
+    '#options' => (new SBOCDBMgr())->getEmailMessages(),
     '#default_value' => variable_get(EBConsts::EBS_CONFIG_EMAIL_MESSAGE_NODE_ID, EBConsts::EBS_EMAIL_NODE_ID),
     '#required' => TRUE,
   );
