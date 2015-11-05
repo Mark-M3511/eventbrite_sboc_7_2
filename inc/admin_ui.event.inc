@@ -96,40 +96,46 @@ function _eventbrite_sboc_form_event_info($form, &$form_state, $event){
     '#title' => t('Event Information'),
   );
   
+  $value = empty($event->name['text']) ? '' : $event->name['text'];
   $form['ebs_event_info']['event_name_label'] = array(
     '#type' => 'item',
     '#description' => t('Name'),
-    '#markup' => check_plain($event->name['text']),
+    '#markup' => check_plain($value),
   );
   
+  $value = empty($event->description['text']) ? '' : $event->description['text'];
   $form['ebs_event_info']['event_title_value'] = array(
     '#type' => 'item',
     '#description' => t('Description'),
-    '#markup' => check_plain($event->description['text']),
+    '#markup' => check_plain($value),
   );
   
+  $value = empty($event->id) ? '' : $event->id;
   $form['ebs_event_info']['id'] = array(
     '#type' => 'item',
     '#description' => t('Id'),
-    '#markup' => check_plain($event->id),
+    '#markup' => check_plain($value),
   );
   
+  $value = empty($event->start['local']) ? '' : $event->start['local'];
   $form['ebs_event_info']['start-time'] = array(
     '#type' => 'item',
     '#description' => t('Start Time'),
-    '#markup' => check_plain($event->start['local']),
+    '#markup' => check_plain($value),
   );
   
+  $value = empty($event->end['local']) ? '' : $event->end['local'];
   $form['ebs_event_info']['end_time'] = array(
     '#type' => 'item',
     '#description' => t('End Time'),
-    '#markup' => check_plain($event->end['local']),
+    '#markup' => check_plain($value),
   );
   
+  $value = empty(($event->start['timezone']) ? '' : ($event->start['timezone'];
   $form['ebs_event_info']['time_zone'] = array(
     '#type' => 'item',
     '#description' => t('Timezone'),
-    '#markup' => check_plain($event->start['timezone']),
+    '#markup' => check_plain($value),
   );
   
   $form['#attached']['css'] = array(
