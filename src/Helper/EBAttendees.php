@@ -80,9 +80,15 @@ class EBAttendees{
   
   public function loadAttendeesFromResource(array $params){
     if (empty($this->event)){
-      return array();
+      return $this->attendees;
     }
+    
     $response = $this->event->getEventAttendees($params);
+    
+    if (isset($response) && !isset($response->attendees)){
+      return $this->attendees;
+    }
+    
     foreach($response->attendees as $attendee){
       $a = new EBAttendee();
       $create_date = date(EBConsts::EBS_MYSQLDATEFORMAT, strtotime(str_ireplace('Z', '', $attendee['created'])));
