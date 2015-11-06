@@ -56,15 +56,13 @@ class SBOCDBMgr implements iDBMgr{
     // Property names must match field names in base table(s) 
     $rec = array();
     $a = null;
-    $key = $attendee->attendeeId;
     try{
-      $rec = entity_load($this->entityName, array($key,)); 
+      $rec = entity_load($this->entityName, array($attendee->attendeeId,)); 
       if (empty($rec)){
         if ($this->saveChangedOnly){
           return $a;
         }
-        $values = array('attendee_id' => $key,);
-        $a = entity_create($this->entityName, $values);
+        $a = entity_create($this->entityName, array('attendee_id' => $attendee->attendeeId,));
       }else{
         $a = current($rec);
       }
@@ -168,7 +166,10 @@ class SBOCDBMgr implements iDBMgr{
   public function save(){
     $retval = array(); 
     foreach($this->attendees as $id => $attendee){
-      $retval[] = $this->realSave($attendee);
+      $attendee_rec = $this->realSave($attendee);
+      if (isset($attendee_rec)){
+        $retval[] = $this->realSave($attendee);
+      }
     }
     return $retval;
   }

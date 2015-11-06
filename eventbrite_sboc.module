@@ -483,7 +483,7 @@ function attendee_order_load($order_num){
 
 function _eventbrite_sboc_display_order($order){
   dpm($order, 'Order & Attendee');  
-  return 'This is a test: '. __FUNCTION__;
+  return 'Response from: '. __FUNCTION__;
 }
 
 /**

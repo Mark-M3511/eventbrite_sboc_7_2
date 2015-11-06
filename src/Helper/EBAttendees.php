@@ -58,7 +58,7 @@ class EBAttendees{
   protected function getAnswer(array $answers, $question, $default){
     $ret_val = $default;
     foreach($answers as $id => $answer){
-      if ($question == $answer['question']){
+      if ($question == $answer['question'] && !empty($answer['answer'])){
         $ret_val = $answer['answer'];
         switch($answer['question']){
           case EBConsts::EBS_QA_101:
