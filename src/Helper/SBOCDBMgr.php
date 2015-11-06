@@ -166,6 +166,8 @@ class SBOCDBMgr implements iDBMgr{
   public function save(){
     $retval = array(); 
     foreach($this->attendees as $id => $attendee){
+      // realSave could return null if the "changes only" flag is set to true 
+      // and a record does not exist with the current attendee id
       $attendee_rec = $this->realSave($attendee);
       if (isset($attendee_rec)){
         $retval[] = $attendee_rec;
