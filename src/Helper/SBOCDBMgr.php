@@ -168,7 +168,7 @@ class SBOCDBMgr implements iDBMgr{
     foreach($this->attendees as $id => $attendee){
       $attendee_rec = $this->realSave($attendee);
       if (isset($attendee_rec)){
-        $retval[] = $this->realSave($attendee);
+        $retval[] = $attendee_rec;
       }
     }
     return $retval;
