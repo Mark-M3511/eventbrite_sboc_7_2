@@ -131,7 +131,7 @@ function _eventbrite_sboc_form_event_info($form, &$form_state, $event){
     '#markup' => check_plain($value),
   );
   
-  $value = empty(($event->start['timezone']) ? '' : ($event->start['timezone'];
+  $value = empty($event->start['timezone']) ? '' : $event->start['timezone'];
   $form['ebs_event_info']['time_zone'] = array(
     '#type' => 'item',
     '#description' => t('Timezone'),
