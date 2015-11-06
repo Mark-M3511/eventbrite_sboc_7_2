@@ -38,6 +38,8 @@ class EBConsts{
   const EBS_OAUTH2_SETTINGS_LABEL = 'ebv3';
   const EBS_EB_RESPONSE_TYPE_CODE = 'code';
   const EBS_EB_GRANT_TYPE_AUTH_CODE = 'authorization_code';
+  // Eventbrite Tests
+  const EBS_WEBHOOK_TEST_URL_PATH = '{api-endpoint-to-fetch-object-details}';
   // db table
   const EBS_DBTABLE_ATTENDEES = 'eventbrite_sboc_attendees';  
   // entity name
