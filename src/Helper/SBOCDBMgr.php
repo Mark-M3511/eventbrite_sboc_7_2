@@ -77,8 +77,9 @@ class SBOCDBMgr implements iDBMgr{
       $a->category = $attendee->category;
       $a->category_nid = $attendee->categoryNid;
       $a->order_type = $attendee->orderType;
-      $a->email_sent = $attendee->emailSent; 
-      $a->email_send_date = $attendee->emailSendDate;
+      // Should only be updated from mail process
+      // $a->email_sent = $attendee->emailSent; 
+      // $a->email_send_date = $attendee->emailSendDate;
       $a->reg_type = $attendee->regType;
       $a->region_name = $attendee->regionName;
       $a->contestant_first_name = self::no_overflow($attendee->contestantLastName,50);
