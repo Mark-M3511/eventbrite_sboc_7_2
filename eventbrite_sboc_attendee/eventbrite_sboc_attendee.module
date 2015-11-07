@@ -51,8 +51,8 @@ function eventbrite_sboc_attendee_ebattendees_save(array $attendees, $save_chang
     $attendees = $db->save();
     // Are we making too many assumptions here? Creating a user account without confirmation 
     // the attendee record was correctly written to the database
-//     $debug = print_r($attendees, TRUE);
-//     watchdog('eventbrite_sboc_attendee_ebattendees_save', $debug);
+    // $debug = print_r($attendees, TRUE);
+    // watchdog('eventbrite_sboc_attendee_ebattendees_save', $debug);
     $eba = new EBAttendees(NULL);
     $attendees = $eba->mapEBAttendeeEntitytoEBAttendee($attendees);
     _eventbrite_sboc_create_user_login($attendees);
@@ -75,8 +75,8 @@ function eventbrite_sboc_attendee_ebattendees_save_withvalues(array $attendees, 
   try{
     $db = new SBOCDBMgr(EBConsts::EBS_ENTITY_TYPE_NAME, $attendees);
     $attendees = $db->saveWithValues($values);
-//     $debug = print_r($attendees, TRUE);
-//     watchdog('eventbrite_sboc_attendee_ebattendees_save_withvalues', $debug);
+    // $debug = print_r($attendees, TRUE);
+    // watchdog('eventbrite_sboc_attendee_ebattendees_save_withvalues', $debug);
     $eba = new EBAttendees(NULL);
     $attendees = $eba->mapEBAttendeeEntitytoEBAttendee($attendees);
     _eventbrite_sboc_create_user_login($attendees);
@@ -112,7 +112,7 @@ function _eventbrite_sboc_create_user_login(array $attendees){
   // Must have at least one attenee passed to constructor
   $u = NULL;
   $ret_val = array();
-//   watchdog(EBConsts::EBS_APPNAME, 'Entered: _eventbrite_sboc_create_user_login', array(), WATCHDOG_INFO);
+  // watchdog(EBConsts::EBS_APPNAME, 'Entered: _eventbrite_sboc_create_user_login', array(), WATCHDOG_INFO);
   try{
     foreach($attendees as $id => $attendee){
       if (!$u) {
@@ -122,7 +122,7 @@ function _eventbrite_sboc_create_user_login(array $attendees){
       if ($u->createUser()){
         $u->userMailNotify();
       }
-//       watchdog(EBConsts::EBS_APPNAME, 'User id = !uid', array('!uid' => $u->user->uid,), WATCHDOG_INFO);
+      // watchdog(EBConsts::EBS_APPNAME, 'User id = !uid', array('!uid' => $u->user->uid,), WATCHDOG_INFO);
       // user is expected to be a valid user object at all times
       $aw = entity_metadata_wrapper(EBConsts::EBS_ENTITY_TYPE_NAME, $attendee->attendeeId); 
       $aw->uid = $u->user->uid;

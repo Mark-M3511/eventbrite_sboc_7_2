@@ -197,6 +197,15 @@ class EBAttendees{
       if ($r->hasProperty('region_nid')){
         $a->regionNid = $attendee->region_nid;
       }
+      
+      if ($r->hasProperty('email_sent')){
+        $a->emailSent = $attendee->email_sent;      
+      }  
+      
+      if ($r->hasProperty('email_send_date')){
+        $a->emailSendDate = $attendee->email_send_date;
+      }
+      
       $a->attendeeId = $attendee->attendee_id;
       $a->orderId = $attendee->order_id;
       $a->ticketClassId = $attendee->ticket_class_id;
@@ -207,8 +216,6 @@ class EBAttendees{
       $a->firstName = $attendee->first_name;
       $a->category = $attendee->category;
       $a->orderType = $attendee->order_type;
-      $a->emailSent = $attendee->email_sent;      
-      $a->emailSendDate = $attendee->email_send_date;
       $a->regType = $attendee->reg_type;
       $a->regionName = $attendee->region_name;
       $a->contestantLastName = $attendee->contestant_last_name;
