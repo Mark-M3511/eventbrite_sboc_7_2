@@ -427,6 +427,11 @@ class SBOCDBMgr implements iDBMgr{
       'email_consent' => $attendee->emailConsent,
       'additional_info' => self::no_overflow($attendee->additionalInfo,2500),
     );
+    
+    _eventbrite_sboc_debug_output($attendee);
+    if (isset($attendee->passwordResetUrl)){
+      $mapped_values['password_reset_url'] = $attendee->passwordResetUrl;
+    }
      
     return $mapped_values;
   } 

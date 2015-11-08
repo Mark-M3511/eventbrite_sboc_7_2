@@ -56,6 +56,7 @@ function eventbrite_sboc_attendee_ebattendees_save(array $attendees, $save_chang
     $eba = new EBAttendees(NULL);
     $attendees = $eba->mapEBAttendeeEntitytoEBAttendee($attendees);
     _eventbrite_sboc_create_user_login($attendees);
+    // _eventbrite_sboc_debug_output($attendees);
     _eventbrite_sboc_link_to_region($attendees);
   }catch(Exception $e){
     watchdog_exception(EBConsts::EBS_APP_NAME_MAIN, $e);  
@@ -108,7 +109,7 @@ function eventbrite_sboc_attendee_attendees_load($attendee_id, $reset = FALSE){
 *
 * Returns Object $user
 */
-function _eventbrite_sboc_create_user_login(array $attendees){
+function _eventbrite_sboc_create_user_login(array &$attendees){
   // Must have at least one attenee passed to constructor
   $u = NULL;
   $ret_val = array();
@@ -120,7 +121,9 @@ function _eventbrite_sboc_create_user_login(array $attendees){
       }
       $u->attendee = $attendee;
       if ($u->createUser()){
-        $u->userMailNotify();
+//         $u->userMailNotify();
+        $attendee->passwordResetUrl = user_pass_reset_url($u->user);
+//         watchdog(EBConsts::EBS_APPNAME, 'Reset link = !val', array('!val' => $attendee->passwordResetUrl,), WATCHDOG_INFO);
       }
       // watchdog(EBConsts::EBS_APPNAME, 'User id = !uid', array('!uid' => $u->user->uid,), WATCHDOG_INFO);
       // user is expected to be a valid user object at all times

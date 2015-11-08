@@ -482,7 +482,8 @@ function attendee_order_load($order_num){
 
 
 function _eventbrite_sboc_display_order($order){
-  dpm($order, 'Order & Attendee');  
+  dpm($order, 'Order & Attendee'); 
+  _eventbrite_sboc_debug_output($order); 
   return 'Response from: '. __FUNCTION__;
 }
 
@@ -561,13 +562,34 @@ function _eventbrite_sboc_webhook_callback(){
         watchdog(EBConsts::EBS_APPNAME, 'Attendee count = @rec_count | Order path = @url', 
           array('@rec_count' => count($attendees), '@url' => $url,), WATCHDOG_INFO);
         if (!empty($attendees)){
-          _eventbrite_sboc_invoke_save($attendees);
-          _eventbrite_sboc_invoke_mail($attendees);
+          $a = _eventbrite_sboc_invoke_save($attendees);
+          _eventbrite_sboc_debug_output($a);
+//           _eventbrite_sboc_invoke_mail($attendees);
+//           $mail_list = $a['eventbrite_sboc_attendee_ebattendees_save'];
+          foreach($a as $mod => $mail_list){
+            _eventbrite_sboc_invoke_mail($mail_list);
+          }
         }
       }
     }
     
   }catch(Exception $e){
     watchdog_exception(EBConsts::EBS_APPNAME, $e);  
+  }
+}
+
+/**
+*  Debug area!! No dumping! Actual no out side garbage!
+**/
+
+function _eventbrite_sboc_debug_output($var){
+  if (module_exists('devel')){
+    $function_name = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT, 2);
+    if (is_object($var)){
+      $var = get_object_vars($var);
+    }
+    $debug_msg = print_r($var, TRUE);
+    $args = array('!function_name' => $function_name[1]['function'], '!debug_msg' => $debug_msg,);
+    watchdog(EBConsts::EBS_APP_NAME_MAIN, 'CALLED FROM: !function_name => DEBUG OUTPUT: !debug_msg', $args, WATCHDOG_INFO);
   }
 }

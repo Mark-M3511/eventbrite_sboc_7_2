@@ -44,6 +44,7 @@ class EBAttendee{
   public $changeDate;
   public $emailConsent;
   public $additionalInfo;
+  public $passwordResetUrl;
 }
 
 class EBAttendees{
