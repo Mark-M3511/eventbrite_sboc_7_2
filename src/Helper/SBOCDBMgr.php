@@ -82,8 +82,8 @@ class SBOCDBMgr implements iDBMgr{
       // $a->email_send_date = $attendee->emailSendDate;
       $a->reg_type = $attendee->regType;
       $a->region_name = $attendee->regionName;
-      $a->contestant_first_name = self::no_overflow($attendee->contestantLastName,50);
-      $a->contestant_last_name = self::no_overflow($attendee->contestantFirstName,50);
+      $a->contestant_last_name = self::no_overflow($attendee->contestantLastName,50);
+      $a->contestant_first_name = self::no_overflow($attendee->contestantFirstName,50);
       $a->gender = $attendee->gender;
       $a->grade = $attendee->grade;
       $a->school = self::no_overflow($attendee->school,255);
@@ -428,7 +428,7 @@ class SBOCDBMgr implements iDBMgr{
       'additional_info' => self::no_overflow($attendee->additionalInfo,2500),
     );
     
-    _eventbrite_sboc_debug_output($attendee);
+    // _eventbrite_sboc_debug_output($attendee);
     if (isset($attendee->passwordResetUrl)){
       $mapped_values['password_reset_url'] = $attendee->passwordResetUrl;
     }

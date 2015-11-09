@@ -274,7 +274,7 @@ function eventbrite_sboc_cron_queue_info(){
 * Returns n/a
 */
 function _eventbrite_sboc_process_cron_queue($data){
-  watchdog(EBConsts::EBS_APPNAME, '$data->saveChangedOnly = @value', array('@value' => $data->saveChangedOnly,), WATCHDOG_INFO);
+//   watchdog(EBConsts::EBS_APPNAME, '$data->saveChangedOnly = @value', array('@value' => $data->saveChangedOnly,), WATCHDOG_INFO);
   _eventbrite_sboc_cron_update_attendees($data->saveChangedOnly);
 }
 
@@ -302,7 +302,7 @@ function _eventbrite_sboc_cron_update_attendees($save_changed_only = FALSE){
     $eba = new EBAttendees($ev);
     $attendees = $eba->loadAttendeesFromResource($params);
     _eventbrite_sboc_invoke_save($attendees, $save_changed_only);
-    watchdog(EBConsts::EBS_APPNAME, 'Count: @count', array('@count' => count($attendees),), WATCHDOG_INFO); 
+    watchdog(EBConsts::EBS_APPNAME, '@count attendee record(s) processed during last cron', array('@count' => count($attendees),), WATCHDOG_INFO); 
   }catch(Exception $e){
     watchdog_exception(EBConsts::EBS_APPNAME, $e);
   }
@@ -390,6 +390,9 @@ function _eventbrite_sboc_invoke_save($attendees, $save_changed_only = FALSE){
   foreach(module_implements('ebattendees_save') as $module){
     $function = $module. '_'. 'ebattendees_save';
     $retval[$function] = $function($attendees, $save_changed_only);
+    if (empty($retval[$function])){
+      $retval[$function] = array();
+    }
   }
   
   return $retval;
@@ -407,6 +410,9 @@ function _eventbrite_sboc_invoke_save_withvalues($attendees, $values){
   foreach(module_implements('ebattendees_save_withvalues') as $module){
     $function = $module. '_'. 'ebattendees_save_withvalues';
     $retval[$function] = $function($attendees, $values);
+    if (empty($retval[$function])){
+      $retval[$function] = array();
+    }
   }
   
   return $retval;
@@ -562,12 +568,10 @@ function _eventbrite_sboc_webhook_callback(){
         watchdog(EBConsts::EBS_APPNAME, 'Attendee count = @rec_count | Order path = @url', 
           array('@rec_count' => count($attendees), '@url' => $url,), WATCHDOG_INFO);
         if (!empty($attendees)){
-          $a = _eventbrite_sboc_invoke_save($attendees);
-          _eventbrite_sboc_debug_output($a);
-//           _eventbrite_sboc_invoke_mail($attendees);
-//           $mail_list = $a['eventbrite_sboc_attendee_ebattendees_save'];
-          foreach($a as $mod => $mail_list){
-            _eventbrite_sboc_invoke_mail($mail_list);
+          $returned_attendee_list = _eventbrite_sboc_invoke_save($attendees);
+          // _eventbrite_sboc_debug_output($returned_attendee_list);
+          foreach($returned_attendee_list as $mod => $attendee_list){
+            _eventbrite_sboc_invoke_mail($attendee_list);
           }
         }
       }
