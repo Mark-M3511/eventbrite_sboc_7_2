@@ -74,10 +74,10 @@ function eventbrite_sboc_mailer_mandrill_mail_alter(&$mandrill_params, $message)
      $_SESSION['attendee'] = $message['params']['attendee'];
   }
   /*** bof: Taken from mandrill_template.module ***/
+  // Mandrill mondule calls mandrill_template_sender by default $mandrill_params['function'] = 'mandrill_template_sender';
+  // See for module code for further informtion
   $template_map = mandrill_template_map_load_by_mailsystem($message['id'], $message['module']);
   if ($template_map) {
-    // Mandrill mondule calls mandrill_template_sender by default $mandrill_params['function'] = 'mandrill_template_sender';
-    // See for module code for further informtion
     $mandrill_params['function'] = 'eventbrite_sboc_mailer_mandrill_template_sender';
     $mandrill_params['args'] = array(
       'template_id' => $template_map->template_id,
