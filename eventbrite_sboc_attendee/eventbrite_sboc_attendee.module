@@ -56,9 +56,7 @@ function eventbrite_sboc_attendee_ebattendees_save(array $attendees, $save_chang
     $eba = new EBAttendees(NULL);
     $attendees = $eba->mapEBAttendeeEntitytoEBAttendee($attendees);
     // We only effect a login for new registrations
-    if (!$save_changed_only){
-       _eventbrite_sboc_create_user_login($attendees);
-    }   
+    _eventbrite_sboc_create_user_login($attendees);
     // _eventbrite_sboc_debug_output($attendees);
     _eventbrite_sboc_link_to_region($attendees);
   }catch(Exception $e){
@@ -121,7 +119,7 @@ function _eventbrite_sboc_create_user_login(array &$attendees){
       if (!$u) {
         $u = new EBSBOCDrupalUser($attendee);
       }
-//       $u->attendee = $attendee;
+      $u->attendee = $attendee;
       if (!$u->userExists($attendee) && $u->createUser($attendee)){
         // $u->userMailNotify();
         $attendee->passwordResetUrl = user_pass_reset_url($u->user);
@@ -250,10 +248,9 @@ function _eventbrite_sboc_attendee_test_load($order_id){
   $ids = $db->loadOrders(array($order_id));
   $attendees = $db->loadAttendees($ids);  
   $attendees = $eba->mapEBAttendeeEntitytoEBAttendee($attendees);
-  dpm($attendees, 'After $eba->mapEBAttendeeEntitytoEBAttendee()');
   _eventbrite_sboc_create_user_login($attendees);
   $attendees = _eventbrite_sboc_link_to_region($attendees);
-  dpm($attendees, 'After _eventbrite_sboc_link_to_region()');
+  _eventbrite_sboc_debug_output($attendees);
 }
 
 $module_path = drupal_get_path('module', EBConsts::EBS_APPNAME);
