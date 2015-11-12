@@ -90,6 +90,7 @@ class EBConsts{
   const EBS_TESTBODY = 'Howdy, buddy <b>*|FIRST_NAME|* *|LAST_NAME|*</b> !!';
   const EBS_EMAILSENT_STATUS_SUCCESS = 'sent';
   const EBS_EMAIL_NODE_ID = 1;
+  const EBS_ENTITY_EMAIL_FIELD = 'emailAddress';
   // Eventbrite DB Fields
   const EBS_FIELDS_EID = 'eid';
   const EBS_FIELDS_EVENT_ID = 'event_id';

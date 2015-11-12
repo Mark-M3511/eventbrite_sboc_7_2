@@ -274,7 +274,6 @@ function eventbrite_sboc_cron_queue_info(){
 * Returns n/a
 */
 function _eventbrite_sboc_process_cron_queue($data){
-//   watchdog(EBConsts::EBS_APPNAME, '$data->saveChangedOnly = @value', array('@value' => $data->saveChangedOnly,), WATCHDOG_INFO);
   _eventbrite_sboc_cron_update_attendees($data->saveChangedOnly);
 }
 

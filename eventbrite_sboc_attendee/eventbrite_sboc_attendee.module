@@ -55,7 +55,10 @@ function eventbrite_sboc_attendee_ebattendees_save(array $attendees, $save_chang
     // watchdog('eventbrite_sboc_attendee_ebattendees_save', $debug);
     $eba = new EBAttendees(NULL);
     $attendees = $eba->mapEBAttendeeEntitytoEBAttendee($attendees);
-    _eventbrite_sboc_create_user_login($attendees);
+    // We only effect a login for new registrations
+    if (!$save_changed_only){
+       _eventbrite_sboc_create_user_login($attendees);
+    }   
     // _eventbrite_sboc_debug_output($attendees);
     _eventbrite_sboc_link_to_region($attendees);
   }catch(Exception $e){
@@ -80,7 +83,7 @@ function eventbrite_sboc_attendee_ebattendees_save_withvalues(array $attendees, 
     // watchdog('eventbrite_sboc_attendee_ebattendees_save_withvalues', $debug);
     $eba = new EBAttendees(NULL);
     $attendees = $eba->mapEBAttendeeEntitytoEBAttendee($attendees);
-    _eventbrite_sboc_create_user_login($attendees);
+    // _eventbrite_sboc_create_user_login($attendees);
     _eventbrite_sboc_link_to_region($attendees);
   }catch(Exception $e){
     watchdog_exception(EBConsts::EBS_APP_NAME_MAIN, $e);  
@@ -113,19 +116,16 @@ function _eventbrite_sboc_create_user_login(array &$attendees){
   // Must have at least one attenee passed to constructor
   $u = NULL;
   $ret_val = array();
-  // watchdog(EBConsts::EBS_APPNAME, 'Entered: _eventbrite_sboc_create_user_login', array(), WATCHDOG_INFO);
   try{
     foreach($attendees as $id => $attendee){
       if (!$u) {
         $u = new EBSBOCDrupalUser($attendee);
       }
-      $u->attendee = $attendee;
-      if ($u->createUser()){
-//         $u->userMailNotify();
+//       $u->attendee = $attendee;
+      if (!$u->userExists($attendee) && $u->createUser($attendee)){
+        // $u->userMailNotify();
         $attendee->passwordResetUrl = user_pass_reset_url($u->user);
-//         watchdog(EBConsts::EBS_APPNAME, 'Reset link = !val', array('!val' => $attendee->passwordResetUrl,), WATCHDOG_INFO);
       }
-      // watchdog(EBConsts::EBS_APPNAME, 'User id = !uid', array('!uid' => $u->user->uid,), WATCHDOG_INFO);
       // user is expected to be a valid user object at all times
       $aw = entity_metadata_wrapper(EBConsts::EBS_ENTITY_TYPE_NAME, $attendee->attendeeId); 
       $aw->uid = $u->user->uid;

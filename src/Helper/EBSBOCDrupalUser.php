@@ -38,6 +38,18 @@ class EBSBOCDrupalUser{
     return $fields;
   }
   
+  public function userExists(EBAttendee $attendee){
+    $ret_val = FALSE; 
+    $pc = array('mail' => array('value' => $this->attendee->{EBConsts::EBS_ENTITY_EMAIL_FIELD}, 'operation' => '=',),); 
+    $fc = array();
+    $user = self::searchUser($pc, $fc);
+    if (!empty($user)){
+       $this->user = current($user);
+       $ret_val = TRUE;
+    } 
+    return $ret_val;
+  }
+  
   /**
   * Creates a Drupal user account for the order associated with the attendee record
   *
@@ -45,24 +57,17 @@ class EBSBOCDrupalUser{
   *
   * Returns Boolean
   */
-  public function createUser(){
+  public function createUser(EBAttendee $attendee){
+    $this->attendee = $attendee;
     if (empty($this->attendee)) {
       return FALSE;
-    }
-    $email_field = 'emailAddress';
-    $pc = array('mail' => array('value' => $this->attendee->{$email_field}, 'operation' => '=',),); 
-    $fc = array();
-    $user = self::searchUser($pc, $fc);
-    if (!empty($user)){
-       $this->user = current($user);
-       return FALSE;
-    }    
+    }   
     $new_user = new \StdClass;
     $new_user->is_new = TRUE;
     $new_user->status = 1;
-    $new_user->name = $this->attendee->{$email_field};
-    $new_user->mail = $this->attendee->{$email_field};
-    $new_user->init = $this->attendee->{$email_field};
+    $new_user->name = $this->attendee->{EBConsts::EBS_ENTITY_EMAIL_FIELD};
+    $new_user->mail = $this->attendee->{EBConsts::EBS_ENTITY_EMAIL_FIELD};
+    $new_user->init = $this->attendee->{EBConsts::EBS_ENTITY_EMAIL_FIELD};
     $new_user->pass = user_password(8);
     $new_user->timezone = variable_get('date_default_timezone', '');
     try{
@@ -75,6 +80,7 @@ class EBSBOCDrupalUser{
       foreach($fields as $key => $value){
         $this->user = user_save($this->user, array($key => $value,));
       }
+      watchdog(EBConsts::EBS_APPNAME, t('New user account created').': @name', array('@name' => $new_user->name,), WATCHDOG_INFO);
     }catch(Exception $e){
       $this->user = NULL;
       watchdog_exception(EBConsts::EBS_APPNAME_ATTENDEES, $e);
