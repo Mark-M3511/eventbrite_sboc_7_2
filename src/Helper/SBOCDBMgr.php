@@ -367,7 +367,6 @@ class SBOCDBMgr implements iDBMgr{
       $q = new \EntityFieldQuery();
       $q->entityCondition('entity_type', 'node');
       $q->entityCondition('bundle', 'email_message');
-      $q->propertyCondition('status', 1, '=');
       $result = $q->execute();
       if (!empty($result['node'])){
         $node_ids = array_keys($result['node']);

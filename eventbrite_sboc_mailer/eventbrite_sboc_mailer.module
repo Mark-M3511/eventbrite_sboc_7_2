@@ -177,8 +177,11 @@ function _eventbrite_sboc_load_message($message_id){
   
   try{
     $mw = entity_metadata_wrapper('node', $message_id);
-    $retval['subject'] = (!empty($mw->title->value()) ? $mw->title->value() : $retval['subject']); 
-    $retval['body'] = (!empty($mw->body->value()) ? $mw->body->value->value() : $retval['body']); 
+    // for versions of PHP < 5.5
+    $subject = $mw->title->value();
+    $retval['subject'] = (!empty($subject) ? $subject : $retval['subject']); 
+    $body = $mw->body->value();
+    $retval['body'] = (!empty($body) ? $body : $retval['body']); 
   }catch(Exception $e){
     watchdog_exception(EBConsts::EBS_APPNAME_MAIL, $e);  
   }
