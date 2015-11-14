@@ -116,7 +116,8 @@ class EBAttendees{
       $a->grade = $this->getAnswer($attendee['answers'], EBConsts::EBS_QA_106, 0);
       $a->school = $this->getAnswer($attendee['answers'], EBConsts::EBS_QA_107, EBConsts::EBS_UNSPECIFIED_VALUE);
       $a->yearOfBirth = $this->getAnswer($attendee['answers'], EBConsts::EBS_QA_108, EBConsts::EBS_UNSPECIFIED_YOB);
-      $a->monthOfBirth = $this->getAnswer($attendee['answers'], EBConsts::EBS_QA_109, EBConsts::EBS_UNSPECIFIED_MOB);
+//       $a->monthOfBirth = $this->getAnswer($attendee['answers'], EBConsts::EBS_QA_109, EBConsts::EBS_UNSPECIFIED_MOB);
+      $a->monthOfBirth = SBOCDBMgr::month_num($this->getAnswer($attendee['answers'], EBConsts::EBS_QA_109, EBConsts::EBS_UNSPECIFIED_MOB));
       $a->dayOfBirth = $this->getAnswer($attendee['answers'], EBConsts::EBS_QA_110, EBConsts::EBS_UNSPECIFIED_DOB);
       $a->homeAddressLine1 = $this->getAnswer($attendee['answers'], EBConsts::EBS_QA_111, EBConsts::EBS_UNSPECIFIED_VALUE);
       $a->homeAddressLine2 = $this->getAnswer($attendee['answers'], EBConsts::EBS_QA_112, EBConsts::EBS_EMPTY_STRING);
@@ -160,7 +161,8 @@ class EBAttendees{
       $a->grade = $this->getAnswer($attendee['answers'], EBConsts::EBS_QA_106, 0);
       $a->school = $this->getAnswer($attendee['answers'], EBConsts::EBS_QA_107, EBConsts::EBS_UNSPECIFIED_VALUE);
       $a->yearOfBirth = $this->getAnswer($attendee['answers'], EBConsts::EBS_QA_108, EBConsts::EBS_UNSPECIFIED_YOB);
-      $a->monthOfBirth = $this->getAnswer($attendee['answers'], EBConsts::EBS_QA_109, EBConsts::EBS_UNSPECIFIED_MOB);
+//       $a->monthOfBirth = $this->getAnswer($attendee['answers'], EBConsts::EBS_QA_109, EBConsts::EBS_UNSPECIFIED_MOB);
+      $a->monthOfBirth = SBOCDBMgr::month_num($this->getAnswer($attendee['answers'], EBConsts::EBS_QA_109, EBConsts::EBS_UNSPECIFIED_MOB));
       $a->dayOfBirth = $this->getAnswer($attendee['answers'], EBConsts::EBS_QA_110, EBConsts::EBS_UNSPECIFIED_DOB);
       $a->homeAddressLine1 = $this->getAnswer($attendee['answers'], EBConsts::EBS_QA_111, EBConsts::EBS_UNSPECIFIED_VALUE);
       $a->homeAddressLine2 = $this->getAnswer($attendee['answers'], EBConsts::EBS_QA_112, EBConsts::EBS_EMPTY_STRING);

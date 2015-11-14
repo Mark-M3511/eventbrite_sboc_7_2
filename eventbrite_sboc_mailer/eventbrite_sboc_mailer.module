@@ -177,11 +177,11 @@ function _eventbrite_sboc_load_message($message_id){
   
   try{
     $mw = entity_metadata_wrapper('node', $message_id);
-    // for versions of PHP < 5.5
+    // for versions of PHP < 5.5 we pass variables to empty()
     $subject = $mw->title->value();
     $retval['subject'] = (!empty($subject) ? $subject : $retval['subject']); 
     $body = $mw->body->value();
-    $retval['body'] = (!empty($body) ? $body : $retval['body']); 
+    $retval['body'] = (!empty($body) ? $mw->body->value->value() : $retval['body']); 
   }catch(Exception $e){
     watchdog_exception(EBConsts::EBS_APPNAME_MAIL, $e);  
   }

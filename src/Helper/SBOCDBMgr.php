@@ -517,6 +517,37 @@ class SBOCDBMgr implements iDBMgr{
     return $retval;
   }
   
+  /**
+  * Returns a numeric value for month
+  *
+  * @param Month as string or number
+  *
+  * Returns Number
+  */
+  public static function month_num($month){
+    if (is_numeric($month)){
+      return $month;
+    }
+    
+    $m = array();
+    $ret_val = 0;
+    if (is_string($month)){
+      /* $m = array(1 => 'january', 'february', 'march', 'april', 'may', 'june', 'july',
+      'august', 'september', 'october', 'november', 'december',); */ 
+      $month = drupal_strtolower($month);
+      for($ctr = 1; $ctr <= 12; $ctr++){
+        $m[$ctr] = drupal_strtolower(date('F', mktime(0, 0, 0, $ctr, 1, date('Y'))));
+        if ($m[$ctr] == $month){
+          $ret_val = $ctr;
+          break;
+        }
+      }
+    }
+    
+    return $ret_val;
+    
+  }
+  
 }
 
   

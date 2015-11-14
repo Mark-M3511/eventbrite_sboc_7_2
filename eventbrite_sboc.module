@@ -488,7 +488,7 @@ function attendee_order_load($order_num){
 
 function _eventbrite_sboc_display_order($order){
   dpm($order, 'Order & Attendee'); 
-  _eventbrite_sboc_debug_output($order); 
+//   _eventbrite_sboc_debug_output($order); 
   return 'Response from: '. __FUNCTION__;
 }
 
@@ -586,13 +586,11 @@ function _eventbrite_sboc_webhook_callback(){
 **/
 
 function _eventbrite_sboc_debug_output($var){
-  if (module_exists('devel')){
-    $function_name = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT, 2);
-    if (is_object($var)){
-      $var = get_object_vars($var);
-    }
-    $debug_msg = print_r($var, TRUE);
-    $args = array('!function_name' => $function_name[1]['function'], '!debug_msg' => $debug_msg,);
-    watchdog(EBConsts::EBS_APP_NAME_MAIN, 'CALLED FROM: !function_name => DEBUG OUTPUT: !debug_msg', $args, WATCHDOG_INFO);
+  $function_name = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT, 2);
+  if (is_object($var)){
+    $var = get_object_vars($var);
   }
+  $debug_msg = print_r($var, TRUE);
+  $args = array('!function_name' => $function_name[1]['function'], '!debug_msg' => $debug_msg,);
+  watchdog(EBConsts::EBS_APP_NAME_MAIN, 'CALLED FROM: !function_name => DEBUG OUTPUT: !debug_msg', $args, WATCHDOG_INFO);
 }
