@@ -280,3 +280,27 @@
     'setter callback' => 'entity_property_verbatim_set',
     'schema field' => 'additional_info',
   );
+  
+  $properties['ts_create_date'] = array(
+    'label' => t('Create Date Timestamp'),
+    'description' => t("Timestamp value for create date column"),
+    'type' => 'date',
+    'setter callback' => 'entity_property_verbatim_set',
+    'schema field' => 'ts_create_date',
+  );
+  
+  $properties['ts_change_date'] = array(
+    'label' => t('Change Date Timestamp'),
+    'description' => t("Timestamp value for change date column"),
+    'type' => 'date',
+    'setter callback' => 'entity_property_verbatim_set',
+    'schema field' => 'ts_change_date',
+  );
+  
+  $properties['ts_email_send_date'] = array(
+    'label' => t('Email Send Date Timestamp'),
+    'description' => t("Timestamp value for email send date column"),
+    'type' => 'date',
+    'setter callback' => 'entity_property_verbatim_set',
+    'schema field' => 'ts_email_send_date',
+  );

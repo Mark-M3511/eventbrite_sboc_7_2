@@ -220,7 +220,23 @@ function eventbrite_sboc_attendee_schema(){
         'description' => "Additional Notes",
         'type' => 'text',
         'length' => 2500,
-      ),
+      ),      
+      'ts_create_date' => array(
+	      'description' => 'Timestamp value for date and time attendee record was created in this table.',          
+        'type' => 'int',		   
+        'not null' => FALSE,
+	    ),
+	    'ts_change_date' => array(
+	      'description' => 'Timestamp value for date and time attendee record was updated in this table.',          
+        'type' => 'int',		   
+        'not null' => FALSE,
+	    ),
+	    'ts_email_send_date' => array(
+	      'description' => 'Timestamp value for date and time attendee email was sent.',          
+        'type' => 'int',		   
+        'not null' => FALSE,
+	    ),
+      
      ),  
     'primary key' => array('eid'),
     'indexes' => array(
@@ -235,7 +251,10 @@ function eventbrite_sboc_attendee_schema(){
 	    'eventbrite_sboc_attendees_ticket_class_id' => array('ticket_class_id'),
 	    'eventbrite_sboc_attendees_uid' => array('uid'),	
 	    'eventbrite_sboc_attendees_category_nid' => array('category_nid'),  
-	    'eventbrite_sboc_attendees_region_nid' => array('region_nid'),  
+	    'eventbrite_sboc_attendees_region_nid' => array('region_nid'), 
+	    'eventbrite_sboc_attendees_ts_create_date' => array('ts_create_date'),
+	    'eventbrite_sboc_attendees_ts_change_date' => array('ts_change_date'),
+	    'eventbrite_sboc_attendees_ts_email_send_date' => array('ts_email_send_date'),	    
     ), 
   );
   
@@ -300,7 +319,7 @@ function eventbrite_sboc_attendee_schema(){
    
   } 
   
-  /**
+ /**
  * Eventbrite SBOC update #2
  * Add new index on email_send_date to table 'eventbrite_sboc_attendees'
  * Updated: 2015-11-20
@@ -313,6 +332,26 @@ function eventbrite_sboc_attendee_schema(){
     
    db_add_index($table_name, $table_name. '_email_send_date', array('email_send_date',));
    $ctr++;
+   
+   return format_string($msg, array('%count' => $ctr, '%table_name' => $table_name,));
+ }
+ 
+/**
+ * Eventbrite SBOC update #3
+ * Insert new values into table 'eventbrite_sboc_attendees'
+ * Updated: 2015-11-20
+ */
+ function eventbrite_sboc_attendee_update_7203(){  
+   $init_val = 'N/A';
+   $table_name = 'eventbrite_sboc_attendees';
+   $msg = "%count new values added to table '%table_name'";
+   $ctr = 0;
+    
+   $ctr = db_update($table_name)
+   ->expression('ts_create_date', 'UNIX_TIMESTAMP(`create_date` )')
+   ->expression('ts_change_date', 'UNIX_TIMESTAMP(`change_date` )')
+   ->expression('ts_email_send_date', 'UNIX_TIMESTAMP(`email_send_date` )')   
+   ->execute();
    
    return format_string($msg, array('%count' => $ctr, '%table_name' => $table_name,));
  }
