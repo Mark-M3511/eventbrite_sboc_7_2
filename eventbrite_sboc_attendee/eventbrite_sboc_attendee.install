@@ -241,3 +241,78 @@ function eventbrite_sboc_attendee_schema(){
   
   return $schema;
 }
+
+ /**
+ * Eventbrite SBOC update #1
+ * Add new timestamp column to table 'eventbrite_sboc_attendees'
+ * Updated: 2015-11-20
+ */
+ function eventbrite_sboc_attendee_update_7201(){ 
+   
+   $init_val = 'N/A';
+   $table_name = 'eventbrite_sboc_attendees';
+   $msg = "%count new column(s) added to table '%table_name'";
+   $ctr = 0;
+   
+   // Add ts_create_date
+   $schema_1 = array(
+	   'description' => 'Timestamp value for date and time attendee record was created in this table.',          
+     'type' => 'int',		   
+     'not null' => FALSE,
+	 );
+   $keys_new = array(
+      'indexes' => array(
+	       'eventbrite_sboc_attendees_ts_create_date' => array('ts_create_date'),
+      ),
+   );
+   db_add_field($table_name, 'ts_create_date', $schema_1, $keys_new);	
+   $ctr++;
+   
+   // Add ts_change_date
+   $schema_1 = array(
+	   'description' => 'Timestamp value for date and time attendee record was updated in this table.',          
+     'type' => 'int',		   
+     'not null' => FALSE,
+	 );
+   $keys_new = array(
+      'indexes' => array(
+	       'eventbrite_sboc_attendees_ts_change_date' => array('ts_change_date'),
+      ),
+   );
+   db_add_field($table_name, 'ts_change_date', $schema_1, $keys_new);	
+   $ctr++;
+   
+    // Add ts_email_send_date
+   $schema_1 = array(
+	   'description' => 'Timestamp value for date and time attendee email was sent.',          
+     'type' => 'int',		   
+     'not null' => FALSE,
+	 );
+   $keys_new = array(
+      'indexes' => array(
+	       'eventbrite_sboc_attendees_ts_email_send_date' => array('ts_email_send_date'),
+      ),
+   );
+   db_add_field($table_name, 'ts_email_send_date', $schema_1, $keys_new);	
+   $ctr++;
+   
+   return format_string($msg, array('%count' => $ctr, '%table_name' => $table_name,));
+   
+  } 
+  
+  /**
+ * Eventbrite SBOC update #2
+ * Add new index on email_send_date to table 'eventbrite_sboc_attendees'
+ * Updated: 2015-11-20
+ */
+ function eventbrite_sboc_attendee_update_7202(){  
+   $init_val = 'N/A';
+   $table_name = 'eventbrite_sboc_attendees';
+   $msg = "%count new index(es) added to table '%table_name'";
+   $ctr = 0;
+    
+   db_add_index($table_name, $table_name. '_email_send_date', array('email_send_date',));
+   $ctr++;
+   
+   return format_string($msg, array('%count' => $ctr, '%table_name' => $table_name,));
+ }
