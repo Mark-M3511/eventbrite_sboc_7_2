@@ -99,6 +99,8 @@ class SBOCDBMgr implements iDBMgr{
       $a->home_phone_2 = self::no_overflow($attendee->homePhone2,20);
       $a->email_consent = $attendee->emailConsent;
       $a->additional_info = self::no_overflow($attendee->additionalInfo,2500);
+      $a->ts_create_date = strtotime($attendee->createDate);
+      $a->ts_change_date = strtotime($attendee->changeDate);
       
       $a->category_nid = $this->getCategoryNodeId($a->category);
       
@@ -187,8 +189,7 @@ class SBOCDBMgr implements iDBMgr{
   */
   protected function realSaveWithValues($attendee, $values){ 
     try{
-      $key = $attendee->attendeeId;
-      $rec = entity_load($this->entityName, array($key,)); 
+      $rec = entity_load($this->entityName, array($attendee->attendeeId,)); 
       $a = current($rec);
       $over_flows = self::over_flows();
       // Global namespace designator = \ClassName
@@ -205,10 +206,30 @@ class SBOCDBMgr implements iDBMgr{
         }
       } 
       $a->save();
+      $this->updateTimestamps($attendee);
     }catch(Exception $e){
       watchdog_exception(__CLASS__. '->'. __METHOD__, $e);
     }
     return $a;
+  }
+  
+  /**
+  * Updates timestamp fields which are not wholly managed by the system
+  *
+  * @params int $eid
+  *
+  * Returns Boolean
+  */
+  protected function updateTimestamps($attendee){
+    $emw = entity_metadata_wrapper(EBConsts::EBS_ENTITY_TYPE_NAME, $attendee->attendeeId); 
+    $emw->ts_create_date = strtotime($attendee->createDate);
+    $emw->ts_change_date = strtotime($attendee->changeDate);
+    // Extra check on email send date
+    $value = $attendee->emailSendDate;
+    if (!empty($value)){
+      $emw->ts_email_send_date = strtotime($attendee->emailSendDate); 
+    }
+    $emw->save();
   }
   
   /**
