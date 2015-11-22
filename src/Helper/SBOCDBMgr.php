@@ -216,9 +216,9 @@ class SBOCDBMgr implements iDBMgr{
   /**
   * Updates timestamp fields which are not wholly managed by the system
   *
-  * @params int $eid
+  * @params object $attendee
   *
-  * Returns Boolean
+  * Returns N/A
   */
   protected function updateTimestamps($attendee){
     $emw = entity_metadata_wrapper(EBConsts::EBS_ENTITY_TYPE_NAME, $attendee->attendeeId); 
