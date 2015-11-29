@@ -49,13 +49,10 @@ function eventbrite_sboc_attendee_ebattendees_save(array $attendees, $save_chang
   try{
     $db = new SBOCDBMgr(EBConsts::EBS_ENTITY_TYPE_ATTENDEE, $attendees, $save_changed_only);
     $attendees = $db->save();
-    // Are we making too many assumptions here? Creating a user account without confirmation 
-    // the attendee record was correctly written to the database
     // $debug = print_r($attendees, TRUE);
     // watchdog('eventbrite_sboc_attendee_ebattendees_save', $debug);
     $eba = new EBAttendees(NULL);
     $attendees = $eba->mapEBAttendeeEntitytoEBAttendee($attendees);
-    // We only effect a login for new registrations
     _eventbrite_sboc_create_user_login($attendees);
     // _eventbrite_sboc_debug_output($attendees);
     _eventbrite_sboc_link_to_region($attendees);
