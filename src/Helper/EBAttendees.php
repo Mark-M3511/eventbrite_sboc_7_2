@@ -95,6 +95,7 @@ class EBAttendees{
       $create_date = date(EBConsts::EBS_MYSQLDATEFORMAT, strtotime(str_ireplace('Z', '', $attendee['created'])));
       $change_date = date(EBConsts::EBS_MYSQLDATEFORMAT, strtotime(str_ireplace('Z', '', $attendee['changed'])));
       $create_date = SBOCDBMgr::convert_date_tz($create_date);
+      $change_date = SBOCDBMgr::convert_date_tz($change_date);
       $a->eventId = $attendee['event_id'];
       $a->attendeeId = $attendee['id'];
       $a->orderId = $attendee['order_id'];
@@ -140,6 +141,7 @@ class EBAttendees{
       $create_date = date(EBConsts::EBS_MYSQLDATEFORMAT, strtotime(str_ireplace('Z', '', $attendee['created'])));
       $change_date = date(EBConsts::EBS_MYSQLDATEFORMAT, strtotime(str_ireplace('Z', '', $attendee['changed'])));
       $create_date = SBOCDBMgr::convert_date_tz($create_date);
+      $change_date = SBOCDBMgr::convert_date_tz($change_date);
       $a->eventId = $attendee['event_id'];
       $a->attendeeId = $attendee['id'];
       $a->orderId = $attendee['order_id'];
