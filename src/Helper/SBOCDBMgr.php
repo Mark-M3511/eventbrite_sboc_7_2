@@ -14,6 +14,7 @@ use Drupal\eventbrite_sboc\Helper\EBConsts;
 */ 
 interface iDBMgr{
   public function save();
+  public function saveChangedOnly();
   public function saveWithvalues(array $values);
   public function legacySave();
   public function loadAttendees(array $attendee_ids);
@@ -53,15 +54,17 @@ class SBOCDBMgr implements iDBMgr{
   * Returns array of attendee entity objects
   */
   protected function realSave($attendee){
-    // Property names must match field names in base table(s) 
+    /*** ****************************************************** ***
+    1: Property names must match field names in base table(s) 
+    2: The following fields should only be updated by the email prcess  
+        $a->email_sent = $attendee->emailSent; 
+        $a->email_send_date = $attendee->emailSendDate;
+    ************************************************************ ***/
     $rec = array();
     $a = null;
     try{
       $rec = entity_load($this->entityName, array($attendee->attendeeId,)); 
       if (empty($rec)){
-        if ($this->saveChangedOnly){
-          return $a;
-        }
         $a = entity_create($this->entityName, array('attendee_id' => $attendee->attendeeId,));
       }else{
         $a = current($rec);
@@ -77,9 +80,6 @@ class SBOCDBMgr implements iDBMgr{
       $a->category = $attendee->category;
       $a->category_nid = $attendee->categoryNid;
       $a->order_type = $attendee->orderType;
-      // Should only be updated from mail process
-      // $a->email_sent = $attendee->emailSent; 
-      // $a->email_send_date = $attendee->emailSendDate;
       $a->reg_type = $attendee->regType;
       $a->region_name = $attendee->regionName;
       $a->contestant_last_name = self::no_overflow($attendee->contestantLastName,50);
@@ -100,8 +100,7 @@ class SBOCDBMgr implements iDBMgr{
       $a->email_consent = $attendee->emailConsent;
       $a->additional_info = self::no_overflow($attendee->additionalInfo,2500);
       $a->ts_create_date = strtotime($attendee->createDate);
-      $a->ts_change_date = strtotime($attendee->changeDate);
-      
+      $a->ts_change_date = strtotime($attendee->changeDate);     
       $a->category_nid = $this->getCategoryNodeId($a->category);
       
       $a->save();      
@@ -169,14 +168,54 @@ class SBOCDBMgr implements iDBMgr{
   public function save(){
     $retval = array(); 
     foreach($this->attendees as $id => $attendee){
-      // realSave could return null if the "changes only" flag is set to true 
-      // and a record does not exist with the current attendee id
-      $attendee_rec = $this->realSave($attendee);
-      if (isset($attendee_rec)){
-        $retval[] = $attendee_rec;
+        $retval[] = $this->realSave($attendee);
+    }
+    return $retval;
+  }
+  
+  /**
+  * Iterates over all Attendee records passed to the object and calls the realSave method to do the work
+  *  Only allows changes to be saved and does not create new records
+  * @params None
+  *
+  * Returns array of Attendee records
+  */
+  public function saveChangedOnly(){
+    $retval = array(); 
+    foreach($this->attendees as $id => $attendee){
+      $rec = entity_load($this->entityName, array($attendee->attendeeId,)); 
+      if (!empty($rec)){
+        // Record exists let's check the fields we need to for emailing purposes
+        $attendee_rec = current($rec);
+        $this->populateChangedFieldsList($attendee, $attendee_rec);
+        $retval[] = $this->realSave($attendee);
+//         _eventbrite_sboc_debug_output($attendee);
+        if (!empty($attendee->changedFields)){
+           if (function_exists('_eventbrite_sboc_invoke_mail')){
+             _eventbrite_sboc_invoke_mail(array($attendee));
+           } 
+        }
       }
     }
     return $retval;
+  }
+  
+  public function populateChangedFieldsList($attendeeFromSource, $attendeeSaved){
+    if (!is_array($attendeeFromSource->changedFields)){
+       $attendeeFromSource->changedFields = array();
+    }
+    if ($attendeeFromSource->emailAddress != $attendeeSaved->email_address){
+        $attendeeFromSource->changedFields['email'] = array(
+           'old' => $attendeeSaved->email_address,
+           'new' => $attendeeFromSource->emailAddress,
+        );
+    }
+    if ($attendeeFromSource->additionalInfo != $attendeeSaved->additional_info){
+        $attendeeFromSource->changedFields[ 'additionalInfo'] =array(
+           'old' =>  $attendeeSaved->additional_info,
+           'new' => $attendeeFromSource->additionalInfo,
+        );
+    }
   }
   
   /**

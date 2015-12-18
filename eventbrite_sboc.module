@@ -562,7 +562,7 @@ function _eventbrite_sboc_webhook_callback(){
     if (!empty($input_json_array[EBConsts::EBS_JSON_PARAM_API_URL])) {             
       $url = $input_json_array[EBConsts::EBS_JSON_PARAM_API_URL];
       if (stripos($url, EBConsts::EBS_WEBHOOK_TEST_URL_PATH) === FALSE){
-        watchdog(EBConsts::EBS_APPNAME, '$url = @url', array('@url' => $url,), WATCHDOG_INFO);
+//         watchdog(EBConsts::EBS_APPNAME, '$url = @url', array('@url' => $url,), WATCHDOG_INFO);
         $attendees = _eventbrite_sboc_order($url);
         watchdog(EBConsts::EBS_APPNAME, 'Attendee count = @rec_count | Order path = @url', 
           array('@rec_count' => count($attendees), '@url' => $url,), WATCHDOG_INFO);

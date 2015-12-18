@@ -45,6 +45,7 @@ class EBAttendee{
   public $emailConsent;
   public $additionalInfo;
   public $passwordResetUrl;
+  public $changedFields;
 }
 
 class EBAttendees{

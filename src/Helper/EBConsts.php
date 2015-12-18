@@ -140,4 +140,7 @@ class EBConsts{
   const EBS_HTTP_RESPONSE_CODE_OK = 200;    
   // Error messages
   const EBS_ERROR_NO_MATCHING_RECORD = 'No matching record found.';
+  //Email message
+  const EBS_EMAIL_DEFAULT_SUBJECT = 'Message from Spelling Bee Of Canada';
+  const EBS_EMAIL_DEFAULT_MESSAGE = 'Dear Reader:<br /><br />Thank you for your interest. Please visit us at <a href="http://spellingbeeofcanada.ca">spellingbeeofcanada.ca</a><br /><br />Sincerely,<br />Spelling Bee Of Canada';
 }

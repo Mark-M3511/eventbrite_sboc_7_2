@@ -75,7 +75,7 @@ function eventbrite_sboc_mailer_mandrill_mail_alter(&$mandrill_params, $message)
   }
   /*** bof: Taken from mandrill_template.module ***/
   // Mandrill mondule calls mandrill_template_sender by default $mandrill_params['function'] = 'mandrill_template_sender';
-  // See for module code for further informtion
+  // See module code for further informtion
   $template_map = mandrill_template_map_load_by_mailsystem($message['id'], $message['module']);
   if ($template_map) {
     $mandrill_params['function'] = 'eventbrite_sboc_mailer_mandrill_template_sender';
@@ -149,8 +149,6 @@ function eventbrite_sboc_mailer_mandrill_mailsend_result($result) {
 * Returns array
 */
 function eventbrite_sboc_mailer_ebattendees_mail($attendees){
-  // $mail->params['body'] = 'This is sample body text for: <br /><br /><b>*|first_name|*</b>';
-  // $mail->params['body'] .= '<br /><b>*|last_name|*</b> <br /><b>*|attendee_id|*</b>';
   $nid = variable_get(EBConsts::EBS_CONFIG_EMAIL_MESSAGE_NODE_ID, EBConsts::EBS_EMAIL_NODE_ID);
   $message = _eventbrite_sboc_load_message($nid);
   $mail = new MandrillEmailMgr($attendees);
@@ -167,21 +165,20 @@ function eventbrite_sboc_mailer_ebattendees_mail($attendees){
  * This function checks loads a message node via entity_metadata_wrapper
  *
  * @param int $message_id
- *   Unique identifiere of message to be sent
+ *   Unique identifier of message to be sent
  *
  * @return array
  *   Formatted as array('subject' => 'Subject Text', 'body' => 'Body Text',)
  */
 function _eventbrite_sboc_load_message($message_id){
-  $retval = array('subject' => 'Email Subject', 'body' => 'Body of email',);
-  
+  $retval = array();  
   try{
     $mw = entity_metadata_wrapper('node', $message_id);
     // for versions of PHP < 5.5 we pass variables to empty()
     $subject = $mw->title->value();
-    $retval['subject'] = (!empty($subject) ? $subject : $retval['subject']); 
+    $retval['subject'] = (!empty($subject) ? $subject : EBConsts::EBS_EMAIL_DEFAULT_SUBJECT); 
     $body = $mw->body->value();
-    $retval['body'] = (!empty($body) ? $mw->body->value->value() : $retval['body']); 
+    $retval['body'] = (!empty($body) ? $mw->body->value->value() : EBConsts::EBS_EMAIL_DEFAULT_MESSAGE); 
   }catch(Exception $e){
     watchdog_exception(EBConsts::EBS_APPNAME_MAIL, $e);  
   }
