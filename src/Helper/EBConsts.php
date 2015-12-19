@@ -30,6 +30,10 @@ class EBConsts{
   const EBS_CONFIG_DEFAULT_CHANGED_SINCE_DAYS = 7;
   const EBS_CONFIG_PARAM_CHANGED_SINCE = 'changed_since';
   const EBS_CONFIG_EMAIL_MESSAGE_NODE_ID = 'ebs_email_msg_node_id';
+  const EBS_CONFIG_EMAIL_MESSAGE_NODE_ID_1 = self::EBS_CONFIG_EMAIL_MESSAGE_NODE_ID;
+  const EBS_CONFIG_EMAIL_MESSAGE_NODE_ID_2 = 'ebs_email_msg_node_id_2';
+  // Callbacks
+  const EBS_FUNC_EMAIL_CALLBACK = '_eventbrite_sboc_invoke_mail';
   // webhook json api data
   const EBS_JSON_PARAM_API_URL = 'api_url';
   // Title

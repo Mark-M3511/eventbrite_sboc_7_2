@@ -29,6 +29,7 @@ class SBOCDBMgr implements iDBMgr{
   protected $saveChangedOnly;
   public $entityName;
   public $attendees;
+  public $func_email_callback;
   
   /**
   * Creates an instance of SBOCDBMgr and returns that object to the caller
@@ -43,6 +44,7 @@ class SBOCDBMgr implements iDBMgr{
     $this->entityName = $entity_name;
     $this->attendees = $attendees;
     $this->saveChangedOnly = $save_changed_only;
+    $this->func_email_callback = EBConsts::EBS_FUNC_EMAIL_CALLBACK;
   }
   
   /**
@@ -191,8 +193,10 @@ class SBOCDBMgr implements iDBMgr{
         $retval[] = $this->realSave($attendee);
 //         _eventbrite_sboc_debug_output($attendee);
         if (!empty($attendee->changedFields)){
-           if (function_exists('_eventbrite_sboc_invoke_mail')){
-             _eventbrite_sboc_invoke_mail(array($attendee));
+//            if (function_exists('_eventbrite_sboc_invoke_mail')){
+           if (function_exists($this->func_email_callback)){
+//              _eventbrite_sboc_invoke_mail(array($attendee), EBConsts::EBS_CONFIG_EMAIL_MESSAGE_NODE_ID_2);
+              $this->func_email_callback(array($attendee), EBConsts::EBS_CONFIG_EMAIL_MESSAGE_NODE_ID_2);
            } 
         }
       }
@@ -200,6 +204,16 @@ class SBOCDBMgr implements iDBMgr{
     return $retval;
   }
   
+  /**
+  * Populates attendee object properties with new/changed data for selected fields
+  *
+  * @param object $attendeeFromSource
+  *    EBAttendee object populated with data from soure such as: Eventbrite API
+  * @param object $attendeeSaved)
+  *   EBAttendeeEntity object populated with data from application database
+  *
+  * Returns N/A
+  */
   public function populateChangedFieldsList($attendeeFromSource, $attendeeSaved){
     if (!is_array($attendeeFromSource->changedFields)){
        $attendeeFromSource->changedFields = array();
