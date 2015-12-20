@@ -424,11 +424,11 @@ function _eventbrite_sboc_invoke_save_withvalues($attendees, $values){
 *
 * Returns array of Attendee objects
 */
-function _eventbrite_sboc_invoke_mail($attendees){
+function _eventbrite_sboc_invoke_mail($attendees, $message_id=EBConsts::EBS_CONFIG_EMAIL_MESSAGE_NODE_ID_1){
   $retval = array();
   foreach(module_implements('ebattendees_mail') as $module){
     $function = $module. '_'. 'ebattendees_mail';
-    $retval[$function] = $function($attendees);
+    $retval[$function] = $function($attendees, $message_id);
   }
   
   return $retval;

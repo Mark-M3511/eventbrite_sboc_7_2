@@ -148,7 +148,7 @@ function eventbrite_sboc_mailer_mandrill_mailsend_result($result) {
 *
 * Returns array
 */
-function eventbrite_sboc_mailer_ebattendees_mail(array $attendees, $message_id=EBConsts::EBS_CONFIG_EMAIL_MESSAGE_NODE_ID_1){
+function eventbrite_sboc_mailer_ebattendees_mail(array $attendees, $message_id){
   $nid = variable_get($message_id, EBConsts::EBS_EMAIL_NODE_ID);
   $message = _eventbrite_sboc_load_message($nid);
   $mail = new MandrillEmailMgr($attendees);
