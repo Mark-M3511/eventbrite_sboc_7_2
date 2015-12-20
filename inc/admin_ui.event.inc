@@ -28,11 +28,23 @@ function _eventbrite_sboc_form_event_setup($form, &$form_state){
     '#required' => TRUE,
   );
   
+  $email_messages = (new SBOCDBMgr())->getEmailMessages();
   $form['ebs_event_setup'][EBConsts::EBS_CONFIG_EMAIL_MESSAGE_NODE_ID] = array(
     '#type' => 'select',
-    '#title' => t('Email Message'),
-    '#options' => (new SBOCDBMgr())->getEmailMessages(),
+    '#title' => t('Email Message 1'),
+    '#description' => t('Usually used for the main welcome message (i.e. new registrations)'),
+    '#options' => $email_messages,
     '#default_value' => variable_get(EBConsts::EBS_CONFIG_EMAIL_MESSAGE_NODE_ID, EBConsts::EBS_EMAIL_NODE_ID),
+    '#required' => TRUE,
+  );
+  
+  $form['ebs_event_setup'][EBConsts::EBS_CONFIG_EMAIL_MESSAGE_NODE_ID_2] = array(
+    '#type' => 'select',
+    '#title' => t('Email Message 2'),
+    '#description' => t('Usually used for a secondary welcome message (i.e. existing registrations)'),
+    '#options' => $email_messages,
+    '#default_value' => variable_get(EBConsts::EBS_CONFIG_EMAIL_MESSAGE_NODE_ID_2, 
+      variable_get(EBConsts::EBS_CONFIG_EMAIL_MESSAGE_NODE_ID, EBConsts::EBS_EMAIL_NODE_ID)),
     '#required' => TRUE,
   );
   

@@ -69,7 +69,7 @@ class SBOCDBMgr implements iDBMgr{
       if (empty($rec)){
         $a = entity_create($this->entityName, array('attendee_id' => $attendee->attendeeId,));
       }else{
-        $a = current($rec);
+        $a = reset($rec);
       }
       $a->event_id = $attendee->eventId;
       $a->order_id = $attendee->orderId;
@@ -188,15 +188,13 @@ class SBOCDBMgr implements iDBMgr{
       $rec = entity_load($this->entityName, array($attendee->attendeeId,)); 
       if (!empty($rec)){
         // Record exists let's check the fields we need to for emailing purposes
-        $attendee_rec = current($rec);
+        $attendee_rec = reset($rec);
         $this->populateChangedFieldsList($attendee, $attendee_rec);
         $retval[] = $this->realSave($attendee);
 //         _eventbrite_sboc_debug_output($attendee);
         if (!empty($attendee->changedFields)){
-//            if (function_exists('_eventbrite_sboc_invoke_mail')){
            if (function_exists($this->func_email_callback)){
-//              _eventbrite_sboc_invoke_mail(array($attendee), EBConsts::EBS_CONFIG_EMAIL_MESSAGE_NODE_ID_2);
-              $this->func_email_callback(array($attendee), EBConsts::EBS_CONFIG_EMAIL_MESSAGE_NODE_ID_2);
+              call_user_func_array($this->func_email_callback, array(array($attendee), EBConsts::EBS_CONFIG_EMAIL_MESSAGE_NODE_ID_2,));
            } 
         }
       }
@@ -243,7 +241,7 @@ class SBOCDBMgr implements iDBMgr{
   protected function realSaveWithValues($attendee, $values){ 
     try{
       $rec = entity_load($this->entityName, array($attendee->attendeeId,)); 
-      $a = current($rec);
+      $a = reset($rec);
       $over_flows = self::over_flows();
       // Global namespace designator = \ClassName
       if (empty($a)){
@@ -384,7 +382,7 @@ class SBOCDBMgr implements iDBMgr{
         $node_ids = array_keys($result['node']);
         $nodes = node_load_multiple($node_ids);
         if (count($nodes) > 0){
-          $ret_val = current($nodes)->nid;
+          $ret_val = reset($nodes)->nid;
         }
       }
     }catch(Exception $e){
@@ -415,7 +413,7 @@ class SBOCDBMgr implements iDBMgr{
           $node_ids = array_keys($result['node']);
           $nodes = node_load_multiple($node_ids);
           if (count($nodes) > 0){
-            $ret_val = current($nodes)->nid;
+            $ret_val = reset($nodes)->nid;
           }
         }else{
           $region_name = EBConsts::EBS_UNSPECIFIED_REGION;

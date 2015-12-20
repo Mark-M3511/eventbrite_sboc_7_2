@@ -45,7 +45,7 @@ class EBSBOCDrupalUser{
     $fc = array();
     $user = self::searchUser($pc, $fc);
     if (!empty($user)){
-       $this->user = current($user);
+       $this->user = reset($user);
        $ret_val = TRUE;
     } 
     return $ret_val;
