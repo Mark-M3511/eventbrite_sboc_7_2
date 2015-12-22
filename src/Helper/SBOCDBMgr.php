@@ -195,8 +195,11 @@ class SBOCDBMgr implements iDBMgr{
            if (function_exists($this->func_email_callback)){
               $callback_val = call_user_func_array($this->func_email_callback, array(array($attendee), EBConsts::EBS_CONFIG_EMAIL_MESSAGE_NODE_ID_2,));
               if ($callback_val === FALSE){
-                 $ex = new Exception('Exception thrown in call to: '. $this->func_email_callback);
-                 watchdog_exception(__CLASS__. '->'. __METHOD__ , $ex);
+                try{
+                   throw new \Exception('Exception thrown in call to: '. $this->func_email_callback);
+                }catch(Exception $e){
+                   watchdog_exception(__CLASS__. '->'. __METHOD__ , $e);
+                } 
               }
            } 
         }
