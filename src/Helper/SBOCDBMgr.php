@@ -5,13 +5,13 @@ namespace Drupal\eventbrite_sboc\Helper;
 use Drupal\eventbrite_sboc\Helper\EBConsts;
 
 /**
-* Interface iDBMgr  
+* Interface iDBMgr
 *    Outlines the public methods and properties that must be present in clasees
 *    implementing this interface
 * @function save()
 * @function legacySave()
 * @function loadAttendeesSave(array @attendee_ids)
-*/ 
+*/
 interface iDBMgr{
   public function save();
   public function saveChangedOnly();
@@ -21,7 +21,7 @@ interface iDBMgr{
 }
 
 /**
-* Class SBOCDBMgr  
+* Class SBOCDBMgr
 *    Implements interface iDBMgr
 *    Manages saving and loading of Attendee objects/data to and from the database
 */
@@ -30,7 +30,7 @@ class SBOCDBMgr implements iDBMgr{
   public $entityName;
   public $attendees;
   public $func_email_callback;
-  
+
   /**
   * Creates an instance of SBOCDBMgr and returns that object to the caller
   *
@@ -38,7 +38,7 @@ class SBOCDBMgr implements iDBMgr{
   * @params array $atendees (default = empty array)
   *
   * Returns implicit object of type SBOCDBMgr
-  */ 
+  */
   public function __construct($entity_name=EBConsts::EBS_ENTITY_TYPE_ATTENDEE, array $attendees = array(),
       $save_changed_only = FALSE){
     $this->entityName = $entity_name;
@@ -46,9 +46,9 @@ class SBOCDBMgr implements iDBMgr{
     $this->saveChangedOnly = $save_changed_only;
     $this->func_email_callback = EBConsts::EBS_FUNC_EMAIL_CALLBACK;
   }
-  
+
   /**
-  * Writes an attendee data stored in an object to the database. 
+  * Writes an attendee data stored in an object to the database.
   *
   * @params object $attendee
   *   This method uses the more Drupal like Entity API to save values to the database
@@ -57,15 +57,15 @@ class SBOCDBMgr implements iDBMgr{
   */
   protected function realSave($attendee){
     /*** ****************************************************** ***
-    1: Property names must match field names in base table(s) 
-    2: The following fields should only be updated by the email prcess  
-        $a->email_sent = $attendee->emailSent; 
+    1: Property names must match field names in base table(s)
+    2: The following fields should only be updated by the email prcess
+        $a->email_sent = $attendee->emailSent;
         $a->email_send_date = $attendee->emailSendDate;
     ************************************************************ ***/
     $rec = array();
     $a = null;
     try{
-      $rec = entity_load($this->entityName, array($attendee->attendeeId,)); 
+      $rec = entity_load($this->entityName, array($attendee->attendeeId,));
       if (empty($rec)){
         $a = entity_create($this->entityName, array('attendee_id' => $attendee->attendeeId,));
       }else{
@@ -102,18 +102,18 @@ class SBOCDBMgr implements iDBMgr{
       $a->email_consent = $attendee->emailConsent;
       $a->additional_info = self::no_overflow($attendee->additionalInfo,2500);
       $a->ts_create_date = strtotime($attendee->createDate);
-      $a->ts_change_date = strtotime($attendee->changeDate);     
+      $a->ts_change_date = strtotime($attendee->changeDate);
       $a->category_nid = $this->getCategoryNodeId($a->category);
-      
-      $a->save();      
+
+      $a->save();
     }catch(Exception $e){
       watchdog_exception(__CLASS__. '~'. __METHOD__, $e);
     }
-    return $a;    
+    return $a;
   }
-  
+
   /**
-  * Writes an attendee data stored in an object to the database. 
+  * Writes an attendee data stored in an object to the database.
   *
   * @params object $attendee
   *   This method uses the DBTNG API to save values to the database
@@ -130,8 +130,8 @@ class SBOCDBMgr implements iDBMgr{
       $q = db_merge(EBConsts::EBS_DBTABLE_ATTENDEES);
       $q->key(
         array(
-          'event_id' => $attendee->eventId, 
-          'order_id' => $attendee->orderId, 
+          'event_id' => $attendee->eventId,
+          'order_id' => $attendee->orderId,
           'attendee_id' => $attendee->attendeeId,
         )
       );
@@ -142,7 +142,7 @@ class SBOCDBMgr implements iDBMgr{
     }catch(Exception $e){
       watchdog_exception(__CLASS__. '~'. __METHOD__, $e);
     }
-    return $retval; 
+    return $retval;
   }
 
   /**
@@ -153,13 +153,13 @@ class SBOCDBMgr implements iDBMgr{
   * Returns array of Attendee records
   */
   public function legacySave(){
-    $retval = array();  
+    $retval = array();
     foreach($this->attendees as $id => $attendee){
       $retval[] = $this->realLegacySave($attendee);
     }
     return $retval;
   }
-  
+
   /**
   * Iterates over all Attendee records passed to the object and calls the realSave method to do the work
   *
@@ -168,46 +168,56 @@ class SBOCDBMgr implements iDBMgr{
   * Returns array of Attendee records
   */
   public function save(){
-    $retval = array(); 
+    $retval = array();
     foreach($this->attendees as $id => $attendee){
         $retval[] = $this->realSave($attendee);
     }
     return $retval;
   }
-  
+
   /**
-  * Iterates over all Attendee records passed to the object and calls the realSave method to do the work
-  *  Only allows changes to be saved and does not create new records
-  * @params None
-  *
-  * Returns array of Attendee records
-  */
-  public function saveChangedOnly(){
-    $retval = array(); 
+   * Iterates over all Attendee records passed to the object and calls the realSave method to do the work
+   *  Only allows changes to be saved and does not create new records
+   *
+   * Returns array of Attendee records
+   * @param bool $strict
+   * @return array
+   * @throws \Exception
+   */
+  public function saveChangedOnly($strict = TRUE){
+    $retval = array();
     foreach($this->attendees as $id => $attendee){
-      $rec = entity_load($this->entityName, array($attendee->attendeeId,)); 
+      $rec = entity_load($this->entityName, array($attendee->attendeeId,));
       if (!empty($rec)){
         // Record exists let's check the fields we need to for emailing purposes
         $attendee_rec = reset($rec);
         $this->populateChangedFieldsList($attendee, $attendee_rec);
         $retval[] = $this->realSave($attendee);
         if (!empty($attendee->changedFields)){
-           if (function_exists($this->func_email_callback)){
-              $callback_val = call_user_func_array($this->func_email_callback, array(array($attendee), EBConsts::EBS_CONFIG_EMAIL_MESSAGE_NODE_ID_2,));
+          if (function_exists($this->func_email_callback)){
+            try{
+              $params = array(
+                array($attendee),
+                EBConsts::EBS_CONFIG_EMAIL_MESSAGE_NODE_ID_2,
+              );
+              $callback_val = call_user_func_array($this->func_email_callback, $params);
               if ($callback_val === FALSE){
-                try{
-                   throw new \Exception('Exception thrown in call to: '. $this->func_email_callback);
-                }catch(Exception $e){
-                   watchdog_exception(__CLASS__. '->'. __METHOD__ , $e);
-                } 
+                 throw new \Exception('Exception thrown in call to: '. $this->func_email_callback);
               }
-           } 
+            }catch(Exception $e){
+              watchdog_exception(__CLASS__. '->'. __METHOD__ , $e);
+            }
+          }
+        }
+      }else{
+        if (!$strict){
+          $retval[] = $this->realSave($attendee);
         }
       }
     }
     return $retval;
   }
-  
+
   /**
   * Populates attendee object properties with new/changed data for selected fields
   *
@@ -235,18 +245,18 @@ class SBOCDBMgr implements iDBMgr{
         );
     }
   }
-  
+
   /**
-  * Writes an attendee data stored in an object to the database. 
+  * Writes an attendee data stored in an object to the database.
   *
   * @params object $attendee
   *   This method uses the more Drupal like Entity API to save values to the database
   *
   * Returns array of attendee entity objects
   */
-  protected function realSaveWithValues($attendee, $values){ 
+  protected function realSaveWithValues($attendee, $values){
     try{
-      $rec = entity_load($this->entityName, array($attendee->attendeeId,)); 
+      $rec = entity_load($this->entityName, array($attendee->attendeeId,));
       $a = reset($rec);
       $over_flows = self::over_flows();
       // Global namespace designator = \ClassName
@@ -258,10 +268,10 @@ class SBOCDBMgr implements iDBMgr{
         if ($r->hasProperty($field)) {
           $a->{$field} = $value;
           if (in_array($field, array_keys($over_flows))){
-            $a->{$field} = self::no_overflow($a->{$field}, $over_flows[$field]); 
+            $a->{$field} = self::no_overflow($a->{$field}, $over_flows[$field]);
           }
         }
-      } 
+      }
       $a->save();
       $this->updateTimestamps($attendee);
     }catch(Exception $e){
@@ -269,7 +279,7 @@ class SBOCDBMgr implements iDBMgr{
     }
     return $a;
   }
-  
+
   /**
   * Updates timestamp fields which are not wholly managed by the system
   *
@@ -278,17 +288,17 @@ class SBOCDBMgr implements iDBMgr{
   * Returns N/A
   */
   protected function updateTimestamps($attendee){
-    $emw = entity_metadata_wrapper(EBConsts::EBS_ENTITY_TYPE_NAME, $attendee->attendeeId); 
+    $emw = entity_metadata_wrapper(EBConsts::EBS_ENTITY_TYPE_NAME, $attendee->attendeeId);
     $emw->ts_create_date = strtotime($attendee->createDate);
     $emw->ts_change_date = strtotime($attendee->changeDate);
     // Extra check on email send date
     $value = $attendee->emailSendDate;
     if (!empty($value)){
-      $emw->ts_email_send_date = strtotime($attendee->emailSendDate); 
+      $emw->ts_email_send_date = strtotime($attendee->emailSendDate);
     }
     $emw->save();
   }
-  
+
   /**
   * Iterates over all Attendee records passed to the object and calls the realSave method to do the work
   *
@@ -297,13 +307,13 @@ class SBOCDBMgr implements iDBMgr{
   * Returns array of Attendee records
   */
   public function saveWithvalues(array $values){
-    $retval = array(); 
+    $retval = array();
     foreach($this->attendees as $id => $attendee){
       $retval[] = $this->realSaveWithValues($attendee, $values);
     }
-    return $retval; 
+    return $retval;
   }
-  
+
  /**
   * Returns an associative arary of Attendee Entity objects
   *
@@ -320,7 +330,7 @@ class SBOCDBMgr implements iDBMgr{
     }
     return $attendees;
   }
-  
+
   /**
   * Returns an associative arary of Attendee Entity objects
   *
@@ -344,7 +354,7 @@ class SBOCDBMgr implements iDBMgr{
     }
     return $retval;
   }
-  
+
   /**
   * Returns an associative arary of Attendee Entity objects
   *
@@ -368,13 +378,13 @@ class SBOCDBMgr implements iDBMgr{
     }
     return $retval;
   }
-  
+
   /**
   * Returns a node id corresonding to the participant category
   *
   * @param string $category
   *
-  * Returns int 
+  * Returns int
   */
   public function getCategoryNodeId($category){
     $node_ids = array();
@@ -394,10 +404,10 @@ class SBOCDBMgr implements iDBMgr{
     }catch(Exception $e){
       watchdog_exception(__CLASS__. '~'. __METHOD__, $e);
     }
-    
+
     return $ret_val;
   }
-  
+
   /**
   * Returns a node id corresonding to the participant region
   *
@@ -431,7 +441,7 @@ class SBOCDBMgr implements iDBMgr{
     }
     return $ret_val;
   }
-  
+
   /**
   * Returns a node ids and Node titles for email message content type
   *
@@ -458,8 +468,8 @@ class SBOCDBMgr implements iDBMgr{
     }
     return $ret_val;
   }
-  
-  
+
+
   /**
   * Returns an associative arary of field names and values to be used in INSERT/UPDATE/MERGE operations
   *
@@ -469,9 +479,9 @@ class SBOCDBMgr implements iDBMgr{
   */
   public static function mapValues($attendee){
     $mapped_values =  array(
-      'event_id' => $attendee->eventId, 
-      'order_id' => $attendee->orderId, 
-      'attendee_id' => $attendee->attendeeId, 
+      'event_id' => $attendee->eventId,
+      'order_id' => $attendee->orderId,
+      'attendee_id' => $attendee->attendeeId,
       'ticket_class_id' => $attendee->ticketClassId,
       'change_date' => $attendee->changeDate,
       'create_date' => $attendee->createDate,
@@ -504,30 +514,30 @@ class SBOCDBMgr implements iDBMgr{
       'email_consent' => $attendee->emailConsent,
       'additional_info' => self::no_overflow($attendee->additionalInfo,2500),
     );
-    
+
     // _eventbrite_sboc_debug_output($attendee);
     if (isset($attendee->passwordResetUrl)){
       $mapped_values['password_reset_url'] = $attendee->passwordResetUrl;
     }
-     
+
     return $mapped_values;
-  } 
-  
+  }
+
   /**
   * Calculates the maximum number of characters allowed for the field in the db
   *
   * @param string $value
   * @param int length
-  * 
-  * Returns string 
+  *
+  * Returns string
   */
   public static function no_overflow($value, $length){
     if (empty($length)){
       $length = strlen($value);
-    } 
+    }
     return substr($value, 0, $length);
   }
-  
+
   /**
   * Converts an attendee id to a numeric value e.g. 12345-1 to 12345+1 = 12346
   *
@@ -544,14 +554,14 @@ class SBOCDBMgr implements iDBMgr{
       $retval = $attendee_id;
     }else{
       // look for "-" character
-      $retval = (int)$attendee_id;      
+      $retval = (int)$attendee_id;
       $pos++;
       $num2 = (int)substr($attendee_id, $pos);
       $retval += $num2;
     }
     return $retval;
   }
-  
+
   /**
   * Converts an attendee id to a numeric value e.g. 12345-1 to 12345+1 = 12346
   *
@@ -563,7 +573,7 @@ class SBOCDBMgr implements iDBMgr{
   */
   public static function over_flows(){
     $over_flow = array(
-      'last_name' => 50, 
+      'last_name' => 50,
       'first_name' => 50,
       'contestant_last_name' => 50,
       'contestant_first_name' => 50,
@@ -575,10 +585,10 @@ class SBOCDBMgr implements iDBMgr{
       'home_phone_2' => 20,
       'additional_info' => 2500,
     );
-    
+
     return $over_flow;
   }
-  
+
   /**
   * Returns a date matching the timezone specified
   *
@@ -591,10 +601,10 @@ class SBOCDBMgr implements iDBMgr{
     $tz = (empty($tz) ? variable_get('date_default_timezone', '') : $tz);
     $dt = new \DateTime($date_time, new \DateTimeZone($tz));
     $retval = $dt->format(EBConsts::EBS_MYSQLDATEFORMAT);
-    
+
     return $retval;
   }
-  
+
   /**
   * Returns a numeric value for month
   *
@@ -606,12 +616,12 @@ class SBOCDBMgr implements iDBMgr{
     if (is_numeric($month)){
       return $month;
     }
-    
+
     $m = array();
     $ret_val = 0;
     if (is_string($month)){
       /* $m = array(1 => 'january', 'february', 'march', 'april', 'may', 'june', 'july',
-      'august', 'september', 'october', 'november', 'december',); */ 
+      'august', 'september', 'october', 'november', 'december',); */
       $month = drupal_strtolower($month);
       for($ctr = 1; $ctr <= 12; $ctr++){
         $m[$ctr] = drupal_strtolower(date('F', mktime(0, 0, 0, $ctr, 1, date('Y'))));
@@ -621,11 +631,11 @@ class SBOCDBMgr implements iDBMgr{
         }
       }
     }
-    
+
     return $ret_val;
-    
+
   }
-  
+
 }
 
-  
+
