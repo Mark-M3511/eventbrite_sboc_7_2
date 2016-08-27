@@ -218,14 +218,14 @@ function eventbrite_sboc_help($path, $arg){
 function eventbrite_sboc_cronapi(){
   $items = array();
   
-  $items[EBConsts::EBS_CRON_JOB_KEY1] = array(
-    'title' => t(EBConsts::EBS_CRONJOB_TITLE),
+  $items['EBS_CRON_KEY1'] = array(
+    'title' => t('Eventbrite SBOC v2'),
     'callback' => '_eventbrite_sboc_cron_job_config_queue',
     'tags' => array('eventbrite_sboc'),
     'scheduler' => array(
       'name' => 'crontab',
       'crontab' => array(
-        'rules' => array(EBConsts::EBS_CRONRULE_DEFAULT,),
+        'rules' => array('*/5 * * * *',),
       ),
     ),
   );
