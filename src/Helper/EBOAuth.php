@@ -146,7 +146,7 @@ class EBOAuth{
       if ($response->code == EBConsts::EBS_HTTP_RESPONSE_CODE_OK && !empty($response->redirect_url)){
         drupal_goto($response->redirect_url);
       }else{
-        throw new Exception(format_string('Code: @code / Error: @error', 
+        throw new \Exception(format_string('Code: @code / Error: @error',
           array('@code' => $response->code, '@error' => $response->error, ))); 
       }
     }catch (Exception $e) {
