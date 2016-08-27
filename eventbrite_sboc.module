@@ -386,9 +386,9 @@ function _eventbrite_sboc_oauth_callback(){
 */
 function _eventbrite_sboc_invoke_save($attendees, $save_changed_only = FALSE){
   $retval = array();
-  $hook_name = 'ebattendees_save';
-  foreach(module_implements($hook_name) as $module){
-    $function = $module. '_'. $hook_name;
+  $hook_suffix = 'ebattendees_save';
+  foreach(module_implements($hook_suffix) as $module){
+    $function = $module. '_'. $hook_suffix;
     $retval[$function] = $function($attendees, $save_changed_only);
     if (empty($retval[$function])){
       $retval[$function] = array();
@@ -407,9 +407,9 @@ function _eventbrite_sboc_invoke_save($attendees, $save_changed_only = FALSE){
 */
 function _eventbrite_sboc_invoke_save_withvalues($attendees, $values){
   $retval = array();
-  $hook_name = 'ebattendees_save_withvalues';
-  foreach(module_implements($hook_name) as $module){
-    $function = $module. '_'. $hook_name;
+  $hook_suffix = 'ebattendees_save_withvalues';
+  foreach(module_implements($hook_suffix) as $module){
+    $function = $module. '_'. $hook_suffix;
     $retval[$function] = $function($attendees, $values);
     if (empty($retval[$function])){
       $retval[$function] = array();
@@ -428,9 +428,9 @@ function _eventbrite_sboc_invoke_save_withvalues($attendees, $values){
 */
 function _eventbrite_sboc_invoke_mail($attendees, $message_id=EBConsts::EBS_CONFIG_EMAIL_MESSAGE_NODE_ID_1){
   $retval = array();
-  $hook_name = 'ebattendees_mail';
-  foreach(module_implements($hook_name) as $module){
-    $function = $module. '_'. $hook_name;
+  $hook_suffix = 'ebattendees_mail';
+  foreach(module_implements($hook_suffix) as $module){
+    $function = $module. '_'. $hook_suffix;
     $retval[$function] = $function($attendees, $message_id);
   }
   
