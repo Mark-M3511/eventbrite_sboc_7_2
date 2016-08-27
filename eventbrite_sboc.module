@@ -287,7 +287,7 @@ function _eventbrite_sboc_process_cron_queue($data){
 function _eventbrite_sboc_cron_update_attendees($save_changed_only = FALSE){
   try{
     $ev = _eventbrite_sboc_init_event();
-    $do = new DateTime();
+    $do = new DateTime('now', DateTimeZone::UTC);
     // e.g. P10D  Period of 10 Days 
     // bof: Set interval
     $days = variable_get(EBConsts::EBS_CONFIG_CHANGED_SINCE_DAYS, EBConsts::EBS_CONFIG_DEFAULT_CHANGED_SINCE_DAYS);

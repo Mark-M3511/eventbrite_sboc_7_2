@@ -48,16 +48,10 @@ function eventbrite_sboc_attendee_help($path, $arg){
 function eventbrite_sboc_attendee_ebattendees_save(array $attendees, $save_changed_only=FALSE){  
   try{
     $db = new SBOCDBMgr(EBConsts::EBS_ENTITY_TYPE_ATTENDEE, $attendees, $save_changed_only);
-    if ($save_changed_only){
-      $attendees = $db->saveChangedOnly();
-    }else{
-      $attendees = $db->save();
-    }
+    $attendees = $db->save();
     $eba = new EBAttendees(NULL);
     $attendees = $eba->mapEBAttendeeEntitytoEBAttendee($attendees);
-    // We only effect a login for new registrations
     _eventbrite_sboc_create_user_login($attendees);
-    // _eventbrite_sboc_debug_output($attendees);
     _eventbrite_sboc_link_to_region($attendees);
   }catch(Exception $e){
     watchdog_exception(EBConsts::EBS_APP_NAME_MAIN, $e);  
@@ -77,11 +71,8 @@ function eventbrite_sboc_attendee_ebattendees_save_withvalues(array $attendees, 
   try{
     $db = new SBOCDBMgr(EBConsts::EBS_ENTITY_TYPE_NAME, $attendees);
     $attendees = $db->saveWithValues($values);
-    // $debug = print_r($attendees, TRUE);
-    // watchdog('eventbrite_sboc_attendee_ebattendees_save_withvalues', $debug);
     $eba = new EBAttendees(NULL);
     $attendees = $eba->mapEBAttendeeEntitytoEBAttendee($attendees);
-    // _eventbrite_sboc_create_user_login($attendees);
     _eventbrite_sboc_link_to_region($attendees);
   }catch(Exception $e){
     watchdog_exception(EBConsts::EBS_APP_NAME_MAIN, $e);  
@@ -137,6 +128,14 @@ function _eventbrite_sboc_create_user_login(array &$attendees){
   return $ret_val;
 }
 
+/**
+* This function links each attendee record to an existing region
+*
+* @param array $attendees
+*   An array of attendee objects
+*
+* Returns Array $attendees
+*/
 function _eventbrite_sboc_link_to_region(array $attendees){
   // Must have at least one attenee passed to constructor
   $db = new SBOCDBMgr();
