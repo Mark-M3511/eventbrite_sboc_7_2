@@ -53,7 +53,8 @@ class EBEvents{
     
     $options = array( 
       'headers' => $headers,
-    ); 
+    );
+    $options = array_merge($options, array('max_redirects' => EBConsts::EBS_DRUPAL_HTTP_QUERY_MAX_REDIRECTS,));
     
     $eb_params = format_string(EBConsts::EBS_ENDPOINT_EVENTS_SINGLE, array('@event_id' => $this->eventId,));
     
@@ -81,7 +82,8 @@ class EBEvents{
     
     $options = array(
       'headers' => $headers,
-    ); 
+    );
+    $options = array_merge($options, array('max_redirects' => EBConsts::EBS_DRUPAL_HTTP_QUERY_MAX_REDIRECTS,));
     
     $query = '';
     if (!empty($params)){
@@ -114,6 +116,7 @@ class EBEvents{
     $options = array(
       'headers' => $headers,
     );
+    $options = array_merge($options, array('max_redirects' => EBConsts::EBS_DRUPAL_HTTP_QUERY_MAX_REDIRECTS,));
     
     $query = '';
     if (!empty($expansions)){
@@ -147,6 +150,7 @@ class EBEvents{
     $options = array(
       'headers' => $headers,
     );
+    $options = array_merge($options, array('max_redirects' => EBConsts::EBS_DRUPAL_HTTP_QUERY_MAX_REDIRECTS,));
     
     if (!empty($expansions)){
       $url .= '?expand='. $expansions;

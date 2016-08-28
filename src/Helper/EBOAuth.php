@@ -140,14 +140,16 @@ class EBOAuth{
       'response_type' => EBConsts::EBS_EB_RESPONSE_TYPE_CODE,
       'client_id' => $this->clientId,
     ); 
-    $query = '?'. drupal_http_build_query($params); 
+    $query = '?'. drupal_http_build_query($params);
+    $options = array();
+    $options = array_merge($options, array('max_redirects' => EBConsts::EBS_DRUPAL_HTTP_QUERY_MAX_REDIRECTS,));
     try{
-      $response = drupal_http_request(EBConsts::EBS_URL_EVENTBRITE_OAUTH. EBConsts::EBS_ENDPOINT_AUTHORIZE. $query);
+      $response = drupal_http_request(EBConsts::EBS_URL_EVENTBRITE_OAUTH. EBConsts::EBS_ENDPOINT_AUTHORIZE. $query, $options);
       if ($response->code == EBConsts::EBS_HTTP_RESPONSE_CODE_OK && !empty($response->redirect_url)){
         drupal_goto($response->redirect_url);
       }else{
         throw new \Exception(format_string('Code: @code / Error: @error',
-          array('@code' => $response->code, '@error' => $response->error, ))); 
+          array('@code' => $response->code, '@error' => $response->error,)));
       }
     }catch (Exception $e) {
       watchdog_exception(EBConsts::EBS_APPNAME, $e);
@@ -177,6 +179,7 @@ class EBOAuth{
       'headers' => $headers,
       'method' => 'POST',
     );
+    $options = array_merge($options, array('max_redirects' => EBConsts::EBS_DRUPAL_HTTP_QUERY_MAX_REDIRECTS,));
     
     $retval = null;
     try{
