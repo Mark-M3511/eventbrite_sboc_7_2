@@ -45,10 +45,14 @@ function eventbrite_sboc_attendee_help($path, $arg){
 *
 * Returns array of Attendee objects
 */
-function eventbrite_sboc_attendee_ebattendees_save(array $attendees, $save_changed_only=FALSE){  
+function eventbrite_sboc_attendee_ebattendees_save(array $attendees, $save_changed_only = FALSE, $strictly_process_changed_records = TRUE){
   try{
     $db = new SBOCDBMgr(EBConsts::EBS_ENTITY_TYPE_ATTENDEE, $attendees, $save_changed_only);
-    $attendees = $db->save();
+    if ($save_changed_only){
+      $attendees = $db->saveChangedOnly($strictly_process_changed_records);
+    }else{
+      $attendees = $db->save();
+    }
     $eba = new EBAttendees(NULL);
     $attendees = $eba->mapEBAttendeeEntitytoEBAttendee($attendees);
     _eventbrite_sboc_create_user_login($attendees);

@@ -242,7 +242,8 @@ function eventbrite_sboc_cronapi(){
 */
 function _eventbrite_sboc_cron_job_config_queue(){
   $data = new \StdClass;
-  $data->saveChangedOnly = TRUE; 
+  $data->saveChangedOnly = TRUE;
+  $data->strictlyProcessChangedRecords = FALSE;
   $queue = DrupalQueue::get(EBConsts::EBS_QUEUE_PROCESS_CHANGED_RECORDS);
   $queue->createItem($data);
 }
@@ -274,17 +275,18 @@ function eventbrite_sboc_cron_queue_info(){
 * Returns n/a
 */
 function _eventbrite_sboc_process_cron_queue($data){
-  _eventbrite_sboc_cron_update_attendees($data->saveChangedOnly);
+  _eventbrite_sboc_cron_update_attendees($data->saveChangedOnly, $data->strictlyProcessChangedRecords);
 }
 
 /**
 * Processes attendee records when invoked from Cron
 *
 * @param Boolean $save_changed_only
+* @param Boolean $strictly_process_changed_records
 *
 * Return n/a
 */
-function _eventbrite_sboc_cron_update_attendees($save_changed_only = FALSE){
+function _eventbrite_sboc_cron_update_attendees($save_changed_only = FALSE, $strictly_process_changed_records = TRUE){
   try{
     $ev = _eventbrite_sboc_init_event();
     $do = new DateTime('now', DateTimeZone::UTC);
@@ -300,7 +302,7 @@ function _eventbrite_sboc_cron_update_attendees($save_changed_only = FALSE){
     $params = array(EBConsts::EBS_CONFIG_PARAM_CHANGED_SINCE => $date_param,);
     $eba = new EBAttendees($ev);
     $attendees = $eba->loadAttendeesFromResource($params);
-    _eventbrite_sboc_invoke_save($attendees, $save_changed_only);
+    _eventbrite_sboc_invoke_save($attendees, $save_changed_only, $strictly_process_changed_records);
     watchdog(EBConsts::EBS_APPNAME, '@count attendee record(s) processed during last cron', array('@count' => count($attendees),), WATCHDOG_INFO); 
   }catch(Exception $e){
     watchdog_exception(EBConsts::EBS_APPNAME, $e);
@@ -384,12 +386,12 @@ function _eventbrite_sboc_oauth_callback(){
 *
 * Returns array of Attendee objects
 */
-function _eventbrite_sboc_invoke_save($attendees, $save_changed_only = FALSE){
+function _eventbrite_sboc_invoke_save($attendees, $save_changed_only = FALSE, $strictly_process_changed_records = TRUE){
   $retval = array();
   $hook_suffix = 'ebattendees_save';
   foreach(module_implements($hook_suffix) as $module){
     $function = $module. '_'. $hook_suffix;
-    $retval[$function] = $function($attendees, $save_changed_only);
+    $retval[$function] = $function($attendees, $save_changed_only, $strictly_process_changed_records);
     if (empty($retval[$function])){
       $retval[$function] = array();
     }
