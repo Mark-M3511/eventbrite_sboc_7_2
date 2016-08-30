@@ -35,8 +35,8 @@ class MandrillEmailMgr implements iEmailMgr{
   *
   * Returns implicit object of type MandrillEmailMgr
   */ 
-  public function __construct(array $attendees=array(), $module_name=EBConsts::EBS_SBOCATTENDEES_MODULE, 
-      $mail_key=EBConsts::EBS_SBOCATTENDEES_MAIL_KEY){
+  public function __construct(array $attendees = array(), $module_name = EBConsts::EBS_SBOCATTENDEES_MODULE,
+      $mail_key = EBConsts::EBS_SBOCATTENDEES_MAIL_KEY){
       
     $this->attendees = $attendees;
     $this->moduleName = $module_name;
