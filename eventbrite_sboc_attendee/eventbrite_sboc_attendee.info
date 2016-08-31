@@ -11,7 +11,7 @@ configure = admin/config/system/eventbrite_sboc
 dependencies[] = eventbrite_sboc
 
 ;Version Info
-version = '7.x-1.0-alpha2'
+version = '7.x-2.0-beta1'
 
 ;Project Update Info
 ;project status url = 'http://dev1508.holbrookgoodman.com/'
