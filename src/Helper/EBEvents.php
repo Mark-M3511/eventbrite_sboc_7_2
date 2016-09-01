@@ -27,7 +27,7 @@ class EBEvents{
   *
   * @params None 
   *
-  * Returns String in the format Bearer XXXXXXXXXXX
+  * Returns String in the format: Bearer XXXXXXXXXXX
   */
   protected function getBearerCredentials(){
     $token = $this->oauthClient->getAccessToken()->accessToken; 
