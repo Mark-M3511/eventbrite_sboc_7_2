@@ -515,6 +515,7 @@ class SBOCDBMgr implements iDBMgr{
       'home_phone_2' => self::no_overflow($attendee->homePhone2, 20),
       'email_consent' => $attendee->emailConsent,
       'additional_info' => self::no_overflow($attendee->additionalInfo,2500),
+      'language' => $attendee->language,
     );
 
     // _eventbrite_sboc_debug_output($attendee);

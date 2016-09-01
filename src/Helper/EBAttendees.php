@@ -46,6 +46,7 @@ class EBAttendee{
   public $additionalInfo;
   public $passwordResetUrl;
   public $changedFields;
+  public $language;
 }
 
 class EBAttendees{
@@ -130,6 +131,7 @@ class EBAttendees{
       $a->homePhone2 = $this->getAnswer($attendee['answers'], EBConsts::EBS_QA_117, EBConsts::EBS_EMPTY_STRING);
       $a->emailConsent = $this->getAnswer($attendee['answers'], EBConsts::EBS_QA_118, 0);
       $a->additionalInfo = $this->getAnswer($attendee['answers'], EBConsts::EBS_QA_119, EBConsts::EBS_EMPTY_STRING);
+      $a->language =  $this->getAnswer($attendee['answers'], EBConsts::EBS_QA_120, EBConsts::EBS_EMPTY_STRING);
       
       $this->attendees[$a->attendeeId] = $a;
     }
@@ -176,6 +178,7 @@ class EBAttendees{
       $a->homePhone2 = $this->getAnswer($attendee['answers'], EBConsts::EBS_QA_117, EBConsts::EBS_EMPTY_STRING);
       $a->emailConsent = $this->getAnswer($attendee['answers'], EBConsts::EBS_QA_118, 0);
       $a->additionalInfo = $this->getAnswer($attendee['answers'], EBConsts::EBS_QA_119, EBConsts::EBS_EMPTY_STRING);
+      $a->language =  $this->getAnswer($attendee['answers'], EBConsts::EBS_QA_120, EBConsts::EBS_EMPTY_STRING);
       
       $this->attendees[$a->attendeeId] = $a;
     }
@@ -241,6 +244,7 @@ class EBAttendees{
       $a->homePhone2 = $attendee->home_phone_2;
       $a->emailConsent = $attendee->email_consent;
       $a->additionalInfo = $attendee->additional_info;
+      $a->language = $attendee->language;
       
       $this->attendees[$a->attendeeId] = $a;
     }

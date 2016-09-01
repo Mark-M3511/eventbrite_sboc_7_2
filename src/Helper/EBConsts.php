@@ -122,7 +122,8 @@ class EBConsts{
   const EBS_QA_116 = "Contestant's Phone Number";  
   const EBS_QA_117 = "Contestant's Phone Number 2";    
   const EBS_QA_118 = "I consent to receiving email communications from SBOC";      
-  const EBS_QA_119 = "Additional information for SBOC"; 
+  const EBS_QA_119 = "Additional information for SBOC";
+  const EBS_QA_120 = "Language";
   // EB Values
   const EBS_UNSPECIFIED_REGION = 'Unspecified Region';
   const EBS_ORDER_CANCELLED = 'RC';
