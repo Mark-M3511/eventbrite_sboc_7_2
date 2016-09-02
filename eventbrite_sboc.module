@@ -117,8 +117,8 @@ function eventbrite_sboc_menu(){
   $items[EBConsts::EBS_ADMINMENUROOT. '/event/attendees/op1'] = array(
     'title' => t('Attendees Op1'),
     'type' => MENU_LOCAL_ACTION,    
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('_eventbrite_sboc_test',),
+    'page callback' => '_eventbrite_sboc_test_local_action',
+    'page arguments' => array('Opporunity Awaits...',),
     'access arguments' => array(0),
     'weight' => 0,
   );
@@ -206,6 +206,10 @@ function eventbrite_sboc_help($path, $arg){
 	}
 	
   return $output;
+}
+
+function _eventbrite_sboc_test_local_action($msg){
+  return $msg;
 }
 
 /**
