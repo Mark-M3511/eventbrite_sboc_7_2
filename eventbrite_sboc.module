@@ -221,6 +221,7 @@ function eventbrite_sboc_cronapi(){
   $items['EBS_CRON_KEY1'] = array(
     'title' => t('Eventbrite SBOC v2'),
     'callback' => '_eventbrite_sboc_cron_job_config_queue',
+    'callback arguments' => array('EBS_CRON_KEY1'),
     'tags' => array('eventbrite_sboc'),
     'scheduler' => array(
       'name' => 'crontab',
@@ -240,7 +241,7 @@ function eventbrite_sboc_cronapi(){
 *
 * Returns n/a
 */
-function _eventbrite_sboc_cron_job_config_queue(){
+function _eventbrite_sboc_cron_job_config_queue($arg = ''){
   $data = new \StdClass;
   $data->saveChangedOnly = TRUE;
   $data->strictlyProcessChangedRecords = FALSE;
