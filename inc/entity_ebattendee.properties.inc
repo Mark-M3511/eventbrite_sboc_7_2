@@ -304,3 +304,11 @@
     'setter callback' => 'entity_property_verbatim_set',
     'schema field' => 'ts_email_send_date',
   );
+
+  $properties['ts_email_send_date'] = array(
+    'label' => t('Language'),
+    'description' => t("Language selected for competition"),
+    'type' => 'text',
+    'setter callback' => 'entity_property_verbatim_set',
+    'schema field' => 'language',
+  );
