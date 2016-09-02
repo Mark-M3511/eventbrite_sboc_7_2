@@ -244,7 +244,7 @@ function _eventbrite_sboc_cron_job_config_queue(){
   $data = new \StdClass;
   $data->saveChangedOnly = TRUE;
   $data->strictlyProcessChangedRecords = FALSE;
-  $queue = DrupalQueue::get(EBConsts::EBS_QUEUE_PROCESS_CHANGED_RECORDS);
+  $queue = DrupalQueue::get('ebs_process_changed_records');
   $queue->createItem($data);
 }
 
@@ -258,7 +258,7 @@ function _eventbrite_sboc_cron_job_config_queue(){
 function eventbrite_sboc_cron_queue_info(){
   $queues = array();
   
-  $queues[EBConsts::EBS_QUEUE_PROCESS_CHANGED_RECORDS] = array(
+  $queues['ebs_process_changed_records'] = array(
     'worker callback' => '_eventbrite_sboc_process_cron_queue',
     'time' => 120,
   );
