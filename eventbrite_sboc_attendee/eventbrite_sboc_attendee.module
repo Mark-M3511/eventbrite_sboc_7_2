@@ -141,7 +141,6 @@ function _eventbrite_sboc_create_user_login(array &$attendees){
 * Returns Array $attendees
 */
 function _eventbrite_sboc_link_to_region(array $attendees){
-  // Must have at least one attenee passed to constructor
   $db = new SBOCDBMgr();
   try{
     foreach($attendees as $id => $attendee){
