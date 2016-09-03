@@ -173,6 +173,7 @@ function eventbrite_sboc_attendee_entity_info(){
     'controller class' => 'EBAttendeeEntityController', 
     'views controller class' => 'EntityDefaultViewsController',
     'load hook' => 'eventbrite_sboc_attendee_attendees_load',
+    'fieldable' => FALSE,
     'entity keys' => array(
       'id' => EBConsts::EBS_FIELDS_ENTITY_KEY, 
      ),
