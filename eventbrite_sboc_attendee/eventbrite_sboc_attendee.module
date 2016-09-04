@@ -197,7 +197,7 @@ function eventbrite_sboc_attendee_entity_property_info(){
   // Let's pull in the huge array from an include file rather than  
   // overcrowding this file
   $module_path = drupal_get_path('module', EBConsts::EBS_APPNAME);
-  include_once($module_path. '/'. EBConsts::EBS_ENTITY_PROPS_FILE);
+  include_once $module_path. '/'. EBConsts::EBS_ENTITY_PROPS_FILE;
   
   return $propinfo;
 }
