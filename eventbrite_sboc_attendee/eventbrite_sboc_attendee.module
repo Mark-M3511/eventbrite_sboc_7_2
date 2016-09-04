@@ -111,9 +111,7 @@ function _eventbrite_sboc_create_user_login(array &$attendees){
   $ret_val = array();
   try{
     foreach($attendees as $id => $attendee){
-      if (!$u) {
-        $u = new EBSBOCDrupalUser($attendee);
-      }
+      $u = (empty($u) ? (new EBSBOCDrupalUser($attendee)) : $u);
       $u->attendee = $attendee;
       if (!$u->userExists($attendee) && $u->createUser($attendee)){
         // $u->userMailNotify();
