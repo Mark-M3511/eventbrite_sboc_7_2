@@ -10,6 +10,9 @@ configure = admin/config/system/eventbrite_sboc
 ;Dependencies
 dependencies[] = eventbrite_sboc
 
+;Files
+files[] = inc/entity_ebattendee.classes.inc
+
 ;Version Info
 version = '7.x-2.0-beta1'
 
