@@ -12,7 +12,7 @@ class EBAttendeeEntity extends Entity{
     return array('path' => 'ebattendee/' . $this->identifier());
   }
 
-  public function create_date(){
+  public function createDate(){
     return strtotime($this->create_date);
   }
 
