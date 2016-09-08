@@ -358,11 +358,11 @@ function eventbrite_sboc_attendee_schema(){
 
 /**
  * Eventbrite SBOC update #4
- * Add new language column column to table 'eventbrite_sboc_attendees'
+ * Add new language column to table 'eventbrite_sboc_attendees'
  * Updated: 2016-09-01
  */
 function eventbrite_sboc_attendee_update_7204() {
-  $init_val = 'N/A';
+  $init_val = 'en';
   $table_name = 'eventbrite_sboc_attendees';
   $msg = "%count new column(s) added to table '%table_name'";
   $ctr = 0;
@@ -372,7 +372,7 @@ function eventbrite_sboc_attendee_update_7204() {
     'description' => 'Language selected by registrant.',
     'type' => 'varchar',
     'length' => 10,
-    'default' => 'en',
+    'default' => $init_val,
     'not null' => FALSE,
   );
   $field_name = 'language';
