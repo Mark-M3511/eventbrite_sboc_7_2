@@ -22,22 +22,22 @@ class EBAttendeeEntity extends Entity{
 * Extending the EntityAPIController for the Attendee entity.
 */
 class EBAttendeeEntityController extends EntityAPIController{
-   public function save($entity){
-     $retval = parent::save($entity);
-     return $retval;
-   }
-   
-   protected function realLoad($ids, $conditions){
-     $dba = new Drupal\eventbrite_sboc\Helper\SBOCDBMgr();
-     $attendees_ids = $dba->legacyLoadAttendees($ids);
-     return $attendees_ids;
-   }
-   
-   public function load($ids = array(), $conditions = array()){
-     $attendee_ids = $this->realLoad($ids, $conditions);
-     $retval = parent::load($attendee_ids, $conditions);
-     return $retval;
-   }
+  protected function realLoad($ids, $conditions){
+    $dba = new Drupal\eventbrite_sboc\Helper\SBOCDBMgr();
+    $attendees_ids = $dba->legacyLoadAttendees($ids);
+    return $attendees_ids;
+  }
+
+  public function save($entity){
+    $retval = parent::save($entity);
+    return $retval;
+  }
+
+  public function load($ids = array(), $conditions = array()){
+    $attendee_ids = $this->realLoad($ids, $conditions);
+    $retval = parent::load($attendee_ids, $conditions);
+    return $retval;
+  }
 }
 
 /*
