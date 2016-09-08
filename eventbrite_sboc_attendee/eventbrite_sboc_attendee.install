@@ -236,7 +236,13 @@ function eventbrite_sboc_attendee_schema(){
         'type' => 'int',		   
         'not null' => FALSE,
 	    ),
-      
+      'language' => array(
+        'description' => 'Language selected by registrant.',
+        'type' => 'varchar',
+        'length' => 10,
+        'default' => 'en',
+        'not null' => FALSE,
+      ),
      ),  
     'primary key' => array('eid'),
     'indexes' => array(

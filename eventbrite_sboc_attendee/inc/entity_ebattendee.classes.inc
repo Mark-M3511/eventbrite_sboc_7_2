@@ -12,10 +12,6 @@ class EBAttendeeEntity extends Entity{
     return array('path' => 'ebattendee/' . $this->identifier());
   }
 
-  public function createDate(){
-    return strtotime($this->create_date);
-  }
-
 }
 
 /*
@@ -99,7 +95,6 @@ class EBAttendeeMetadataController extends EntityDefaultMetadataController{
        'label' => t('Create Date'),
        'description' => t('Date and time attendee record was created'),
        'type' => 'date',
-       'getter callback' => 'entity_property_getter_method',
        'setter callback' => 'entity_property_verbatim_set',
        'schema field' => 'create_date',
      );
@@ -352,7 +347,7 @@ class EBAttendeeMetadataController extends EntityDefaultMetadataController{
        'schema field' => 'ts_email_send_date',
      );
 
-     $properties['ts_language'] = array(
+     $properties['language'] = array(
        'label' => t('Language'),
        'description' => t("Language selected for competition"),
        'type' => 'text',
@@ -362,4 +357,9 @@ class EBAttendeeMetadataController extends EntityDefaultMetadataController{
 
      return $info;
    }
+}
+
+function _ebsboc_test_getter($param){
+  _eventbrite_sboc_debug_output($param);
+  return 1;
 }
