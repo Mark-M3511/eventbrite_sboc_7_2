@@ -170,15 +170,16 @@ function eventbrite_sboc_mailer_ebattendees_mail(array $attendees, $message_id){
  * @return array
  *   Formatted as array('subject' => 'Subject Text', 'body' => 'Body Text',)
  */
-function _eventbrite_sboc_load_message($message_id){
+function _eventbrite_sboc_load_message($message_nid){
+  global $language;
   $retval = array();  
   try{
-    $mw = entity_metadata_wrapper('node', $message_id);
+    $mw = entity_metadata_wrapper('node', $message_nid);
     // for versions of PHP < 5.5 we pass variables to empty()
     $subject = $mw->title->value();
     $retval['subject'] = (!empty($subject) ? $subject : EBConsts::EBS_EMAIL_DEFAULT_SUBJECT); 
     $body = $mw->body->value();
-    $retval['body'] = (!empty($body) ? $mw->body->value->value() : EBConsts::EBS_EMAIL_DEFAULT_MESSAGE); 
+    $retval['body'] = (!empty($body) ? $mw->language($language->language)->body->value->value() : EBConsts::EBS_EMAIL_DEFAULT_MESSAGE);
   }catch(Exception $e){
     watchdog_exception(EBConsts::EBS_APPNAME_MAIL, $e);  
   }
