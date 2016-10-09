@@ -305,7 +305,7 @@
     'schema field' => 'ts_email_send_date',
   );
 
-  $properties['ts_language'] = array(
+  $properties['language'] = array(
     'label' => t('Language'),
     'description' => t("Language selected for competition"),
     'type' => 'text',

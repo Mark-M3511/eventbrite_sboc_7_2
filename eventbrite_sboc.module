@@ -199,7 +199,10 @@ function eventbrite_sboc_help($path, $arg){
   
   switch($path){
 		case 'admin/help#eventbrite_sboc':
-		  $output = '<p>'. '</p>';
+		  $output = '<p>';
+      $output .= 'This module manages communication with Eventbrite and Mandrill services on behalf of ';
+      $output .= 'Spelling Bee Of Canada (SBOC). Designed/Developed/Maintained by Holbrook Goodman Technologies.';
+      $output .= '</p>';
 		  break;		
 	  default:
 	    break;
@@ -294,7 +297,9 @@ function _eventbrite_sboc_process_cron_queue($data){
 function _eventbrite_sboc_cron_update_attendees($save_changed_only = FALSE, $strictly_process_changed_records = TRUE){
   try{
     $ev = _eventbrite_sboc_init_event();
-    $do = new DateTime('now', DateTimeZone::UTC);
+    $dt = new \DateTimeZone('UTC');
+//    $do = new \DateTime('now', DateTimeZone::UTC);
+    $do = new \DateTime('now', $dt);
     // e.g. P10D  Period of 10 Days 
     // bof: Set interval
     $days = variable_get(EBConsts::EBS_CONFIG_CHANGED_SINCE_DAYS, EBConsts::EBS_CONFIG_DEFAULT_CHANGED_SINCE_DAYS);
@@ -572,13 +577,13 @@ function _eventbrite_sboc_webhook_callback(){
     if (!empty($input_json_array[EBConsts::EBS_JSON_PARAM_API_URL])) {             
       $url = $input_json_array[EBConsts::EBS_JSON_PARAM_API_URL];
       if (stripos($url, EBConsts::EBS_WEBHOOK_TEST_URL_PATH) === FALSE){
-//         watchdog(EBConsts::EBS_APPNAME, '$url = @url', array('@url' => $url,), WATCHDOG_INFO);
+        watchdog(EBConsts::EBS_APPNAME, '$url = @url', array('@url' => $url,), WATCHDOG_INFO);
         $attendees = _eventbrite_sboc_order($url);
-        watchdog(EBConsts::EBS_APPNAME, 'Attendee count = @rec_count | Order path = @url', 
-          array('@rec_count' => count($attendees), '@url' => $url,), WATCHDOG_INFO);
+        /* watchdog(EBConsts::EBS_APPNAME, 'Attendee count = @rec_count | Order path = @url',
+            array('@rec_count' => count($attendees), '@url' => $url,), WATCHDOG_INFO); */
         if (!empty($attendees)){
           $returned_attendee_list = _eventbrite_sboc_invoke_save($attendees);
-          // _eventbrite_sboc_debug_output($returned_attendee_list);
+//          _eventbrite_sboc_debug_output($returned_attendee_list);
           foreach($returned_attendee_list as $mod => $attendee_list){
             _eventbrite_sboc_invoke_mail($attendee_list);
           }

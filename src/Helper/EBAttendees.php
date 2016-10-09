@@ -72,7 +72,11 @@ class EBAttendees{
             break; 
           case EBConsts::EBS_QA_118:
             $ret_val = (drupal_strtoupper($answer['answer']) == 'YES' ? 1 : 0);
-            break;     
+            break;
+          case EBConsts::EBS_QA_120:
+            $ret_val = drupal_strtolower(drupal_substr($answer['answer'], 0, 2));
+            $ret_val = empty($ret_val) ? 'en' : $ret_val;
+            break;
           default:
             break;
         }
@@ -251,8 +255,8 @@ class EBAttendees{
     return $this->attendees;
   }
   
-  public function getCategoryNodeId($category){
-    return (new SBOCDBMgr())->getCategoryNodeId($category);
+  public function getCategoryNodeId($category, $language){
+    return (new SBOCDBMgr())->getCategoryNodeId($category, $language);
   }
   
   public function getRegionNid($region_nid){

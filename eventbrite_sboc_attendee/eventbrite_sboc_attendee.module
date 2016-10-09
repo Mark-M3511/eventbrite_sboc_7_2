@@ -29,7 +29,10 @@ function eventbrite_sboc_attendee_help($path, $arg){
   
   switch($path){
 		case 'admin/help#eventbrite_sboc_attendee':
-		  $output = '<p>'. '</p>';
+      $output = '<p>';
+      $output .= 'This module manages attendee registration data received from Eentbrite on behalf of ';
+      $output .= 'Spelling Bee Of Canada (SBOC). Designed/Developed/Maintained by Holbrook Goodman Technologies.';
+      $output .= '</p>';
 		  break;		
 	  default:
 	    break;
@@ -231,6 +234,13 @@ function eventbrite_sboc_attendee_entity_property_info_alter(&$info){
     'setter callback' => 'entity_property_verbatim_set',
     'schema field' => 'region_nid',
   );
+//  $properties['language'] = array(
+//    'label' => 'Language',
+//    'type' => 'node',
+//    'description' => t("Reference to node containing language information"),
+//    'setter callback' => 'entity_property_verbatim_set',
+//    'schema field' => 'language',
+//  );
 }
 
 /**

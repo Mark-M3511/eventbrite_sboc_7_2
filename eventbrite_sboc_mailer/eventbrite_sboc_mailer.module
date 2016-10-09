@@ -28,7 +28,10 @@ function eventbrite_sboc_mailer_help($path, $arg){
   
   switch($path){
 		case 'admin/help#eventbrite_sboc_mailer':
-		  $output = '<p>'. '</p>';
+      $output = '<p>';
+      $output .= 'This module manages email contact through Mailchimp/Mandrill on behalf of ';
+      $output .= 'Spelling Bee Of Canada (SBOC). Designed/Developed/Maintained by Holbrook Goodman Technologies.';
+      $output .= '</p>';
 		  break;		
 	  default:
 	    break;
@@ -175,11 +178,12 @@ function _eventbrite_sboc_load_message($message_nid){
   $retval = array();  
   try{
     $mw = entity_metadata_wrapper('node', $message_nid);
-    // for versions of PHP < 5.5 we pass variables to empty()
+    // for versions of PHP < 5.5 we pass variables to the "empty()" function
     $subject = $mw->title->value();
     $retval['subject'] = (!empty($subject) ? $subject : EBConsts::EBS_EMAIL_DEFAULT_SUBJECT); 
-    $body = $mw->body->value();
+    $body = $mw->body->value;
     $retval['body'] = (!empty($body) ? $mw->language($language->language)->body->value->value() : EBConsts::EBS_EMAIL_DEFAULT_MESSAGE);
+//    $retval['body'] = (!empty($body) ? $body : EBConsts::EBS_EMAIL_DEFAULT_MESSAGE);
   }catch(Exception $e){
     watchdog_exception(EBConsts::EBS_APPNAME_MAIL, $e);  
   }

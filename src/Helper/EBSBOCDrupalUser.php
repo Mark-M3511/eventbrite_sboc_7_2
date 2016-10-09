@@ -71,6 +71,7 @@ class EBSBOCDrupalUser{
     $new_user->init = $this->attendee->{EBConsts::EBS_ENTITY_EMAIL_FIELD};
     $new_user->pass = user_password(8);
     $new_user->timezone = variable_get('date_default_timezone', '');
+    $new_user->language = empty($attendee->language) ? 'en' : $attendee->language;
     try{
       $uid = user_save($new_user)->uid;
       $this->user = $this->loadUser($uid);
@@ -121,6 +122,7 @@ class EBSBOCDrupalUser{
   * @param array $field_condition
   *   Each array should be in the form: array('field_or_property_name' => array('value' => $value, 'operation' = $op),)
   * Returns array of values
+  * @return array ret_val
   */
   public static function searchUser(array $property_condition, array $field_condition){
     $ret_val = $user_ids = array();
