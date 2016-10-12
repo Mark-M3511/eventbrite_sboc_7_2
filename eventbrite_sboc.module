@@ -298,7 +298,6 @@ function _eventbrite_sboc_cron_update_attendees($save_changed_only = FALSE, $str
   try{
     $ev = _eventbrite_sboc_init_event();
     $dt = new \DateTimeZone('UTC');
-//    $do = new \DateTime('now', DateTimeZone::UTC);
     $do = new \DateTime('now', $dt);
     // e.g. P10D  Period of 10 Days 
     // bof: Set interval
@@ -308,11 +307,20 @@ function _eventbrite_sboc_cron_update_attendees($save_changed_only = FALSE, $str
     $do->sub($dur);
     // eof: Set interval
     $date_param = $do->format(EBConsts::EBS_EBDATEFORMAT);
-    // $params = array('changed_since' => $date_param,);
     $params = array(EBConsts::EBS_CONFIG_PARAM_CHANGED_SINCE => $date_param,);
     $eba = new EBAttendees($ev);
     $attendees = $eba->loadAttendeesFromResource($params);
     _eventbrite_sboc_invoke_save($attendees, $save_changed_only, $strictly_process_changed_records);
+    // Process mail for records with attendee records url set
+    $mail_list = array();
+    foreach($attendees as $id => $attendee){
+      if (!empty($attendee->passwordResetUrl)) {
+        $mail_list[] = $attendee;
+      }
+    }
+    if (!empty($mail_list)) {
+      _eventbrite_sboc_invoke_mail($mail_list);
+    }
     watchdog(EBConsts::EBS_APPNAME, '@count attendee record(s) processed during last cron', array('@count' => count($attendees),), WATCHDOG_INFO); 
   }catch(Exception $e){
     watchdog_exception(EBConsts::EBS_APPNAME, $e);
@@ -566,8 +574,9 @@ function _eventbrite_sboc_webhook_access_check(){
 }
 
 /**
-* Callback function to handle Eventbrite 'order.placed' webhook calls 
-*/
+ * Callback function to handle Eventbrite 'order.placed' webhook calls
+ * $returned_attendee_list in the format $returned_attendee_list[function_name][list_of_objects]
+ */
 function _eventbrite_sboc_webhook_callback(){
   $attendees = array();
   try{

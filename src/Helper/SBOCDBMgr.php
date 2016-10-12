@@ -162,11 +162,19 @@ class SBOCDBMgr implements iDBMgr{
   }
 
   /**
+   * Convenience function to improve self-documentation of the class. This function essentially
+   * calls the save method.
+   * @param No parameters
+   * @return Array of attendee objects
+   */
+  public function saveAttendees(){
+    return $this->save();
+  }
+
+  /**
   * Iterates over all Attendee records passed to the object and calls the realSave method to do the work
-  *
   * @params None
-  *
-  * Returns array of Attendee records
+  * @return array of Attendee records
   */
   public function save(){
     $retval = array();
@@ -174,6 +182,16 @@ class SBOCDBMgr implements iDBMgr{
         $retval[] = $this->realSave($attendee);
     }
     return $retval;
+  }
+
+  /**
+   * Convenience function to improve self-documentation of the class. This function essentially
+   * calls the saveChangedOnly method.
+   * @param bool $strict
+   * @return array of Attendee objects
+   */
+  public function saveChangedAttendeesOnly($strict = TRUE){
+    return $this->saveChangedOnly($strict);
   }
 
   /**
@@ -292,11 +310,7 @@ class SBOCDBMgr implements iDBMgr{
     $emw = entity_metadata_wrapper(EBConsts::EBS_ENTITY_TYPE_NAME, $attendee->attendeeId);
     $emw->ts_create_date = strtotime($attendee->createDate);
     $emw->ts_change_date = strtotime($attendee->changeDate);
-    // Extra check on email send date
-    $value = $attendee->emailSendDate;
-    if (!empty($value)){
-      $emw->ts_email_send_date = strtotime($attendee->emailSendDate);
-    }
+    $emw->ts_email_send_date = !empty($attendee->emailSendDate) ? strtotime($attendee->emailSendDate) : $emw->ts_email_send_date;
     $emw->save();
   }
 

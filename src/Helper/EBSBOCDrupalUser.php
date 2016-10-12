@@ -150,5 +150,23 @@ class EBSBOCDrupalUser{
     
     return $ret_val;
   }
+
+  /**
+   * @param \Drupal\eventbrite_sboc\Helper\EBAttendee $attendee
+   * @return user object or null;
+   */
+  public function updateUserLanguage(EBAttendee $attendee){
+    $ret_val = NULL;
+    try {
+      if ($this->userExists($attendee)) {
+        $user = $this->loadUser($this->user->uid);
+        $user->language = $attendee->language;
+        $ret_val = user_save($user);
+      }
+    }catch (Exception $e){
+      watchdog_exception(EBConsts::EBS_APPNAME_ATTENDEES, $e);
+    }
+    return $ret_val;
+  }
   
 }

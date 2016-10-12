@@ -81,6 +81,11 @@ function eventbrite_sboc_attendee_ebattendees_save_withvalues(array $attendees, 
     $eba = new EBAttendees(NULL);
     $attendees = $eba->mapEBAttendeeEntitytoEBAttendee($attendees);
     _eventbrite_sboc_link_to_region($attendees);
+    foreach($attendees as $id => $attendee) {
+      $u = (empty($u) ? new EBSBOCDrupalUser($attendee) : $u);
+      $u->attendee = $attendee;
+      $u->updateUserLanguage($attendee);
+    }
   }catch(Exception $e){
     watchdog_exception(EBConsts::EBS_APP_NAME_MAIN, $e);  
   }
@@ -88,7 +93,7 @@ function eventbrite_sboc_attendee_ebattendees_save_withvalues(array $attendees, 
 }
 
 /**
-* Implements load callback as delcared in entity_info array 
+* Implements load callback as declared in entity_info array
 *    See hook_entity_info
 *
 * @param integer $attendee_id
