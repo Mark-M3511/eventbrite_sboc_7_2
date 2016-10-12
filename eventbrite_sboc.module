@@ -310,17 +310,23 @@ function _eventbrite_sboc_cron_update_attendees($save_changed_only = FALSE, $str
     $params = array(EBConsts::EBS_CONFIG_PARAM_CHANGED_SINCE => $date_param,);
     $eba = new EBAttendees($ev);
     $attendees = $eba->loadAttendeesFromResource($params);
-    _eventbrite_sboc_invoke_save($attendees, $save_changed_only, $strictly_process_changed_records);
+
+    $returned_attendee_list = _eventbrite_sboc_invoke_save($attendees, $save_changed_only, $strictly_process_changed_records);
+
     // Process mail for records with attendee records url set
     $mail_list = array();
-    foreach($attendees as $id => $attendee){
-      if (!empty($attendee->passwordResetUrl)) {
-        $mail_list[] = $attendee;
+    foreach($returned_attendee_list as $mod => $attendee_list){
+      foreach($attendee_list as $id => $attendee){
+        if (!empty($attendee->passwordResetUrl)) {
+          $mail_list[] = $attendee;
+        }
       }
     }
+
     if (!empty($mail_list)) {
       _eventbrite_sboc_invoke_mail($mail_list);
     }
+
     watchdog(EBConsts::EBS_APPNAME, '@count attendee record(s) processed during last cron', array('@count' => count($attendees),), WATCHDOG_INFO); 
   }catch(Exception $e){
     watchdog_exception(EBConsts::EBS_APPNAME, $e);
@@ -410,9 +416,7 @@ function _eventbrite_sboc_invoke_save($attendees, $save_changed_only = FALSE, $s
   foreach(module_implements($hook_suffix) as $module){
     $function = $module. '_'. $hook_suffix;
     $retval[$function] = $function($attendees, $save_changed_only, $strictly_process_changed_records);
-    if (empty($retval[$function])){
-      $retval[$function] = array();
-    }
+    $retval[$function] = (empty($retval[$function]) ? array() : $retval[$function]);
   }
   
   return $retval;
