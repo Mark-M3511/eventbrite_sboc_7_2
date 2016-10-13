@@ -13,8 +13,7 @@ use Drupal\eventbrite_sboc\Helper\EBAttendees;
 
 /**
 * Implements hook_menu
-*
-* Returns array
+* @return array
 */
 function eventbrite_sboc_menu(){
   $items = array();
@@ -167,8 +166,7 @@ function eventbrite_sboc_menu(){
 
 /**
 * Implements hook_oauth2_clients
-*
-* Returns array
+* @return array
 */
 function eventbrite_sboc_oauth2_clients(){
   $oauth2_clients = array();
@@ -188,11 +186,9 @@ function eventbrite_sboc_oauth2_clients(){
 
 /**
 * Implements hook_help
-* 
 * @param string $path
 * @param string $arg
-*
-* Returns array
+* @return  array
 */
 function eventbrite_sboc_help($path, $arg){
   $output = '';
@@ -217,10 +213,8 @@ function _eventbrite_sboc_test_local_action($msg){
 
 /**
 * Implements hook_cronapi
-* 
 * @param none
-*
-* Returns n/a
+* @return  n/a
 */
 function eventbrite_sboc_cronapi(){
   $items = array();
@@ -243,10 +237,8 @@ function eventbrite_sboc_cronapi(){
 
 /**
 * Implements hook_cronapi
-* 
 * @param String $cron_key
-*
-* Returns n/a
+* @return n/a
 */
 function _eventbrite_sboc_cron_job_config_queue($arg = ''){
   $data = new \StdClass;
@@ -258,10 +250,8 @@ function _eventbrite_sboc_cron_job_config_queue($arg = ''){
 
 /**
 * Implements hook_queue_info
-* 
 * @param none
-*
-* Returns array
+* @return array
 */
 function eventbrite_sboc_cron_queue_info(){
   $queues = array();
@@ -277,10 +267,8 @@ function eventbrite_sboc_cron_queue_info(){
 
 /**
 * Cron Quere worker callback
-* 
 * @param Object $data
-*
-* Returns n/a
+* @return n/a
 */
 function _eventbrite_sboc_process_cron_queue($data){
   _eventbrite_sboc_cron_update_attendees($data->saveChangedOnly, $data->strictlyProcessChangedRecords);
@@ -288,11 +276,9 @@ function _eventbrite_sboc_process_cron_queue($data){
 
 /**
 * Processes attendee records when invoked from Cron
-*
 * @param Boolean $save_changed_only
 * @param Boolean $strictly_process_changed_records
-*
-* Return n/a
+* @return  n/a
 */
 function _eventbrite_sboc_cron_update_attendees($save_changed_only = FALSE, $strictly_process_changed_records = TRUE){
   try{
@@ -335,10 +321,8 @@ function _eventbrite_sboc_cron_update_attendees($save_changed_only = FALSE, $str
 
 /**
 * Display/Edit EB info
-* 
 * @param n/a
-*
-* Returns string (Rendered form markup)
+* @return  string (Rendered form markup)
 */
 function _eventbrite_sboc_event_info(){
   $event_setup_form = drupal_get_form('_eventbrite_sboc_form_event_setup');
@@ -355,10 +339,8 @@ function _eventbrite_sboc_event_info(){
 
 /**
 * Initlaizes OAuth2 sequence (customized for Eventbrite)
-* 
 * @param string $settings_label
-*
-* Returns array of Attendee objects
+* @return  array of Attendee objects
 */
 function _eventbrite_sboc_init_oauth_sequence(){
   $consumer_key = variable_get(EBConsts::EBS_CONGIFG_EB_CLIENT_ID, '');
@@ -369,10 +351,8 @@ function _eventbrite_sboc_init_oauth_sequence(){
 
 /**
 * Initalizes Event object so dependent objects are able to access data via Eventbrite API
-* 
 * @param none
-*
-* Returns object (EBEvent class)
+* @return  object (EBEvent class)
 */
 function _eventbrite_sboc_init_event(){
   $ev = null;
@@ -391,10 +371,8 @@ function _eventbrite_sboc_init_event(){
 
 /**
 * Callback function to retrieve access code sent from Eventbrite API
-* 
 * @param none
-*
-* Returns n/a
+* @return  n/a
 */
 function _eventbrite_sboc_oauth_callback(){
   $client_id = variable_get(EBConsts::EBS_CONFIG_CONSUMER_KEY, '');
@@ -405,10 +383,8 @@ function _eventbrite_sboc_oauth_callback(){
 
 /**
 * Interacts with modules that have implementd hook_ebattendees_save
-* 
 * @param array $attendees (array(Object1, Object2, ObjectN))
-*
-* Returns array of Attendee objects
+* @return  array of Attendee objects
 */
 function _eventbrite_sboc_invoke_save($attendees, $save_changed_only = FALSE, $strictly_process_changed_records = TRUE){
   $retval = array();
@@ -424,10 +400,8 @@ function _eventbrite_sboc_invoke_save($attendees, $save_changed_only = FALSE, $s
 
 /**
 * Interacts with modules that have implementd hook_ebattendees_save
-* 
 * @param array $attendees (array(Object1, Object2, ObjectN))
-*
-* Returns array of Attendee objects
+* @return array of Attendee objects
 */
 function _eventbrite_sboc_invoke_save_withvalues($attendees, $values){
   $retval = array();
@@ -445,10 +419,8 @@ function _eventbrite_sboc_invoke_save_withvalues($attendees, $values){
 
 /**
 * Interacts with modules that have implemented hook_ebattendees_mail
-* 
 * @param array $attendees (array(Object1, Object2, ObjectN))
-*
-* Returns array of Attendee objects
+* @return  array of Attendee objects
 */
 function _eventbrite_sboc_invoke_mail($attendees, $message_id=EBConsts::EBS_CONFIG_EMAIL_MESSAGE_NODE_ID_1){
   $retval = array();
@@ -491,10 +463,8 @@ function _eventbrite_sboc_submit_attendee_order_num($form, &$form_state){
 
 /**
 * Autoloader function called by menu router item
-*
 * @param string $order_num
-*
-* Return n/a
+* @return Eventbrite Order List
 */
 function order_load($order_num){
   return _eventbrite_sboc_fetch_order($order_num, '');
@@ -502,10 +472,8 @@ function order_load($order_num){
 
 /**
 * Autoloader function called by menu router item
-*
 * @param string $order_num
-*
-* Return n/a
+* @return Eventbrite Order List
 */
 function attendee_order_load($order_num){
   return _eventbrite_sboc_fetch_order($order_num);
@@ -514,8 +482,7 @@ function attendee_order_load($order_num){
 
 
 function _eventbrite_sboc_display_order($order){
-  dpm($order, 'Order & Attendee'); 
-//   _eventbrite_sboc_debug_output($order); 
+  dpm($order, 'Order & Attendee');
   return 'Response from: '. __FUNCTION__;
 }
 
@@ -524,8 +491,7 @@ function _eventbrite_sboc_display_order($order){
 *
 * @param string $order_num
 * @param string $expansion (default attendees,event)
-*
-* Return Object $order or FALSE
+* @return  Object $order or FALSE
 */
 function _eventbrite_sboc_fetch_order($order_num, $expansion = EBConsts::EBS_ORDER_EXPANSIONS_ATTENDEES){
   $order_num = check_plain($order_num);
@@ -543,16 +509,13 @@ function _eventbrite_sboc_fetch_order($order_num, $expansion = EBConsts::EBS_ORD
 
 /**
 * Helper function to retrieve Eventbrite attendee records from an order
-* 
 * @param string $url - a url typically supplied by Eventbrite via its wehhook API
-*
-* Returns array of Attendee objects
+* @return  array of Attendee objects
 */
 function _eventbrite_sboc_order($url){
   $attendees = array();
   try{
     $ev = _eventbrite_sboc_init_event();
-    //$expansions = 'attendees,event';
     $order = $ev->getOrderByUrl($url, EBConsts::EBS_ORDER_EXPANSIONS); 
     if (is_array($order->attendees) && !empty($order->attendees)){
       $eba = new EBAttendees($ev);
