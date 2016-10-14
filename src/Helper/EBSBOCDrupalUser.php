@@ -131,12 +131,12 @@ class EBSBOCDrupalUser{
       $q->entityCondition('entity_type', 'user');
       foreach($property_condition as $key => $value){
         $input_value = $value['value'];
-        $op = ($value['operation'] ? '=' : $value['operation']);
+        $op = ($value['operation'] ? $value['operation'] : '=');
         $q->propertyCondition($key, $input_value, $op);
       }
       foreach($field_condition as $key => $value){
         $input_value = $value['value'];
-        $op = ($value['operation'] ? $value['operation'] : '');
+        $op = ($value['operation'] ? $value['operation'] : '=');
         $q->fieldCondition($key, 'value', $input_value, $op);
       }
       $result = $q->execute();
