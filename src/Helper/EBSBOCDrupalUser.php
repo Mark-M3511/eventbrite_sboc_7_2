@@ -124,6 +124,11 @@ class EBSBOCDrupalUser{
   public function passwordResetUrl($user_id){
     $ret_val = '';
     $account = $this->loadUser($user_id);
+
+    if ($account === FALSE) {
+      return $ret_val;
+    }
+
     $langs = language_list();
     $lang = language_default();
 
