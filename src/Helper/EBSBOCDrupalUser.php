@@ -121,7 +121,7 @@ class EBSBOCDrupalUser{
    * @return string
    *   Url with language context
    */
-  public function passwordResetUrl($user_id){
+  public function passwordResetUrl($user_id = -1){
     $ret_val = '';
     $account = $this->loadUser($user_id);
 
@@ -137,9 +137,12 @@ class EBSBOCDrupalUser{
     }
 
     $timestamp = time();
-    $ret_val = url("user/reset/$account->uid/$timestamp/" .
-       user_pass_rehash($account->pass, $timestamp, $account->login, $account->uid), array('absolute' => TRUE,
-      'language' => $lang));
+    $options = array(
+      'absolute' => TRUE,
+      'language' => $lang,
+    );
+    $hash = user_pass_rehash($account->pass, $timestamp, $account->login, $account->uid);
+    $ret_val = url("user/reset/$account->uid/$timestamp/" . $hash, $options);
 
     return $ret_val;
   }
