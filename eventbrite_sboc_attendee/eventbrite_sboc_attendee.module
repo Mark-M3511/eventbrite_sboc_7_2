@@ -101,13 +101,13 @@ function _eventbrite_sboc_create_user_login(array &$attendees){
       $u = (empty($u) ? (new EBSBOCDrupalUser($attendee)) : $u);
       $u->attendee = $attendee;
       if (!$u->userExists($attendee) && $u->createUser($attendee)){
-        $attendee->passwordResetUrl = user_pass_reset_url($u->user);
-//        _eventbrite_sboc_debug_output($u->passwordResetUrl($u->user->uid));
+//        $attendee->passwordResetUrl = user_pass_reset_url($u->user);
+        $attendee->passwordResetUrl = $u->passwordResetUrl($u->user->uid);
       }
       // user is expected to be a valid user object at all times
       $aw = entity_metadata_wrapper(EBConsts::EBS_ENTITY_TYPE_NAME, $attendee->attendeeId); 
       $aw->uid = $u->user->uid;
-      _eventbrite_sboc_debug_output($u->passwordResetUrl($u->user->uid));
+//      _eventbrite_sboc_debug_output($u->passwordResetUrl($u->user->uid));
       $aw->save();
       $ret_val[$attendee->attendeeId] = $u->user;
     } 

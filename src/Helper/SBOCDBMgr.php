@@ -252,17 +252,23 @@ class SBOCDBMgr implements iDBMgr{
        $attendeeFromSource->changedFields = array();
     }
     if ($attendeeFromSource->emailAddress != $attendeeSaved->email_address){
-        $attendeeFromSource->changedFields['email'] = array(
-           'old' => $attendeeSaved->email_address,
-           'new' => $attendeeFromSource->emailAddress,
-        );
+      $attendeeFromSource->changedFields['email'] = array(
+        'old' => $attendeeSaved->email_address,
+        'new' => $attendeeFromSource->emailAddress,
+      );
     }
     if ($attendeeFromSource->additionalInfo != $attendeeSaved->additional_info){
-        $attendeeFromSource->changedFields[ 'additionalInfo'] =array(
-           'old' =>  $attendeeSaved->additional_info,
-           'new' => $attendeeFromSource->additionalInfo,
-        );
+      $attendeeFromSource->changedFields[ 'additionalInfo'] = array(
+        'old' => $attendeeSaved->additional_info,
+        'new' => $attendeeFromSource->additionalInfo,
+      );
     }
+//    if (empty($attendeeFromSource->emailSent)){
+//      $attendeeFromSource->changedFields[ 'emailSent'] = array(
+//        'old' => $attendeeFromSource->emailSent,
+//        'new' => 1,
+//      );
+//    }
   }
 
   /**
