@@ -132,15 +132,16 @@ class EBSBOCDrupalUser{
     $langs = language_list();
     $lang = language_default();
 
-    if (!empty($langs[$account->language]) && $langs[$account->language]->enabled){
+    if (!empty($langs[$account->language]) && $langs[$account->language]->enabled) {
       $lang = $langs[$account->language];
     }
 
-    $timestamp = time();
     $options = array(
       'absolute' => TRUE,
       'language' => $lang,
     );
+
+    $timestamp = time();
     $hash = user_pass_rehash($account->pass, $timestamp, $account->login, $account->uid);
     $ret_val = url("user/reset/$account->uid/$timestamp/" . $hash, $options);
 
