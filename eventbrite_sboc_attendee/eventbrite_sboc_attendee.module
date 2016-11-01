@@ -74,7 +74,7 @@ function eventbrite_sboc_attendee_ebattendees_save_withvalues(array $attendees, 
     $eba = new EBAttendees(NULL);
     $attendees = $eba->mapEBAttendeeEntitytoEBAttendee($attendees);
     _eventbrite_sboc_link_to_region($attendees);
-    foreach($attendees as $id => $attendee) {
+    foreach($attendees as $id => $attendee){
       $u = (empty($u) ? new EBSBOCDrupalUser($attendee) : $u);
       $u->attendee = $attendee;
       $u->updateUserLanguage($attendee);
