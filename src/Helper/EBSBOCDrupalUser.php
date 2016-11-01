@@ -132,7 +132,7 @@ class EBSBOCDrupalUser{
     $langs = language_list();
     $lang = language_default();
 
-    if (!empty($langs[$account->language]) && $langs[$account->language]->enabled) {
+    if (!empty($langs[$account->language]) && $langs[$account->language]->enabled){
       $lang = $langs[$account->language];
     }
 
