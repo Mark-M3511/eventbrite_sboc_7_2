@@ -183,7 +183,6 @@ function _eventbrite_sboc_load_message($message_nid){
     $retval['subject'] = (!empty($subject) ? $subject : EBConsts::EBS_EMAIL_DEFAULT_SUBJECT); 
     $body = $mw->body->value;
     $retval['body'] = (!empty($body) ? $mw->language($language->language)->body->value->value() : EBConsts::EBS_EMAIL_DEFAULT_MESSAGE);
-//    $retval['body'] = (!empty($body) ? $body : EBConsts::EBS_EMAIL_DEFAULT_MESSAGE);
   }catch(Exception $e){
     watchdog_exception(EBConsts::EBS_APPNAME_MAIL, $e);  
   }

@@ -93,7 +93,7 @@ function eventbrite_sboc_attendee_ebattendees_save_withvalues(array $attendees, 
 * @return Object $user
 */
 function _eventbrite_sboc_create_user_login(array &$attendees){
-  // Must have at least one attenee passed to constructor
+  // Must have at least one attendee passed to constructor
   $u = NULL;
   $ret_val = array();
   try{
