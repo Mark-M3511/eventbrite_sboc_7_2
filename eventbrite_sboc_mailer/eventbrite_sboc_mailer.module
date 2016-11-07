@@ -115,18 +115,20 @@ function eventbrite_sboc_mailer_mandrill_mail_alter(&$mandrill_params, $message)
  *   Message response.
  */
 function eventbrite_sboc_mailer_mandrill_template_sender($message, $template_id, $template_content) {
+  $ret_val = NULL;
   if ($mailer = mandrill_get_api_object()) {
-    return $mailer->messages->sendTemplate($template_id, $template_content, $message);
+    $ret_val = $mailer->messages->sendTemplate($template_id, $template_content, $message);
   }
-  return NULL;
+  return $ret_val;
 }
 
 /**
-* Implements hook_mail
+* Implements hook_mandrill_mailsend_result
 *
 * @param array result 
-*
-* Returns string (Help text) 
+*   Holds result data returned from mail system
+* @return void
+*  No return value
 */
 function eventbrite_sboc_mailer_mandrill_mailsend_result($result) {
   // can we use session data to match the response with the attendee making the request? 
