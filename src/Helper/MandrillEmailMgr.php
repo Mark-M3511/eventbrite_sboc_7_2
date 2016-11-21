@@ -55,17 +55,27 @@ class MandrillEmailMgr implements iEmailMgr{
   */
   public function setGlobalMergeVars(&$mandrill_params, $message){
     $global_merge_vars = array();
+    $attendee = $message['params']['attendee'];
     
     $global_merge_vars[] = array(
       'name' => 'subject',
 	    'content' => check_plain($message['params']['subject']),
     );
+
     /*
     $global_merge_vars[] = array(
       'name' => 'from',
 	    'content' => $message['params']['from'],
     );
+
+    $global_merge_vars[] = array(
+      'name' => 'headers',
+      'content' => array(
+         'Reply-To' => $attendee->emailAddress,
+       ),
+    );
     */
+
     $global_merge_vars[] = array(
       'name' => 'current_year',
       'content' => date('Y'),
@@ -84,8 +94,7 @@ class MandrillEmailMgr implements iEmailMgr{
   *
   * Returns array
   */
-  public function setMergeVars(&$mandrill_params, $message){ 
-    $global_merge_vars = array();
+  public function setMergeVars(&$mandrill_params, $message){
     $attendee = $message['params']['attendee'];
     
     /* an array of arrays of per recipient values */

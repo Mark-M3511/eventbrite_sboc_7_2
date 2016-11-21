@@ -156,7 +156,7 @@ function eventbrite_sboc_attendee_entity_info(){
     'entity class' =>  EBConsts::EBS_ENTITY_CLASS_NAME,
     'controller class' => 'EBAttendeeEntityController',
     'metadata controller class' => 'EBAttendeeMetadataController',
-    'views controller class' => 'EntityDefaultViewsController',
+    'views controller class' => 'EntityAttendeeViewsController',
     'fieldable' => FALSE,
     'entity keys' => array(
       'id' => EBConsts::EBS_FIELDS_ENTITY_KEY, 
@@ -174,7 +174,7 @@ function eventbrite_sboc_attendee_entity_info(){
 * @return array
 */
 function eventbrite_sboc_attendee_entity_property_info_alter(&$info){
-  $properties = &$info[EBConsts::EBS_ENTITY_TYPE_ATTENDEE]['properties'];
+  /*$properties = &$info[EBConsts::EBS_ENTITY_TYPE_ATTENDEE]['properties'];
   $properties['uid'] = array(
     'label' => 'Enrollee',
     'type' => 'user',
@@ -195,7 +195,7 @@ function eventbrite_sboc_attendee_entity_property_info_alter(&$info){
     'description' => t("Reference to node containing region information"),
     'setter callback' => 'entity_property_verbatim_set',
     'schema field' => 'region_nid',
-  );
+  );*/
 }
 
 /**

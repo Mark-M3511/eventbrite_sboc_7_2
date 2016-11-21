@@ -359,7 +359,84 @@ class EBAttendeeMetadataController extends EntityDefaultMetadataController{
    }
 }
 
-function _ebsboc_test_getter($param){
-  _eventbrite_sboc_debug_output($param);
-  return 1;
+// Draws heavily on samples from: https://api.drupal.org/api/views/views.api.php/function/hook_views_data/7.x-3.x
+class EntityAttendeeViewsController extends EntityDefaultViewsController {
+  public function views_data(){
+    $data = parent::views_data();
+
+    // The 'group' index will be used as a prefix in the UI for any of this
+    // table's fields, sort criteria, etc. so it's easy to tell where they came
+    // from.
+    $data['eventbrite_sboc_attendees']['table']['group'] = 'Eventbrite SBOC Attendees';
+    // Define this as a base table – a table that can be described in itself by
+    // views
+    $data['eventbrite_sboc_attendees']['table']['base'] = array(
+      'field' => 'eid',
+      'title' => t('Eventbrite SBOC Attendees'),
+      'help' => t('Contains Attendee data imported from Eventbrite registrations'),
+      'weight' => -10,
+    );
+
+    // This table references the {user} table. The declaration below creates an
+    // 'implicit' relationship to the {user} table, so that when {user} is the base
+    // table, the fields are automatically available.
+    $data['eventbrite_sboc_attendees']['table']['join'] = array(
+      // Index this array by the table name to which this table refers.
+      // 'left_field' is the primary key in the referenced table.
+      // 'field' is the foreign key in this table.
+      'users' => array(
+        'left_field' => 'uid',
+        'field' => 'uid',
+      ),
+    );
+
+    // category_nid matching node id (nid) in {node} table
+    $data['eventbrite_sboc_attendees']['uid'] = array(
+      'title' => t('Attendee User Id'),
+      'help' => t('Links an attendee to a registered system user'),
+      // Define a relationship to the {node} table
+      'relationship' => array(
+        'base' => 'users',
+        'base field' => 'uid',
+        'handler' => 'views_handler_relationship',
+        'label' => t('Attendee User Id'),
+        'title' => t('Attendee User Id'),
+        'help' => t('Links an attendee to a registered system user'),
+      ),
+    );
+
+    // category_nid matching node id (nid) in {node} table
+    $data['eventbrite_sboc_attendees']['category_nid'] = array(
+      'title' => t('Attendee Category'),
+      'help' => t('Links an attendee to a category'),
+      // Define a relationship to the {node} table
+      'relationship' => array(
+        'base' => 'node',
+        'base field' => 'nid',
+        'handler' => 'views_handler_relationship',
+        'label' => t('Attendee Category'),
+        'title' => t('Attendee Category'),
+        'help' => t('Links an attendee to a category'),
+      ),
+    );
+
+    // region_nid matching node id (nid) in {node} table
+    $data['eventbrite_sboc_attendees']['region_nid'] = array(
+      'title' => t('Attendee Region'),
+      'help' => t('Links an attendee to a region'),
+      // Define a relationship to the {node} table
+      'relationship' => array(
+        'base' => 'node',
+        'base field' => 'nid',
+        'handler' => 'views_handler_relationship',
+        'label' => t('Attendee Region'),
+        'title' => t('Attendee Region'),
+        'help' => t('Links an attendee to a region'),
+      ),
+    );
+
+   // For dates: http://www.rahulsingla.com/blog/2013/03/drupal-7-exposing-date-time-fields-in-custom-tables-to-views-3
+
+    return $data;
+  }
 }
