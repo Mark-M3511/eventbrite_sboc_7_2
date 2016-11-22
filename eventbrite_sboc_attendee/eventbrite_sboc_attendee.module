@@ -101,7 +101,6 @@ function _eventbrite_sboc_create_user_login(array &$attendees){
       $u = (empty($u) ? (new EBSBOCDrupalUser($attendee)) : $u);
       $u->attendee = $attendee;
       if (!$u->userExists($attendee) && $u->createUser($attendee)){
-//        $attendee->passwordResetUrl = user_pass_reset_url($u->user);
         $attendee->passwordResetUrl = $u->passwordResetUrl($u->user->uid);
       }
       // user is expected to be a valid user object at all times
@@ -166,36 +165,6 @@ function eventbrite_sboc_attendee_entity_info(){
   );
   
   return $items;
-}
-
-/**
-* Implements hook_entity_property_info_alter
-* @params Array $info
-* @return array
-*/
-function eventbrite_sboc_attendee_entity_property_info_alter(&$info){
-  /*$properties = &$info[EBConsts::EBS_ENTITY_TYPE_ATTENDEE]['properties'];
-  $properties['uid'] = array(
-    'label' => 'Enrollee',
-    'type' => 'user',
-    'description' => t('Reference to the enrolled user'),
-    'setter callback' => 'entity_property_verbatim_set',
-    'schema field' => 'uid',
-  );
-  $properties['category_nid'] = array(
-    'label' => 'Category',
-    'type' => 'node',
-    'description' => t("Reference to content specific to the competitor's category"),
-    'setter callback' => 'entity_property_verbatim_set',
-    'schema field' => 'category_nid',
-  );
-  $properties['region_nid'] = array(
-    'label' => 'Region',
-    'type' => 'node',
-    'description' => t("Reference to node containing region information"),
-    'setter callback' => 'entity_property_verbatim_set',
-    'schema field' => 'region_nid',
-  );*/
 }
 
 /**
