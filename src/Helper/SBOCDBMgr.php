@@ -208,8 +208,8 @@ class SBOCDBMgr implements iDBMgr{
     foreach($this->attendees as $id => $attendee){
       $rec = entity_load($this->entityName, array($attendee->attendeeId,));
       if (!empty($rec)){
-        // Record exists let's check the fields we need to for emailing purposes
         $attendee_rec = reset($rec);
+        // Record exists let's check the fields we need to for emailing purposes
         $this->populateChangedFieldsList($attendee, $attendee_rec);
         $retval[] = $this->realSave($attendee);
         if (!empty($attendee->changedFields)){
@@ -415,6 +415,7 @@ class SBOCDBMgr implements iDBMgr{
       $q->entityCondition('entity_type', 'node');
       $q->fieldCondition('field_participant_category', 'value', $category, '=');
       $q->fieldCondition('field_participant_language', 'value', $language, '=');
+//      $q->fieldCondition('field_event_id', 'value', $event_id, '=');
       $q->propertyCondition('status', 1);
       $q->propertyOrderBy('created', 'DESC');
       $result = $q->execute();

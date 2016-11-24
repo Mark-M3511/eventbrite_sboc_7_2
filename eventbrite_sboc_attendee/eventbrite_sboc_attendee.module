@@ -41,6 +41,8 @@ function eventbrite_sboc_attendee_help($path, $arg){
 /**
 * Implements hook_ebattendees_save
 * @param array $attendees
+* @param boolean $save_changed_only
+* @param boolean $strictly_process_changed_records
 * @return array of Attendee objects
 */
 function eventbrite_sboc_attendee_ebattendees_save(array $attendees, $save_changed_only = FALSE, $strictly_process_changed_records = TRUE){
@@ -65,6 +67,7 @@ function eventbrite_sboc_attendee_ebattendees_save(array $attendees, $save_chang
 /**
 * Implements hook_ebattendees_save_withvalues
 * @param array $attendees
+* @param mixed $values
 * @return array of Attendee objects
 */
 function eventbrite_sboc_attendee_ebattendees_save_withvalues(array $attendees, $values){   
