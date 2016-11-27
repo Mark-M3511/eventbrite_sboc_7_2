@@ -253,8 +253,8 @@ class EBAttendees{
     return $this->attendees;
   }
   
-  public function getCategoryNodeId($category, $language){
-    return (new SBOCDBMgr())->getCategoryNodeId($category, $language);
+  public function getCategoryNodeId($category, $event_id, $language){
+    return (new SBOCDBMgr())->getCategoryNodeId($category, $event_id, $language);
   }
   
   public function getRegionNid($region_nid){

@@ -103,7 +103,7 @@ class SBOCDBMgr implements iDBMgr{
       $a->additional_info = self::no_overflow($attendee->additionalInfo,2500);
       $a->ts_create_date = strtotime($attendee->createDate);
       $a->ts_change_date = strtotime($attendee->changeDate);
-      $a->category_nid = $this->getCategoryNodeId($a->category, $attendee->language);
+      $a->category_nid = $this->getCategoryNodeId($a->category, $attendee->eventId, $attendee->language);
       $a->language = $attendee->language;
 
       $a->save();
@@ -407,7 +407,7 @@ class SBOCDBMgr implements iDBMgr{
   *
   * Returns int
   */
-  public function getCategoryNodeId($category, $language = 'en'){
+  public function getCategoryNodeId($category, $event_id, $language = 'en'){
     $node_ids = array();
     $ret_val = 0;
     try{
@@ -415,7 +415,7 @@ class SBOCDBMgr implements iDBMgr{
       $q->entityCondition('entity_type', 'node');
       $q->fieldCondition('field_participant_category', 'value', $category, '=');
       $q->fieldCondition('field_participant_language', 'value', $language, '=');
-//      $q->fieldCondition('field_event_id', 'value', $event_id, '=');
+      $q->fieldCondition('field_eventbrite_event_id', 'value', $event_id, '=');
       $q->propertyCondition('status', 1);
       $q->propertyOrderBy('created', 'DESC');
       $result = $q->execute();
