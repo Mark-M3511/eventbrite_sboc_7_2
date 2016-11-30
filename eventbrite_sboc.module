@@ -283,7 +283,8 @@ function _eventbrite_sboc_process_cron_queue($data){
 function _eventbrite_sboc_cron_update_attendees($save_changed_only = FALSE, $strictly_process_changed_records = TRUE){
   try{
     $ev = _eventbrite_sboc_init_event();
-    $dt = new \DateTimeZone('UTC');
+    $tz = variable_get('date_default_timezone', 'America/Toronto');
+    $dt = new \DateTimeZone($tz);
     $do = new \DateTime('now', $dt);
     // e.g. P10D  Period of 10 Days 
     // bof: Set interval
