@@ -624,7 +624,7 @@ class SBOCDBMgr implements iDBMgr{
   * Returns DateTime (formatted string)
   */
   public static function convert_date_tz($date_time, $tz=''){
-    $tz = (empty($tz) ? variable_get('date_default_timezone', '') : $tz);
+    $tz = (empty($tz) ? variable_get('date_default_timezone', 'America/Toronto') : $tz);
     $dt = new \DateTime($date_time, new \DateTimeZone($tz));
     $retval = $dt->format(EBConsts::EBS_MYSQLDATEFORMAT);
 
