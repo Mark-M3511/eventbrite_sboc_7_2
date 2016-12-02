@@ -286,7 +286,7 @@ function _eventbrite_sboc_cron_update_attendees($save_changed_only = FALSE, $str
     $tz = variable_get('date_default_timezone', 'America/Toronto');
     $dt = new \DateTimeZone($tz);
     $do = new \DateTime('now', $dt);
-    // e.g. P10D  Period of 10 Days | P2H
+    // e.g. P10D  Period of 10 Days | P2H Period of 2 Hours
     // bof: Set interval
     $days = variable_get(EBConsts::EBS_CONFIG_CHANGED_SINCE_DAYS, EBConsts::EBS_CONFIG_DEFAULT_CHANGED_SINCE_DAYS);
     $interval_days = format_string('P@interval_daysD', array('@interval_days' => $days,));
