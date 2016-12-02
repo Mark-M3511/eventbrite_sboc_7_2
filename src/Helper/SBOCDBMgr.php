@@ -39,7 +39,7 @@ class SBOCDBMgr implements iDBMgr{
   *
   * Returns implicit object of type SBOCDBMgr
   */
-  public function __construct($entity_name=EBConsts::EBS_ENTITY_TYPE_ATTENDEE, array $attendees = array(),
+  public function __construct($entity_name = EBConsts::EBS_ENTITY_TYPE_ATTENDEE, array $attendees = array(),
       $save_changed_only = FALSE){
     $this->entityName = $entity_name;
     $this->attendees = $attendees;
