@@ -143,7 +143,7 @@ class EBSBOCDrupalUser{
 
     $timestamp = time();
     $hash = user_pass_rehash($account->pass, $timestamp, $account->login, $account->uid);
-    $ret_val = url("user/reset/$account->uid/$timestamp/" . $hash, $options);
+    $ret_val = url("user/reset/$account->uid/$timestamp/$hash", $options);
 
     return $ret_val;
   }
