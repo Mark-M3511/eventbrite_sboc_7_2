@@ -215,6 +215,13 @@ function eventbrite_sboc_help($path, $arg){
       $output .= 'If you have entered the correct event id, information will be displayed about the event in the ';
       $output .= '<span style="font-weight: bold;">EVENT INFORMATION</span> section';
       $output .= '</p>';
+    case EBConsts::EBS_ADMINMENUROOT. '/event/orders':
+      $output .= '<h3>Event Orders -- Help</h3>';
+      $output .= '<p>';
+      $output .= '<ul>';
+      $output .= '<li>Enter a valid order number to retrieve the order details from Eventbrite</li>';
+      $output .= '</ul>';
+      $output .= '</p>';
       break;
 	  default:
 	    break;
