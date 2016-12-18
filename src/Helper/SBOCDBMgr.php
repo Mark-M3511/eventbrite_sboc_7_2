@@ -74,8 +74,10 @@ class SBOCDBMgr implements iDBMgr{
       $a->event_id = $attendee->eventId;
       $a->order_id = $attendee->orderId;
       $a->ticket_class_id = $attendee->ticketClassId;
-      $a->create_date = self::convert_date_tz($attendee->createDate);
-      $a->change_date = self::convert_date_tz($attendee->changeDate);
+//      $a->create_date = self::convert_date_tz($attendee->createDate);
+//      $a->change_date = self::convert_date_tz($attendee->changeDate);
+      $a->create_date = $attendee->createDate;
+      $a->change_date = $attendee->changeDate;
       $a->email_address = $attendee->emailAddress;
       $a->last_name = self::no_overflow($attendee->lastName,50);
       $a->first_name = self::no_overflow($attendee->firstName,50);
