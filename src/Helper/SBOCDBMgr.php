@@ -74,8 +74,6 @@ class SBOCDBMgr implements iDBMgr{
       $a->event_id = $attendee->eventId;
       $a->order_id = $attendee->orderId;
       $a->ticket_class_id = $attendee->ticketClassId;
-//      $a->create_date = self::convert_date_tz($attendee->createDate);
-//      $a->change_date = self::convert_date_tz($attendee->changeDate);
       $a->create_date = $attendee->createDate;
       $a->change_date = $attendee->changeDate;
       $a->email_address = $attendee->emailAddress;
@@ -625,9 +623,29 @@ class SBOCDBMgr implements iDBMgr{
   *
   * Returns DateTime (formatted string)
   */
-  public static function convert_date_tz($date_time, $tz=''){
-    $tz = (empty($tz) ? variable_get('date_default_timezone', 'America/Toronto') : $tz);
+  public static function convert_date_tz($date_time, $tz = ''){
+    $tz = (empty($tz) ? variable_get('date_default_timezone', EBConsts::tz_Site_Default) : $tz);
     $dt = new \DateTime($date_time, new \DateTimeZone($tz));
+    $retval = $dt->format(EBConsts::EBS_MYSQLDATEFORMAT);
+
+    return $retval;
+  }
+
+  /**
+   * Returns a date matching the target timezone specified
+   *
+   * @param DateTime $date_time
+   * @param String $current_tz
+   * @param String $new_tz
+   *
+   * Returns DateTime (formatted string)
+   */
+  public static function convert_from_date_tz($date_time, $current_tz = '', $new_tz = ''){
+    $current_tz = (empty($current_tz) ? variable_get('date_default_timezone', EBConsts::tz_Site_Default) : $current_tz);
+    $new_tz = (empty($new_tz) ? $current_tz : $new_tz);
+
+    $dt = new \DateTime($date_time, new \DateTimeZone($current_tz));
+    $dt->setTimezone(new \DateTimeZone($new_tz));
     $retval = $dt->format(EBConsts::EBS_MYSQLDATEFORMAT);
 
     return $retval;

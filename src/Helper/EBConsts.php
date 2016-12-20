@@ -150,4 +150,7 @@ class EBConsts{
   const EBS_EMAIL_DEFAULT_MESSAGE = 'Dear Reader:<br /><br />Thank you for your interest. Please visit us at <a href="http://spellingbeeofcanada.ca">spellingbeeofcanada.ca</a><br /><br />Sincerely,<br />Spelling Bee Of Canada';
   // drupal_http_query options
   const EBS_DRUPAL_HTTP_QUERY_MAX_REDIRECTS = 10;
+  // Timezomes
+  const tz_UTC = 'UTC';
+  const tz_Site_Default = 'America/Toronto';
 }
