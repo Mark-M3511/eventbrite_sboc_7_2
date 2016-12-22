@@ -306,20 +306,24 @@ function _eventbrite_sboc_process_cron_queue($data){
 function _eventbrite_sboc_cron_update_attendees($save_changed_only = FALSE, $strictly_process_changed_records = TRUE){
   try{
     $ev = _eventbrite_sboc_init_event();
-    $tz = variable_get('date_default_timezone', 'America/Toronto');
+    $tz = variable_get('date_default_timezone', EBConsts::tz_Site_Default);
 //    $tz = 'UTC';
     $dt = new \DateTimeZone($tz);
     $do = new \DateTime('now', $dt);
-    // e.g. P10D  Period of 10 Days | P2H Period of 2 Hours
+    // e.g. P10D  Period of 10 Days | PT2H Period of 2 Hours
     // bof: Set interval
     $days = variable_get(EBConsts::EBS_CONFIG_CHANGED_SINCE_DAYS, EBConsts::EBS_CONFIG_DEFAULT_CHANGED_SINCE_DAYS);
-    $interval_days = format_string('P@interval_daysD', array('@interval_days' => $days,));
-    $dur = new \DateInterval($interval_days);
+    $interval = format_string('P@interval_daysD', array('@interval_days' => $days,));
+    // bof: Trying intervals of hours instead of days; starting with 1 hour
+    $interval = 'PT1H';
+    // eof: Trying intervals of hours instead of days
+    $dur = new \DateInterval($interval);
     $do->sub($dur);
     // eof: Set interval
 
     // bof: Update watchdog table
-    $date_param = $do->format(EBConsts::EBS_EBDATEFORMAT);
+//    $date_param = $do->format(EBConsts::EBS_EBDATEFORMAT_UTC);
+    $date_param = $do->format(EBConsts::EBS_EBDATEFORMAT_NAIVE_LOCAL);
     $watchdog_params = array(
       '@date_param' => $date_param,
       '@timezone' => $dt->getName(),

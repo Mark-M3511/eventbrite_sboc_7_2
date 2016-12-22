@@ -79,7 +79,11 @@ class EBConsts{
   const EBS_PHP_INPUT_STREAM = 'php://input';
   // date formats
   const EBS_MYSQLDATEFORMAT = 'Y-m-d H:i:s';
+  /* A datetime represented as a string in ISO8601 combined date and time format, always in UTC. */
   const EBS_EBDATEFORMAT = 'Y-m-d\TH:i:s\Z';
+  const EBS_EBDATEFORMAT_UTC = self::EBS_EBDATEFORMAT;
+  /* A datetime represented as a string in Naive Local ISO8601 date and time format, in the timezone of the event. */
+  const EBS_EBDATEFORMAT_NAIVE_LOCAL = 'Y-m-d\TH:i:s';
   // Queue worker information
   const EBS_QUEUE_EMAIL_WELCOME = 'EBS_QUEUE_EMAIL_WELCOME';
   const EBS_QUEUE_PROCESS_CHANGED_RECORDS = 'ebs_process_changed_records';
