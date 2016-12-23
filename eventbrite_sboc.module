@@ -319,14 +319,15 @@ function _eventbrite_sboc_cron_update_attendees($save_changed_only = FALSE, $str
     // eof: Trying intervals of hours instead of days
     $dur = new \DateInterval($interval);
     $do->sub($dur);
+    $do->setTimezone(new \DateTimeZone(EBConsts::tz_UTC));
     // eof: Set interval
 
     // bof: Update watchdog table
-//    $date_param = $do->format(EBConsts::EBS_EBDATEFORMAT_UTC);
-    $date_param = $do->format(EBConsts::EBS_EBDATEFORMAT_NAIVE_LOCAL);
+    $date_param = $do->format(EBConsts::EBS_EBDATEFORMAT_UTC);
+//    $date_param = $do->format(EBConsts::EBS_EBDATEFORMAT_NAIVE_LOCAL);
     $watchdog_params = array(
       '@date_param' => $date_param,
-      '@timezone' => $dt->getName(),
+      '@timezone' => $do->getTimezone()->getName(),
     );
     $watchdog_msg = 'Parameters used during last cron -> Date: @date_param | Timezone: @timezone';
     watchdog(EBConsts::EBS_APPNAME, $watchdog_msg, $watchdog_params, WATCHDOG_INFO);
