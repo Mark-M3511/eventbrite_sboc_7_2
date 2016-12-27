@@ -136,8 +136,6 @@ class SBOCDBMgr implements iDBMgr{
           'attendee_id' => $attendee->attendeeId,
         )
       );
-      /*$values['contestant_last_name'] = 'Test7';
-      $values['contestant_first_name'] = 'Test7';*/
       $q->fields($values);
       $q->execute();
     }catch(Exception $e){
