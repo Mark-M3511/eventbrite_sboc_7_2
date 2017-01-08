@@ -26,8 +26,10 @@ class EBConsts{
   const EBS_AUTHTOKEN_TYPE = 'ebs_authtoken_type';
   const EBS_CONFIG_AUTHTOKEN_TYPE = self::EBS_AUTHTOKEN_TYPE;
   const EBS_CONFIG_CHANGED_SINCE_DAYS = 'ebs_changed_since_days';
+  const EBS_CONFIG_CHANGED_SINCE_HOURS = 'ebs_changed_since_hours';
   const EBS_CONFIG_EMAIL_WELCOME_MESSAGE = 'ebs_email_message';  
   const EBS_CONFIG_DEFAULT_CHANGED_SINCE_DAYS = 7;
+  const EBS_CONFIG_DEFAULT_CHANGED_SINCE_HOURS = 1;
   const EBS_CONFIG_PARAM_CHANGED_SINCE = 'changed_since';
   const EBS_CONFIG_EMAIL_MESSAGE_NODE_ID = 'ebs_email_msg_node_id';
   const EBS_CONFIG_EMAIL_MESSAGE_NODE_ID_1 = self::EBS_CONFIG_EMAIL_MESSAGE_NODE_ID;

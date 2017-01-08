@@ -20,12 +20,19 @@ function _eventbrite_sboc_form_event_setup($form, &$form_state){
     '#required' => TRUE,
   );
   
-  $form['ebs_event_setup'][EBConsts::EBS_CONFIG_CHANGED_SINCE_DAYS] = array(
-    '#type' => 'select',
+//  $form['ebs_event_setup'][EBConsts::EBS_CONFIG_CHANGED_SINCE_DAYS] = array(
+//    '#type' => 'select',
 //    '#title' => t('Number of days of changed records to retrieve'),
+//    '#options' => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,),
+//    '#default_value' => variable_get(EBConsts::EBS_CONFIG_CHANGED_SINCE_DAYS, EBConsts::EBS_CONFIG_DEFAULT_CHANGED_SINCE_DAYS),
+//    '#required' => TRUE,
+//  );
+
+  $form['ebs_event_setup'][EBConsts::EBS_CONFIG_CHANGED_SINCE_HOURS] = array(
+    '#type' => 'select',
     '#title' => t('Number of hours of changed records to retrieve'),
-    '#options' => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,),
-    '#default_value' => variable_get(EBConsts::EBS_CONFIG_CHANGED_SINCE_DAYS, EBConsts::EBS_CONFIG_DEFAULT_CHANGED_SINCE_DAYS),
+    '#options' => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23),
+    '#default_value' => variable_get(EBConsts::EBS_CONFIG_CHANGED_SINCE_HOURS, EBConsts::EBS_CONFIG_DEFAULT_CHANGED_SINCE_HOURS),
     '#required' => TRUE,
   );
   

@@ -309,14 +309,12 @@ function _eventbrite_sboc_cron_update_attendees($save_changed_only = FALSE, $str
     $tz = variable_get('date_default_timezone', EBConsts::tz_Site_Default);
     $dt = new \DateTimeZone($tz);
     $do = new \DateTime('now', $dt);
-    // e.g. P10D  Period of 10 Days | PT2H Period of 2 Hours
     // bof: Set interval
-    $days = variable_get(EBConsts::EBS_CONFIG_CHANGED_SINCE_DAYS, EBConsts::EBS_CONFIG_DEFAULT_CHANGED_SINCE_DAYS);
-//    $interval = format_string('P@interval_daysD', array('@interval_days' => $days,));
-    // bof: Trying intervals of hours instead of days; starting with 1 hour
-    //    $interval = 'PT1H';
-    $interval = format_string('PT@interval_daysH', array('@interval_days' => $days,));
-    // eof: Trying intervals of hours instead of days
+    // e.g. P10D  Period of 10 Days | PT2H Period of 2 Hours
+//    $days = variable_get(EBConsts::EBS_CONFIG_CHANGED_SINCE_DAYS, EBConsts::EBS_CONFIG_DEFAULT_CHANGED_SINCE_DAYS);
+    $hours = variable_get(EBConsts::EBS_CONFIG_CHANGED_SINCE_HOURS, EBConsts::EBS_CONFIG_DEFAULT_CHANGED_SINCE_HOURS);
+//    $interval = format_string('P@intervalD', array('@interval' => $days,));
+    $interval = format_string('PT@intervalH', array('@interval' => $hours,));
     $dur = new \DateInterval($interval);
     $do->sub($dur);
     $do->setTimezone(new \DateTimeZone(EBConsts::tz_UTC));
