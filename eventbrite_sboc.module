@@ -395,10 +395,11 @@ function _eventbrite_sboc_init_oauth_sequence(){
 function _eventbrite_sboc_init_event(){
   $ev = null;
   try{
-    $client_id = variable_get(EBConsts::EBS_CONFIG_CONSUMER_KEY, '');
-    $client_secret = variable_get(EBConsts::EBS_CONFIG_CONSUMER_SECRET, '');
+    $allowed_tags = array();
+    $client_id = filter_xss(variable_get(EBConsts::EBS_CONFIG_CONSUMER_KEY, ''), $allowed_tags);
+    $client_secret = filter_xss(variable_get(EBConsts::EBS_CONFIG_CONSUMER_SECRET, ''), $allowed_tags);
     $eb_oauth = new EBOauth($client_id, $client_secret); 
-    $event_id = variable_get(EBConsts::EBS_CONFIG_EVENT_ID, '');
+    $event_id = filter_xss(variable_get(EBConsts::EBS_CONFIG_EVENT_ID, ''), $allowed_tags);
     $ev = new EBEvents($eb_oauth, $event_id);   
   }catch (Exception $e) {
     watchdog_exception(EBConsts::EBS_APPNAME, $e);
@@ -413,8 +414,9 @@ function _eventbrite_sboc_init_event(){
 * @return  n/a
 */
 function _eventbrite_sboc_oauth_callback(){
-  $client_id = variable_get(EBConsts::EBS_CONFIG_CONSUMER_KEY, '');
-  $client_secret = variable_get(EBConsts::EBS_CONFIG_CONSUMER_SECRET, '');
+  $allowed_tags = array();
+  $client_id = filter_xss(variable_get(EBConsts::EBS_CONFIG_CONSUMER_KEY, ''), $allowed_tags);
+  $client_secret = filter_xss(variable_get(EBConsts::EBS_CONFIG_CONSUMER_SECRET, ''), $allowed_tags);
   $eb = new EBOauth($client_id, $client_secret); 
   $eb->getEBAccessToken($_GET['code']);
 }
