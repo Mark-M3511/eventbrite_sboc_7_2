@@ -381,8 +381,9 @@ function _eventbrite_sboc_event_info(){
 * @return  array of Attendee objects
 */
 function _eventbrite_sboc_init_oauth_sequence(){
-  $consumer_key = variable_get(EBConsts::EBS_CONGIFG_EB_CLIENT_ID, '');
-  $consumer_secret = variable_get(EBConsts::EBS_CONFIG_CONSUMER_SECRET, '');
+  $allowed_tags = array();
+  $consumer_key = filter_xss(variable_get(EBConsts::EBS_CONGIFG_EB_CLIENT_ID, ''), $allowed_tags);
+  $consumer_secret = filter_xss(variable_get(EBConsts::EBS_CONFIG_CONSUMER_SECRET, ''), $allowed_tags);
   $eb = new EBOauth($consumer_key, $consumer_secret);
   $eb->getEBAccessAuthorization();
 }
