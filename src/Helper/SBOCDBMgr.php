@@ -239,7 +239,7 @@ class SBOCDBMgr implements iDBMgr{
   * Populates attendee object properties with new/changed data for selected fields
   *
   * @param object $attendeeFromSource
-  *    EBAttendee object populated with data from soure such as: Eventbrite API
+  *    EBAttendee object populated with data from source such as: Eventbrite API
   * @param object $attendeeSaved)
   *   EBAttendeeEntity object populated with data from application database
   *
@@ -256,17 +256,17 @@ class SBOCDBMgr implements iDBMgr{
       );
     }
     if ($attendeeFromSource->additionalInfo != $attendeeSaved->additional_info){
-      $attendeeFromSource->changedFields[ 'additionalInfo'] = array(
+      $attendeeFromSource->changedFields['additionalInfo'] = array(
         'old' => $attendeeSaved->additional_info,
         'new' => $attendeeFromSource->additionalInfo,
       );
     }
-//    if (empty($attendeeFromSource->emailSent)){
-//      $attendeeFromSource->changedFields[ 'emailSent'] = array(
-//        'old' => $attendeeFromSource->emailSent,
-//        'new' => 1,
-//      );
-//    }
+    if ($attendeeFromSource->regionName != $attendeeSaved->region_name){
+      $attendeeFromSource->changedFields['regionName'] = array(
+        'old' => $attendeeSaved->region_name,
+        'new' => $attendeeFromSource->regionName,
+      );
+    }
   }
 
   /**

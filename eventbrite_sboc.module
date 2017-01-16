@@ -484,7 +484,8 @@ function _eventbrite_sboc_invoke_mail($attendees, $message_id=EBConsts::EBS_CONF
 * Return n/a
 */
 function _eventbrite_sboc_submit_order_num($form, &$form_state){
-  $order_num = check_plain($form_state['values']['ebs_order_num']);
+  $allowed_tags = array();
+  $order_num = filter_xss($form_state['values']['ebs_order_num'], $allowed_tags);
   drupal_goto('/'. EBConsts::EBS_ADMINMENUROOT. "/event/orders/{$order_num}");
 }
 
@@ -498,7 +499,8 @@ function _eventbrite_sboc_submit_order_num($form, &$form_state){
 * Return n/a
 */
 function _eventbrite_sboc_submit_attendee_order_num($form, &$form_state){
-  $order_num = check_plain($form_state['values']['ebs_attendee_order_num']);
+  $allowed_tags = array();
+  $order_num = filter_xss($form_state['values']['ebs_attendee_order_num'], $allowed_tags);
   drupal_goto('/'. EBConsts::EBS_ADMINMENUROOT. "/event/attendees/{$order_num}");
 }
 
