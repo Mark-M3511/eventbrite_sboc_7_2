@@ -138,7 +138,10 @@ function eventbrite_sboc_mailer_mandrill_mailsend_result($result) {
        $a->emailSendDate = date(EBConsts::EBS_MYSQLDATEFORMAT, REQUEST_TIME);
        $a->emailSent = (int)(drupal_strtolower($result['status']) == EBConsts::EBS_EMAILSENT_STATUS_SUCCESS);
        if (function_exists('_eventbrite_sboc_invoke_save_withvalues')){
-         $values = array('email_send_date' => $a->emailSendDate, 'email_sent' => $a->emailSent,);
+         $values = array(
+           'email_send_date' => $a->emailSendDate,
+           'email_sent' => $a->emailSent,
+           );
          $a = _eventbrite_sboc_invoke_save_withvalues(array($a), $values);
        }
     }
