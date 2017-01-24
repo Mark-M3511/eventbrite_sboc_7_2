@@ -246,29 +246,34 @@ class SBOCDBMgr implements iDBMgr{
   * Returns N/A
   */
   public function populateChangedFieldsList($attendeeFromSource, $attendeeSaved){
-    if (!is_array($attendeeFromSource->changedFields)){
-       $attendeeFromSource->changedFields = array();
+    if (!is_array($attendeeFromSource->changedFields)) {
+      $attendeeFromSource->changedFields = array();
     }
-    if ($attendeeFromSource->emailAddress != $attendeeSaved->email_address){
+    if ($attendeeFromSource->emailAddress != $attendeeSaved->email_address) {
       $attendeeFromSource->changedFields['email'] = array(
         'old' => $attendeeSaved->email_address,
         'new' => $attendeeFromSource->emailAddress,
       );
     }
-    if ($attendeeFromSource->additionalInfo != $attendeeSaved->additional_info){
+    if ($attendeeFromSource->additionalInfo != $attendeeSaved->additional_info) {
       $attendeeFromSource->changedFields['additionalInfo'] = array(
         'old' => $attendeeSaved->additional_info,
         'new' => $attendeeFromSource->additionalInfo,
       );
     }
-    if ($attendeeFromSource->regionName != $attendeeSaved->region_name){
+    if ($attendeeFromSource->regionName != $attendeeSaved->region_name) {
       $attendeeFromSource->changedFields['regionName'] = array(
         'old' => $attendeeSaved->region_name,
         'new' => $attendeeFromSource->regionName,
       );
     }
+    if ($attendeeFromSource->category != $attendeeSaved->category) {
+      $attendeeFromSource->changedFields['category'] = array(
+        'old' => $attendeeSaved->category,
+        'new' => $attendeeFromSource->category,
+      );
+    }
   }
-
   /**
   * Writes an attendee data stored in an object to the database.
   *
