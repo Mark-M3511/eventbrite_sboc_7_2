@@ -246,32 +246,24 @@ class SBOCDBMgr implements iDBMgr{
   * Returns N/A
   */
   public function populateChangedFieldsList($attendeeFromSource, $attendeeSaved){
+    $pf_map = array(
+      'emailAddress' => 'email_address',
+      'additionalInfo' => 'additional_info',
+      'regionName' => 'region_name',
+      'category' => 'category',
+    );
+
     if (!is_array($attendeeFromSource->changedFields)) {
       $attendeeFromSource->changedFields = array();
     }
-    if ($attendeeFromSource->emailAddress != $attendeeSaved->email_address) {
-      $attendeeFromSource->changedFields['email'] = array(
-        'old' => $attendeeSaved->email_address,
-        'new' => $attendeeFromSource->emailAddress,
-      );
-    }
-    if ($attendeeFromSource->additionalInfo != $attendeeSaved->additional_info) {
-      $attendeeFromSource->changedFields['additionalInfo'] = array(
-        'old' => $attendeeSaved->additional_info,
-        'new' => $attendeeFromSource->additionalInfo,
-      );
-    }
-    if ($attendeeFromSource->regionName != $attendeeSaved->region_name) {
-      $attendeeFromSource->changedFields['regionName'] = array(
-        'old' => $attendeeSaved->region_name,
-        'new' => $attendeeFromSource->regionName,
-      );
-    }
-    if ($attendeeFromSource->category != $attendeeSaved->category) {
-      $attendeeFromSource->changedFields['category'] = array(
-        'old' => $attendeeSaved->category,
-        'new' => $attendeeFromSource->category,
-      );
+
+    foreach($pf_map as $property => $field){
+      if ($attendeeFromSource->{$property} != $attendeeSaved->{$field}) {
+        $attendeeFromSource->changedFields[$property] = array(
+          'old' => $attendeeSaved->{$field},
+          'new' => $attendeeFromSource->{$property},
+        );
+      }
     }
   }
   /**
