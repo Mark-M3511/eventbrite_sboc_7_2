@@ -165,13 +165,13 @@ class MandrillEmailMgr implements iEmailMgr{
     $send = FALSE;
     try{
       foreach ($this->attendees as $attendee){
-        if (!empty($attendee->additionalInfo)) {
+        if (!empty($attendee->additionalInfo) && (trim($attendee->additionalInfo) != '')) {
           $params['attendee'] = clone $attendee;
           $from = $attendee->emailAddress;
           if (isset($params['reply-to'])){
             $params['reply-to'] = $from;
           }
-          if (!isset($params['from'])){
+          if (isset($params['from'])){
             $params['from'] = $from;
           }
           $result = drupal_mail($this->moduleName, $this->mailKey, $to, $language, $params, $from, $send);
