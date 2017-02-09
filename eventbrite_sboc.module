@@ -621,6 +621,7 @@ function _eventbrite_sboc_webhook_callback(){
 //          _eventbrite_sboc_debug_output($returned_attendee_list);
           foreach($returned_attendee_list as $mod => $attendee_list){
             _eventbrite_sboc_invoke_mail($attendee_list);
+            _eventbrite_sboc_invoke_mail_internal($attendee_list);
           }
         }
       }
