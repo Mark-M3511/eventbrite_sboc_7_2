@@ -52,6 +52,7 @@ function eventbrite_sboc_mailer_mail($key, &$message, $params){
   // Good place to load a node entity for message body and subject
   switch($key){
 		case EBConsts::EBS_SBOCATTENDEES_MAIL_KEY:
+    case EBConsts::EBS_SBOCATTENDEES_MAIL_KEY_INTERNAL:
 		  $message['subject'] = (!empty($params['subject']) ? $params['subject'] : EBConsts::EBS_TESTSUBJECT);
       $message['body'] = (!empty($params['body']) ? $params['body']: EBConsts::EBS_TESTBODY);
 		  break;		
