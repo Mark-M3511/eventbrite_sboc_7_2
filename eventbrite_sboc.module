@@ -463,7 +463,7 @@ function _eventbrite_sboc_invoke_save_withvalues($attendees, $values){
 * @param array $attendees (array(Object1, Object2, ObjectN))
 * @return  array of Attendee objects
 */
-function _eventbrite_sboc_invoke_mail($attendees, $message_id=EBConsts::EBS_CONFIG_EMAIL_MESSAGE_NODE_ID_1){
+function _eventbrite_sboc_invoke_mail($attendees, $message_id = EBConsts::EBS_CONFIG_EMAIL_MESSAGE_NODE_ID_1){
   $retval = array();
   $hook_suffix = 'ebattendees_mail';
   foreach(module_implements($hook_suffix) as $module){
@@ -471,6 +471,22 @@ function _eventbrite_sboc_invoke_mail($attendees, $message_id=EBConsts::EBS_CONF
     $retval[$function] = $function($attendees, $message_id);
   }
   
+  return $retval;
+}
+
+/**
+ * @param $attendees
+ * @param string $message_id
+ * @return array
+ */
+function _eventbrite_sboc_invoke_mail_internal($attendees, $message_id = EBConsts::EBS_CONFIG_EMAIL_MESSAGE_NODE_ID_3){
+  $retval = array();
+  $hook_suffix = 'ebattendees_mail_internal';
+  foreach(module_implements($hook_suffix) as $module){
+    $function = $module. '_'. $hook_suffix;
+    $retval[$function] = $function($attendees, $message_id);
+  }
+
   return $retval;
 }
 

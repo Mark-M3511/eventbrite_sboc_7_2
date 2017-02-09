@@ -13,6 +13,7 @@ use Drupal\eventbrite_sboc\Helper\SBOCDBMgr;
 */ 
 interface iEmailMgr{
   public function send();
+  public function sendInternal();
 }
 
 /**
@@ -55,26 +56,31 @@ class MandrillEmailMgr implements iEmailMgr{
   */
   public function setGlobalMergeVars(&$mandrill_params, $message){
     $global_merge_vars = array();
-    $attendee = $message['params']['attendee'];
+
+    /* -- Also availabe -- */
+    /* $attendee = $message['params']['attendee']; */
     
     $global_merge_vars[] = array(
       'name' => 'subject',
 	    'content' => check_plain($message['params']['subject']),
     );
 
-    /*
-    $global_merge_vars[] = array(
-      'name' => 'from',
-	    'content' => $message['params']['from'],
-    );
+    if (isset($message['params']['from'])) {
+      $global_merge_vars[] = array(
+        'name' => 'from',
+        'content' => $message['params']['from'],
+      );
+    }
 
-    $global_merge_vars[] = array(
-      'name' => 'headers',
-      'content' => array(
-         'Reply-To' => $attendee->emailAddress,
-       ),
-    );
-    */
+    if (isset($message['params']['reply-to'])) {
+      $global_merge_vars[] = array(
+        'name' => 'headers',
+        'content' => array(
+          'Reply-To' => $message['params']['reply-to'],
+        ),
+      );
+    }
+
 
     $global_merge_vars[] = array(
       'name' => 'current_year',
@@ -148,7 +154,37 @@ class MandrillEmailMgr implements iEmailMgr{
       watchdog_exception(EBConsts::EBS_APPNAME_MAIL, $e);
     }
   }
-  
+
+  public function sendInternal() {
+    // TODO: 1: Add template to Mandrill dashboard 2:Import template 3: Add node/post with message 4:Test
+    $language = language_default();
+    $params = array();
+    $params['mail_object'] = $this;
+    $params += $this->params;
+    $to = variable_get('site_mail', EBConsts::EBS_SBOCEMAILADDRESS);
+    $send = FALSE;
+    try{
+      foreach ($this->attendees as $attendee){
+        if (!empty($attendee->additionalInfo)) {
+          $params['attendee'] = clone $attendee;
+          $from = $attendee->emailAddress;
+          if (isset($params['reply-to'])){
+            $params['reply-to'] = $from;
+          }
+          if (!isset($params['from'])){
+            $params['from'] = $from;
+          }
+          $result = drupal_mail($this->moduleName, $this->mailKey, $to, $language, $params, $from, $send);
+          $system = drupal_mail_system($this->moduleName, $this->mailKey);
+          $message = $system->format($result);
+          $system->mail($result);
+        }
+      }
+    }catch(Exception $e){
+      watchdog_exception(EBConsts::EBS_APPNAME_MAIL, $e);
+    }
+  }
+
 }
 
   

@@ -34,6 +34,7 @@ class EBConsts{
   const EBS_CONFIG_EMAIL_MESSAGE_NODE_ID = 'ebs_email_msg_node_id';
   const EBS_CONFIG_EMAIL_MESSAGE_NODE_ID_1 = self::EBS_CONFIG_EMAIL_MESSAGE_NODE_ID;
   const EBS_CONFIG_EMAIL_MESSAGE_NODE_ID_2 = 'ebs_email_msg_node_id_2';
+  const EBS_CONFIG_EMAIL_MESSAGE_NODE_ID_3 = 'ebs_email_msg_node_id_3';
   // Callbacks
   const EBS_FUNC_EMAIL_CALLBACK = '_eventbrite_sboc_invoke_mail';
   // webhook json api data
@@ -94,6 +95,7 @@ class EBConsts{
   const EBS_CRONRULE_DEFAULT = '*/5 * * * *';
   // Email
   const EBS_SBOCATTENDEES_MAIL_KEY = 'sboc-mail';
+  const EBS_SBOCATTENDEES_MAIL_KEY_INTERNAL = self::EBS_SBOCATTENDEES_MAIL_KEY. '-internal';
   const EBS_SBOCATTENDEES_MODULE = 'eventbrite_sboc_mailer';
   const EBS_SBOCEMAILADDRESS = 'info@spellingbeeofcanada.ca';
   const EBS_TESTSUBJECT = 'What is your real subject?';
