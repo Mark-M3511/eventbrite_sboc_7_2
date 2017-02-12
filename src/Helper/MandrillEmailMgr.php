@@ -36,8 +36,8 @@ class MandrillEmailMgr implements iEmailMgr{
   *
   * Returns implicit object of type MandrillEmailMgr
   */ 
-  public function __construct(array $attendees = array(), $module_name = EBConsts::EBS_SBOCATTENDEES_MODULE,
-      $mail_key = EBConsts::EBS_SBOCATTENDEES_MAIL_KEY){
+  public function __construct(array $attendees = array(), $module_name = EBConsts::EBS_SBOC_MAILER_MODULE,
+      $mail_key = EBConsts::EBS_SBOC_ATTENDEES_MAIL_KEY){
       
     $this->attendees = $attendees;
     $this->moduleName = $module_name;
@@ -64,23 +64,6 @@ class MandrillEmailMgr implements iEmailMgr{
       'name' => 'subject',
 	    'content' => check_plain($message['params']['subject']),
     );
-
-    if (isset($message['params']['from'])) {
-      $global_merge_vars[] = array(
-        'name' => 'from',
-        'content' => $message['params']['from'],
-      );
-    }
-
-    if (isset($message['params']['reply-to'])) {
-      $global_merge_vars[] = array(
-        'name' => 'headers',
-        'content' => array(
-          'Reply-To' => $message['params']['reply-to'],
-        ),
-      );
-    }
-
 
     $global_merge_vars[] = array(
       'name' => 'current_year',
@@ -117,10 +100,12 @@ class MandrillEmailMgr implements iEmailMgr{
           'content' => check_plain($value),
 	      );
 	    }
-    }    
+    }
+
+    $email_address = (!empty($message['params']['to'])) ? $message['params']['to'] : $fields['email_address'];
     
     $merge_vars[] = array(
-      'rcpt' => $fields['email_address'],
+      'rcpt' => $email_address,
       'vars' => $vars,
     );  
 
@@ -139,12 +124,13 @@ class MandrillEmailMgr implements iEmailMgr{
     $params = array();
     $params['mail_object'] = $this;
     $params += $this->params;
-    $from = variable_get('site_mail', EBConsts::EBS_SBOCEMAILADDRESS);
+    $from = variable_get('site_mail', EBConsts::EBS_SBOC_EMAIL_ADDRESS);
     $send = FALSE;
     try{
       foreach($this->attendees as $attendee){
         $params['attendee'] = clone $attendee;
         $to = $attendee->emailAddress;
+        $params['to'] = $to;
         $result = drupal_mail($this->moduleName, $this->mailKey, $to, $language, $params, $from, $send);
         $system = drupal_mail_system($this->moduleName, $this->mailKey);
         $message = $system->format($result);
@@ -161,10 +147,12 @@ class MandrillEmailMgr implements iEmailMgr{
     $params = array();
     $params['mail_object'] = $this;
     $params += $this->params;
-    $to = variable_get('site_mail', EBConsts::EBS_SBOCEMAILADDRESS);
+    $to = variable_get('site_mail', EBConsts::EBS_SBOC_EMAIL_ADDRESS);
     $send = FALSE;
     try{
+//      watchdog(EBConsts::EBS_APPNAME, 'Inside: '. __METHOD__, array(), WATCHDOG_INFO);
       foreach ($this->attendees as $attendee){
+//        watchdog(EBConsts::EBS_APPNAME, $attendee->additionalInfo, array(), WATCHDOG_INFO);
         if (!empty($attendee->additionalInfo) && !empty(trim($attendee->additionalInfo))) {
           $params['attendee'] = clone $attendee;
           $from = $attendee->emailAddress;
@@ -174,6 +162,7 @@ class MandrillEmailMgr implements iEmailMgr{
           if (isset($params['from'])){
             $params['from'] = $from;
           }
+          $params['to'] = $to;
           $result = drupal_mail($this->moduleName, $this->mailKey, $to, $language, $params, $from, $send);
           $system = drupal_mail_system($this->moduleName, $this->mailKey);
           $message = $system->format($result);

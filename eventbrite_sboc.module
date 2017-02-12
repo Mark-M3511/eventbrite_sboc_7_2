@@ -336,7 +336,7 @@ function _eventbrite_sboc_cron_update_attendees($save_changed_only = FALSE, $str
 
     $returned_attendee_list = _eventbrite_sboc_invoke_save($attendees, $save_changed_only, $strictly_process_changed_records);
 
-    // Process mail for records with attendee records url set
+    // Process mail for records with password reset url set
     $mail_list = array();
     foreach($returned_attendee_list as $mod => $attendee_list){
       foreach($attendee_list as $id => $attendee){

@@ -30,6 +30,7 @@ class SBOCDBMgr implements iDBMgr{
   public $entityName;
   public $attendees;
   public $func_email_callback;
+  public $func_email_callback_2;
 
   /**
   * Creates an instance of SBOCDBMgr and returns that object to the caller
@@ -45,6 +46,7 @@ class SBOCDBMgr implements iDBMgr{
     $this->attendees = $attendees;
     $this->saveChangedOnly = $save_changed_only;
     $this->func_email_callback = EBConsts::EBS_FUNC_EMAIL_CALLBACK;
+    $this->func_email_callback_2 = EBConsts::EBS_FUNC_EMAIL_CALLBACK_2;
   }
 
   /**
@@ -220,6 +222,20 @@ class SBOCDBMgr implements iDBMgr{
               $callback_val = call_user_func_array($this->func_email_callback, $params);
               if ($callback_val === FALSE){
                  throw new \Exception('Exception thrown in call to: '. $this->func_email_callback);
+              }
+            }catch(Exception $e){
+              watchdog_exception(__CLASS__. '->'. __METHOD__ , $e);
+            }
+          }
+          if (function_exists($this->func_email_callback_2)){
+            try{
+              $params = array(
+                array($attendee),
+                EBConsts::EBS_CONFIG_EMAIL_MESSAGE_NODE_ID_3,
+              );
+              $callback_val = call_user_func_array($this->func_email_callback_2, $params);
+              if ($callback_val === FALSE){
+                throw new \Exception('Exception thrown in call to: '. $this->func_email_callback_2);
               }
             }catch(Exception $e){
               watchdog_exception(__CLASS__. '->'. __METHOD__ , $e);

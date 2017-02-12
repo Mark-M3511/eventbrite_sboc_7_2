@@ -51,8 +51,8 @@ function eventbrite_sboc_mailer_help($path, $arg){
 function eventbrite_sboc_mailer_mail($key, &$message, $params){
   // Good place to load a node entity for message body and subject
   switch($key){
-		case EBConsts::EBS_SBOCATTENDEES_MAIL_KEY:
-    case EBConsts::EBS_SBOCATTENDEES_MAIL_KEY_INTERNAL:
+		case EBConsts::EBS_SBOC_ATTENDEES_MAIL_KEY:
+    case EBConsts::EBS_SBOC_ATTENDEES_MAIL_KEY_INTERNAL:
 		  $message['subject'] = (!empty($params['subject']) ? $params['subject'] : EBConsts::EBS_TESTSUBJECT);
       $message['body'] = (!empty($params['body']) ? $params['body']: EBConsts::EBS_TESTBODY);
 		  break;		
@@ -71,6 +71,7 @@ function eventbrite_sboc_mailer_mail($key, &$message, $params){
 * Returns string (Help text) 
 */
 function eventbrite_sboc_mailer_mandrill_mail_alter(&$mandrill_params, $message){
+  _eventbrite_sboc_debug_output($message['params']);
   if (isset($message['params']['mail_object'])){
     $mo = $message['params']['mail_object'];
     $mo->setGlobalMergeVars($mandrill_params, $message);
@@ -171,11 +172,12 @@ function eventbrite_sboc_mailer_ebattendees_mail(array $attendees, $message_id){
 function eventbrite_sboc_mailer_ebattendees_mail_internal(array $attendees, $message_id){
   $nid = variable_get($message_id, EBConsts::EBS_EMAIL_NODE_ID);
   $message = _eventbrite_sboc_load_message($nid);
-  $mail = new MandrillEmailMgr($attendees, EBConsts::EBS_SBOCATTENDEES_MODULE, EBConsts::EBS_SBOCATTENDEES_MAIL_KEY_INTERNAL);
+  $mail = new MandrillEmailMgr($attendees, EBConsts::EBS_SBOC_MAILER_MODULE, EBConsts::EBS_SBOC_ATTENDEES_MAIL_KEY_INTERNAL);
   $mail->params['subject'] = $message['subject'];
   $mail->params['body'] =  $message['body'];
   $mail->params['reply-to'] = '';
   $mail->params['from'] = '';
+//  watchdog(EBConsts::EBS_APPNAME, 'Inside: '. __FUNCTION__, array(), WATCHDOG_INFO);
   $mail->sendInternal();
 }
 /**
