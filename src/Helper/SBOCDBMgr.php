@@ -209,38 +209,10 @@ class SBOCDBMgr implements iDBMgr{
       $rec = entity_load($this->entityName, array($attendee->attendeeId,));
       if (!empty($rec)){
         $attendee_rec = reset($rec);
-        // Record exists let's check the fields we need to for emailing purposes
+        // Record exists let's check the fields we need to in order to trigger an email
         $this->populateChangedFieldsList($attendee, $attendee_rec);
         $retval[] = $this->realSave($attendee);
         if (!empty($attendee->changedFields)){
-//          if (function_exists($this->func_email_callback)){
-//            try{
-//              $params = array(
-//                array($attendee),
-//                EBConsts::EBS_CONFIG_EMAIL_MESSAGE_NODE_ID_2,
-//              );
-//              $callback_val = call_user_func_array($this->func_email_callback, $params);
-//              if ($callback_val === FALSE){
-//                 throw new \Exception('Exception thrown in call to: '. $this->func_email_callback);
-//              }
-//            }catch(Exception $e){
-//              watchdog_exception(__CLASS__. '->'. __METHOD__ , $e);
-//            }
-//          }
-//          if (function_exists($this->func_email_callback_2)){
-//            try{
-//              $params = array(
-//                array($attendee),
-//                EBConsts::EBS_CONFIG_EMAIL_MESSAGE_NODE_ID_3,
-//              );
-//              $callback_val = call_user_func_array($this->func_email_callback_2, $params);
-//              if ($callback_val === FALSE){
-//                throw new \Exception('Exception thrown in call to: '. $this->func_email_callback_2);
-//              }
-//            }catch(Exception $e){
-//              watchdog_exception(__CLASS__. '->'. __METHOD__ , $e);
-//            }
-//          }
           $params = array(
             array($attendee),
             EBConsts::EBS_CONFIG_EMAIL_MESSAGE_NODE_ID_2,
