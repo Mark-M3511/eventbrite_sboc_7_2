@@ -131,6 +131,7 @@ class MandrillEmailMgr implements iEmailMgr{
         $params['attendee'] = clone $attendee;
         $to = $attendee->emailAddress;
         $params['to'] = $to;
+        $params['from'] = $from;
         $result = drupal_mail($this->moduleName, $this->mailKey, $to, $language, $params, $from, $send);
         $system = drupal_mail_system($this->moduleName, $this->mailKey);
         $message = $system->format($result);
@@ -150,19 +151,12 @@ class MandrillEmailMgr implements iEmailMgr{
     $to = variable_get('site_mail', EBConsts::EBS_SBOC_EMAIL_ADDRESS);
     $send = FALSE;
     try{
-//      watchdog(EBConsts::EBS_APPNAME, 'Inside: '. __METHOD__, array(), WATCHDOG_INFO);
       foreach ($this->attendees as $attendee){
-//        watchdog(EBConsts::EBS_APPNAME, $attendee->additionalInfo, array(), WATCHDOG_INFO);
         if (!empty($attendee->additionalInfo) && !empty(trim($attendee->additionalInfo))) {
           $params['attendee'] = clone $attendee;
           $from = $attendee->emailAddress;
-          if (isset($params['reply-to'])){
-            $params['reply-to'] = $from;
-          }
-          if (isset($params['from'])){
-            $params['from'] = $from;
-          }
           $params['to'] = $to;
+          $params['from'] = $from;
           $result = drupal_mail($this->moduleName, $this->mailKey, $to, $language, $params, $from, $send);
           $system = drupal_mail_system($this->moduleName, $this->mailKey);
           $message = $system->format($result);

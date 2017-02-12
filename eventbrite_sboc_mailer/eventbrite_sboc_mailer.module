@@ -175,9 +175,6 @@ function eventbrite_sboc_mailer_ebattendees_mail_internal(array $attendees, $mes
   $mail = new MandrillEmailMgr($attendees, EBConsts::EBS_SBOC_MAILER_MODULE, EBConsts::EBS_SBOC_ATTENDEES_MAIL_KEY_INTERNAL);
   $mail->params['subject'] = $message['subject'];
   $mail->params['body'] =  $message['body'];
-  $mail->params['reply-to'] = '';
-  $mail->params['from'] = '';
-//  watchdog(EBConsts::EBS_APPNAME, 'Inside: '. __FUNCTION__, array(), WATCHDOG_INFO);
   $mail->sendInternal();
 }
 /**
