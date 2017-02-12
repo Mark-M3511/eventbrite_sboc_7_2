@@ -71,7 +71,7 @@ function eventbrite_sboc_mailer_mail($key, &$message, $params){
 * Returns string (Help text) 
 */
 function eventbrite_sboc_mailer_mandrill_mail_alter(&$mandrill_params, $message){
-  _eventbrite_sboc_debug_output($message['params']);
+//  _eventbrite_sboc_debug_output($message['params']);
   if (isset($message['params']['mail_object'])){
     $mo = $message['params']['mail_object'];
     $mo->setGlobalMergeVars($mandrill_params, $message);
