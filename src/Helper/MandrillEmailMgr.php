@@ -102,10 +102,10 @@ class MandrillEmailMgr implements iEmailMgr{
 	    }
     }
 
-    $email_address = (!empty($message['params']['to'])) ? $message['params']['to'] : $fields['email_address'];
+    $rcpt = (!empty($message['params']['to'])) ? $message['params']['to'] : $fields['email_address'];
     
     $merge_vars[] = array(
-      'rcpt' => $email_address,
+      'rcpt' => $rcpt,
       'vars' => $vars,
     );  
 
