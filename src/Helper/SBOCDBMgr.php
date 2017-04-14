@@ -425,6 +425,7 @@ class SBOCDBMgr implements iDBMgr{
     try{
       $q = new \EntityFieldQuery();
       $q->entityCondition('entity_type', 'node');
+      $q->entityCondition('bundle', 'contestant_category');
       $q->fieldCondition('field_participant_category', 'value', $category, '=');
       $q->fieldCondition('field_participant_language', 'value', $language, '=');
       $q->fieldCondition('field_eventbrite_event_id', 'value', $event_id, '=');
@@ -457,9 +458,10 @@ class SBOCDBMgr implements iDBMgr{
     $ret_val = 0;
     $ctr = 1;
     try{
-      while ($ret_val == 0 && $ctr <= 2){
+      while ($ret_val == 0 && $ctr++ <= 2){
         $q = new \EntityFieldQuery();
         $q->entityCondition('entity_type', 'node');
+        $q->entityCondition('bundle', 'region');
         $q->propertyCondition('title', $region_name, '=');
         $result = $q->execute();
         if (!empty($result['node'])){
@@ -471,7 +473,6 @@ class SBOCDBMgr implements iDBMgr{
         }else{
           $region_name = EBConsts::EBS_UNSPECIFIED_REGION;
         }
-        $ctr++;
       }
     }catch(Exception $e){
       watchdog_exception(EBConsts::EBS_APP_NAME_MAIN, $e);
