@@ -458,6 +458,7 @@ class SBOCDBMgr implements iDBMgr{
     $ret_val = 0;
     $ctr = 1;
     try{
+      /* We are post-incrementing in line $ctr++ */
       while ($ret_val == 0 && $ctr++ <= 2){
         $q = new \EntityFieldQuery();
         $q->entityCondition('entity_type', 'node');
