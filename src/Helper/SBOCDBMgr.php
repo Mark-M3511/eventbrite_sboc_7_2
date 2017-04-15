@@ -112,6 +112,7 @@ class SBOCDBMgr implements iDBMgr{
     }catch(Exception $e){
       watchdog_exception(EBConsts::EBS_APP_NAME_MAIN, $e);
     }
+
     return $a;
   }
 
@@ -143,6 +144,7 @@ class SBOCDBMgr implements iDBMgr{
     }catch(Exception $e){
       watchdog_exception(EBConsts::EBS_APP_NAME_MAIN, $e);
     }
+
     return $retval;
   }
 
@@ -158,6 +160,7 @@ class SBOCDBMgr implements iDBMgr{
     foreach($this->attendees as $id => $attendee){
       $retval[] = $this->realLegacySave($attendee);
     }
+
     return $retval;
   }
 
@@ -179,8 +182,9 @@ class SBOCDBMgr implements iDBMgr{
   public function save(){
     $retval = array();
     foreach($this->attendees as $id => $attendee){
-        $retval[] = $this->realSave($attendee);
+      $retval[] = $this->realSave($attendee);
     }
+
     return $retval;
   }
 
@@ -231,6 +235,7 @@ class SBOCDBMgr implements iDBMgr{
         }
       }
     }
+
     return $retval;
   }
 
@@ -314,6 +319,7 @@ class SBOCDBMgr implements iDBMgr{
     }catch(Exception $e){
       watchdog_exception(EBConsts::EBS_APP_NAME_MAIN, $e);
     }
+
     return $a;
   }
 
@@ -344,6 +350,7 @@ class SBOCDBMgr implements iDBMgr{
     foreach($this->attendees as $id => $attendee){
       $retval[] = $this->realSaveWithValues($attendee, $values);
     }
+
     return $retval;
   }
 
@@ -361,6 +368,7 @@ class SBOCDBMgr implements iDBMgr{
     }catch(Exception $e){
       watchdog_exception(EBConsts::EBS_APP_NAME_MAIN, $e);
     }
+
     return $attendees;
   }
 
@@ -409,6 +417,7 @@ class SBOCDBMgr implements iDBMgr{
     }catch(Exception $e){
       watchdog_exception(EBConsts::EBS_APP_NAME_MAIN, $e);
     }
+
     return $retval;
   }
 
@@ -478,6 +487,7 @@ class SBOCDBMgr implements iDBMgr{
     }catch(Exception $e){
       watchdog_exception(EBConsts::EBS_APP_NAME_MAIN, $e);
     }
+
     return $ret_val;
   }
 
@@ -505,6 +515,7 @@ class SBOCDBMgr implements iDBMgr{
     }catch(Exception $e){
       watchdog_exception(EBConsts::EBS_APP_NAME_MAIN, $e);
     }
+
     return $ret_val;
   }
 
@@ -575,6 +586,7 @@ class SBOCDBMgr implements iDBMgr{
     if (empty($length)){
       $length = strlen($value);
     }
+
     return substr($value, 0, $length);
   }
 
@@ -599,6 +611,7 @@ class SBOCDBMgr implements iDBMgr{
       $num2 = (int)substr($attendee_id, $pos);
       $retval += $num2;
     }
+
     return $retval;
   }
 
