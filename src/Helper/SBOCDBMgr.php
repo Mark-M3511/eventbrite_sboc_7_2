@@ -468,9 +468,8 @@ class SBOCDBMgr implements iDBMgr{
     $ctr = 1;
     try{
       /* We are post-incrementing inline: $ctr++ */
-      $q = new \EntityFieldQuery();
       while ($ret_val == 0 && $ctr++ <= 2){
-//        $q = new \EntityFieldQuery();
+        $q = new \EntityFieldQuery();
         $q->entityCondition('entity_type', 'node');
         $q->entityCondition('bundle', 'region');
         $q->propertyCondition('title', $region_name, '=');
