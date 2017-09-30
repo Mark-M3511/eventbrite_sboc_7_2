@@ -37,3 +37,6 @@ xmlrpc.php
 /scripts
 /themes
 
+# Dev Tools
+.idea/
+
