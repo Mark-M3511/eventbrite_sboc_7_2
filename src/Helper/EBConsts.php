@@ -145,7 +145,7 @@ class EBConsts{
   const EBS_EMPTY_STRING = '';
   const EBS_UNSPECIFIED_PROV = 'ON';
   // files
-  const EBS_ENTITY_PROPS_FILE = 'inc/entity_ebattendee.properties.inc';  
+//  const EBS_ENTITY_PROPS_FILE = 'inc/entity_ebattendee.properties.inc';
   const EBS_ENTITY_CLASS_FILE = 'inc/entity_ebattendee.classes.inc'; 
   // roles
   const EBS_DRUPAL_ROLE_AUTHENTICATED_USER = 'authenticated user';    
