@@ -152,7 +152,8 @@ class MandrillEmailMgr implements iEmailMgr{
     $send = FALSE;
     try{
       foreach ($this->attendees as $attendee){
-        if (!empty($attendee->additionalInfo) && !empty(trim($attendee->additionalInfo))) {
+        $additional_info = trim($attendee->additionalInfo);
+        if (!empty($additional_info)){
           $params['attendee'] = clone $attendee;
           $from = $attendee->emailAddress;
           $params['to'] = $to;
