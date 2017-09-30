@@ -1,4 +1,4 @@
--- SUMMARY --
+##SUMMARY
 
 Eventbrite SBOC allows a Drupal site to interact with the Eventbrite API to retrieve information about specific events and attendees. In its current form, it is labelled and customized for use on the Spelling Bee Of Canada website.
 
@@ -15,7 +15,7 @@ For a full description of the module, visit the project page on GitHub:
 To submit bug reports and feature suggestions, or to track changes on GitHub:
   https://github.com/Mark-M3511/eventbrite_sboc_7_2
 
--- REQUIREMENTS --
+##REQUIREMENTS
 
  * Drupal Core (v7.x)
  * Mime Mail
@@ -24,10 +24,10 @@ To submit bug reports and feature suggestions, or to track changes on GitHub:
  * xautoload 
  * Eventbrite API Access - PHP project at: http://eventbrite.github.com 
  
- -- RECOMMENDATIONS --
+ ##RECOMMENDATIONS
  * Ulitamte Cron project - http://drupal.org/project/ultimate_cron
 
--- INSTALLATION --
+##INSTALLATION
   
 1) Copy the eventbrite_sboc folder to the modules folder in your installation.
 
@@ -40,8 +40,8 @@ To submit bug reports and feature suggestions, or to track changes on GitHub:
 4) Configure Eventbrie SBOC with your credentials and other items at
    (admin/config/system/eventbrite_sboc).
    
---- TODO ---
-1) Develop and implement test automated cases
+##TODO
+1) Develop and implement automated test cases
 2) Continuous code improvements/changes to remain compliant with API changes/improvements
 3) Improve entity integration (i.e. allow more UI based interactions with local entities)
   
