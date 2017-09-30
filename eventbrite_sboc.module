@@ -192,7 +192,7 @@ function eventbrite_sboc_oauth2_clients(){
 */
 function eventbrite_sboc_help($path, $arg){
   $output = '';
-  
+
   switch($path){
 		case 'admin/help#eventbrite_sboc':
 		  $output .= '<p>';
@@ -200,7 +200,7 @@ function eventbrite_sboc_help($path, $arg){
       $output .= 'Spelling Bee Of Canada (SBOC). Designed/Developed/Maintained by Holbrook Goodman Technologies.';
       $output .= '</p>';
 		  break;
-    case EBConsts::EBS_ADMINMENUROOT. '/event':
+    case 'admin/config/system/eventbrite_sboc/event':
       $output .= '<h3>Event Setup -- Help</h3>';
       $output .= '<p>';
       $output .= '<ul>';
@@ -215,7 +215,8 @@ function eventbrite_sboc_help($path, $arg){
       $output .= 'If you have entered the correct event id, information will be displayed about the event in the ';
       $output .= '<span style="font-weight: bold;">EVENT INFORMATION</span> section';
       $output .= '</p>';
-    case EBConsts::EBS_ADMINMENUROOT. '/event/orders':
+      break;
+    case 'admin/config/system/eventbrite_sboc/event/orders':
       $output .= '<h3>Event Orders -- Help</h3>';
       $output .= '<p>';
       $output .= '<ul>';
@@ -336,7 +337,7 @@ function _eventbrite_sboc_cron_update_attendees($save_changed_only = FALSE, $str
 
     $returned_attendee_list = _eventbrite_sboc_invoke_save($attendees, $save_changed_only, $strictly_process_changed_records);
 
-    // Process mail for records with attendee records url set
+    // Process mail for records with password reset url set
     $mail_list = array();
     foreach($returned_attendee_list as $mod => $attendee_list){
       foreach($attendee_list as $id => $attendee){
@@ -463,7 +464,7 @@ function _eventbrite_sboc_invoke_save_withvalues($attendees, $values){
 * @param array $attendees (array(Object1, Object2, ObjectN))
 * @return  array of Attendee objects
 */
-function _eventbrite_sboc_invoke_mail($attendees, $message_id=EBConsts::EBS_CONFIG_EMAIL_MESSAGE_NODE_ID_1){
+function _eventbrite_sboc_invoke_mail($attendees, $message_id = EBConsts::EBS_CONFIG_EMAIL_MESSAGE_NODE_ID_1){
   $retval = array();
   $hook_suffix = 'ebattendees_mail';
   foreach(module_implements($hook_suffix) as $module){
@@ -471,6 +472,22 @@ function _eventbrite_sboc_invoke_mail($attendees, $message_id=EBConsts::EBS_CONF
     $retval[$function] = $function($attendees, $message_id);
   }
   
+  return $retval;
+}
+
+/**
+ * @param $attendees
+ * @param string $message_id
+ * @return array
+ */
+function _eventbrite_sboc_invoke_mail_internal($attendees, $message_id = EBConsts::EBS_CONFIG_EMAIL_MESSAGE_NODE_ID_3){
+  $retval = array();
+  $hook_suffix = 'ebattendees_mail_internal';
+  foreach(module_implements($hook_suffix) as $module){
+    $function = $module. '_'. $hook_suffix;
+    $retval[$function] = $function($attendees, $message_id);
+  }
+
   return $retval;
 }
 
@@ -605,6 +622,7 @@ function _eventbrite_sboc_webhook_callback(){
 //          _eventbrite_sboc_debug_output($returned_attendee_list);
           foreach($returned_attendee_list as $mod => $attendee_list){
             _eventbrite_sboc_invoke_mail($attendee_list);
+            _eventbrite_sboc_invoke_mail_internal($attendee_list);
           }
         }
       }

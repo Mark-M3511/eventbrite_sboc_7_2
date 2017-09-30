@@ -30,6 +30,7 @@ class SBOCDBMgr implements iDBMgr{
   public $entityName;
   public $attendees;
   public $func_email_callback;
+  public $func_email_callback_2;
 
   /**
   * Creates an instance of SBOCDBMgr and returns that object to the caller
@@ -45,6 +46,7 @@ class SBOCDBMgr implements iDBMgr{
     $this->attendees = $attendees;
     $this->saveChangedOnly = $save_changed_only;
     $this->func_email_callback = EBConsts::EBS_FUNC_EMAIL_CALLBACK;
+    $this->func_email_callback_2 = EBConsts::EBS_FUNC_EMAIL_CALLBACK_2;
   }
 
   /**
@@ -108,8 +110,9 @@ class SBOCDBMgr implements iDBMgr{
 
       $a->save();
     }catch(Exception $e){
-      watchdog_exception(__CLASS__. '~'. __METHOD__, $e);
+      watchdog_exception(EBConsts::EBS_APP_NAME_MAIN, $e);
     }
+
     return $a;
   }
 
@@ -139,8 +142,9 @@ class SBOCDBMgr implements iDBMgr{
       $q->fields($values);
       $q->execute();
     }catch(Exception $e){
-      watchdog_exception(__CLASS__. '~'. __METHOD__, $e);
+      watchdog_exception(EBConsts::EBS_APP_NAME_MAIN, $e);
     }
+
     return $retval;
   }
 
@@ -156,6 +160,7 @@ class SBOCDBMgr implements iDBMgr{
     foreach($this->attendees as $id => $attendee){
       $retval[] = $this->realLegacySave($attendee);
     }
+
     return $retval;
   }
 
@@ -177,8 +182,9 @@ class SBOCDBMgr implements iDBMgr{
   public function save(){
     $retval = array();
     foreach($this->attendees as $id => $attendee){
-        $retval[] = $this->realSave($attendee);
+      $retval[] = $this->realSave($attendee);
     }
+
     return $retval;
   }
 
@@ -207,24 +213,21 @@ class SBOCDBMgr implements iDBMgr{
       $rec = entity_load($this->entityName, array($attendee->attendeeId,));
       if (!empty($rec)){
         $attendee_rec = reset($rec);
-        // Record exists let's check the fields we need to for emailing purposes
+        // Record exists let's check the fields we need to in order to trigger an email
         $this->populateChangedFieldsList($attendee, $attendee_rec);
         $retval[] = $this->realSave($attendee);
         if (!empty($attendee->changedFields)){
-          if (function_exists($this->func_email_callback)){
-            try{
-              $params = array(
-                array($attendee),
-                EBConsts::EBS_CONFIG_EMAIL_MESSAGE_NODE_ID_2,
-              );
-              $callback_val = call_user_func_array($this->func_email_callback, $params);
-              if ($callback_val === FALSE){
-                 throw new \Exception('Exception thrown in call to: '. $this->func_email_callback);
-              }
-            }catch(Exception $e){
-              watchdog_exception(__CLASS__. '->'. __METHOD__ , $e);
-            }
-          }
+          $params = array(
+            array($attendee),
+            EBConsts::EBS_CONFIG_EMAIL_MESSAGE_NODE_ID_2,
+          );
+          $this->executeCallback($this->func_email_callback, $params);
+
+          $params = array(
+            array($attendee),
+            EBConsts::EBS_CONFIG_EMAIL_MESSAGE_NODE_ID_3,
+          );
+          $this->executeCallback($this->func_email_callback_2, $params);
         }
       }else{
         if (!$strict){
@@ -232,7 +235,26 @@ class SBOCDBMgr implements iDBMgr{
         }
       }
     }
+
     return $retval;
+  }
+
+  /**
+   * @param $callback
+   * @param $params
+   * @throws \Exception
+   */
+  public function executeCallback($callback, $params){
+    if (function_exists($callback)){
+      try{
+        $callback_val = call_user_func_array($callback, $params);
+        if ($callback_val === FALSE){
+          throw new \Exception('Exception thrown in call to: '. $callback);
+        }
+      }catch(Exception $e){
+        watchdog_exception(EBConsts::EBS_APP_NAME_MAIN , $e);
+      }
+    }
   }
 
   /**
@@ -295,8 +317,9 @@ class SBOCDBMgr implements iDBMgr{
       $a->save();
       $this->updateTimestamps($attendee);
     }catch(Exception $e){
-      watchdog_exception(__CLASS__. '->'. __METHOD__, $e);
+      watchdog_exception(EBConsts::EBS_APP_NAME_MAIN, $e);
     }
+
     return $a;
   }
 
@@ -327,6 +350,7 @@ class SBOCDBMgr implements iDBMgr{
     foreach($this->attendees as $id => $attendee){
       $retval[] = $this->realSaveWithValues($attendee, $values);
     }
+
     return $retval;
   }
 
@@ -342,8 +366,9 @@ class SBOCDBMgr implements iDBMgr{
     try{
       $attendees = entity_load(EBConsts::EBS_ENTITY_TYPE_ATTENDEE, $ids);
     }catch(Exception $e){
-      watchdog_exception(EBConsts::EBS_APPNAME_ATTENDEES, $e);
+      watchdog_exception(EBConsts::EBS_APP_NAME_MAIN, $e);
     }
+
     return $attendees;
   }
 
@@ -366,7 +391,7 @@ class SBOCDBMgr implements iDBMgr{
         $retval[] = $rec->{EBConsts::EBS_FIELDS_EVENTBRITE_KEY};
       }
     }catch(Exception $e){
-      watchdog_exception(__CLASS__. '~'. __METHOD__, $e);
+      watchdog_exception(EBConsts::EBS_APP_NAME_MAIN, $e);
     }
     return $retval;
   }
@@ -390,8 +415,9 @@ class SBOCDBMgr implements iDBMgr{
         $retval[] = (int)$rec->{EBConsts::EBS_FIELDS_ENTITY_KEY};
       }
     }catch(Exception $e){
-      watchdog_exception(__CLASS__. '~'. __METHOD__, $e);
+      watchdog_exception(EBConsts::EBS_APP_NAME_MAIN, $e);
     }
+
     return $retval;
   }
 
@@ -408,6 +434,7 @@ class SBOCDBMgr implements iDBMgr{
     try{
       $q = new \EntityFieldQuery();
       $q->entityCondition('entity_type', 'node');
+      $q->entityCondition('bundle', 'contestant_category');
       $q->fieldCondition('field_participant_category', 'value', $category, '=');
       $q->fieldCondition('field_participant_language', 'value', $language, '=');
       $q->fieldCondition('field_eventbrite_event_id', 'value', $event_id, '=');
@@ -422,7 +449,7 @@ class SBOCDBMgr implements iDBMgr{
         }
       }
     }catch(Exception $e){
-      watchdog_exception(__CLASS__. '~'. __METHOD__, $e);
+      watchdog_exception(EBConsts::EBS_APP_NAME_MAIN, $e);
     }
 
     return $ret_val;
@@ -440,9 +467,11 @@ class SBOCDBMgr implements iDBMgr{
     $ret_val = 0;
     $ctr = 1;
     try{
-      while ($ret_val == 0 && $ctr <= 2){
+      /* We are post-incrementing inline: $ctr++ */
+      while ($ret_val == 0 && $ctr++ <= 2){
         $q = new \EntityFieldQuery();
         $q->entityCondition('entity_type', 'node');
+        $q->entityCondition('bundle', 'region');
         $q->propertyCondition('title', $region_name, '=');
         $result = $q->execute();
         if (!empty($result['node'])){
@@ -454,11 +483,11 @@ class SBOCDBMgr implements iDBMgr{
         }else{
           $region_name = EBConsts::EBS_UNSPECIFIED_REGION;
         }
-        $ctr++;
       }
     }catch(Exception $e){
-      watchdog_exception(__CLASS__. '~'. __METHOD__, $e);
+      watchdog_exception(EBConsts::EBS_APP_NAME_MAIN, $e);
     }
+
     return $ret_val;
   }
 
@@ -484,8 +513,9 @@ class SBOCDBMgr implements iDBMgr{
         }
       }
     }catch(Exception $e){
-      watchdog_exception(__CLASS__. '~'. __METHOD__, $e);
+      watchdog_exception(EBConsts::EBS_APP_NAME_MAIN, $e);
     }
+
     return $ret_val;
   }
 
@@ -556,6 +586,7 @@ class SBOCDBMgr implements iDBMgr{
     if (empty($length)){
       $length = strlen($value);
     }
+
     return substr($value, 0, $length);
   }
 
@@ -580,6 +611,7 @@ class SBOCDBMgr implements iDBMgr{
       $num2 = (int)substr($attendee_id, $pos);
       $retval += $num2;
     }
+
     return $retval;
   }
 

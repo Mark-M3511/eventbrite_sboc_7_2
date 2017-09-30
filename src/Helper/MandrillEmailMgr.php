@@ -13,6 +13,7 @@ use Drupal\eventbrite_sboc\Helper\SBOCDBMgr;
 */ 
 interface iEmailMgr{
   public function send();
+  public function sendInternal();
 }
 
 /**
@@ -35,8 +36,8 @@ class MandrillEmailMgr implements iEmailMgr{
   *
   * Returns implicit object of type MandrillEmailMgr
   */ 
-  public function __construct(array $attendees = array(), $module_name = EBConsts::EBS_SBOCATTENDEES_MODULE,
-      $mail_key = EBConsts::EBS_SBOCATTENDEES_MAIL_KEY){
+  public function __construct(array $attendees = array(), $module_name = EBConsts::EBS_SBOC_MAILER_MODULE,
+      $mail_key = EBConsts::EBS_SBOC_ATTENDEES_MAIL_KEY){
       
     $this->attendees = $attendees;
     $this->moduleName = $module_name;
@@ -55,26 +56,14 @@ class MandrillEmailMgr implements iEmailMgr{
   */
   public function setGlobalMergeVars(&$mandrill_params, $message){
     $global_merge_vars = array();
-    $attendee = $message['params']['attendee'];
+
+    /* -- Also availabe -- */
+    /* $attendee = $message['params']['attendee']; */
     
     $global_merge_vars[] = array(
       'name' => 'subject',
 	    'content' => check_plain($message['params']['subject']),
     );
-
-    /*
-    $global_merge_vars[] = array(
-      'name' => 'from',
-	    'content' => $message['params']['from'],
-    );
-
-    $global_merge_vars[] = array(
-      'name' => 'headers',
-      'content' => array(
-         'Reply-To' => $attendee->emailAddress,
-       ),
-    );
-    */
 
     $global_merge_vars[] = array(
       'name' => 'current_year',
@@ -111,10 +100,12 @@ class MandrillEmailMgr implements iEmailMgr{
           'content' => check_plain($value),
 	      );
 	    }
-    }    
+    }
+
+    $rcpt = (!empty($message['params']['to'])) ? $message['params']['to'] : $fields['email_address'];
     
     $merge_vars[] = array(
-      'rcpt' => $fields['email_address'],
+      'rcpt' => $rcpt,
       'vars' => $vars,
     );  
 
@@ -133,12 +124,14 @@ class MandrillEmailMgr implements iEmailMgr{
     $params = array();
     $params['mail_object'] = $this;
     $params += $this->params;
-    $from = variable_get('site_mail', EBConsts::EBS_SBOCEMAILADDRESS);
+    $from = variable_get('site_mail', EBConsts::EBS_SBOC_EMAIL_ADDRESS);
     $send = FALSE;
     try{
       foreach($this->attendees as $attendee){
         $params['attendee'] = clone $attendee;
         $to = $attendee->emailAddress;
+        $params['to'] = $to;
+        $params['from'] = $from;
         $result = drupal_mail($this->moduleName, $this->mailKey, $to, $language, $params, $from, $send);
         $system = drupal_mail_system($this->moduleName, $this->mailKey);
         $message = $system->format($result);
@@ -148,7 +141,34 @@ class MandrillEmailMgr implements iEmailMgr{
       watchdog_exception(EBConsts::EBS_APPNAME_MAIL, $e);
     }
   }
-  
+
+  public function sendInternal() {
+    // TODO: 1: Add template to Mandrill dashboard 2:Import template 3: Add node/post with message 4:Test
+    $language = language_default();
+    $params = array();
+    $params['mail_object'] = $this;
+    $params += $this->params;
+    $to = variable_get('site_mail', EBConsts::EBS_SBOC_EMAIL_ADDRESS);
+    $send = FALSE;
+    try{
+      foreach ($this->attendees as $attendee){
+        $additional_info = trim($attendee->additionalInfo);
+        if (!empty($additional_info)){
+          $params['attendee'] = clone $attendee;
+          $from = $attendee->emailAddress;
+          $params['to'] = $to;
+          $params['from'] = $from;
+          $result = drupal_mail($this->moduleName, $this->mailKey, $to, $language, $params, $from, $send);
+          $system = drupal_mail_system($this->moduleName, $this->mailKey);
+          $message = $system->format($result);
+          $system->mail($result);
+        }
+      }
+    }catch(Exception $e){
+      watchdog_exception(EBConsts::EBS_APPNAME_MAIL, $e);
+    }
+  }
+
 }
 
   
