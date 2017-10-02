@@ -50,7 +50,7 @@ class SBOCDBMgr implements iDBMgr{
   }
 
   /**
-  * Writes an attendee data stored in an object to the database.
+  * Writes attendee data stored in an object to the database.
   *
   * @params object $attendee
   *   This method uses the more Drupal like Entity API to save values to the database
@@ -60,7 +60,7 @@ class SBOCDBMgr implements iDBMgr{
   protected function realSave($attendee){
     /*** ****************************************************** ***
     1: Property names must match field names in base table(s)
-    2: The following fields should only be updated by the email prcess
+    2: The following fields should only be updated by the email process
         $a->email_sent = $attendee->emailSent;
         $a->email_send_date = $attendee->emailSendDate;
     ************************************************************ ***/
