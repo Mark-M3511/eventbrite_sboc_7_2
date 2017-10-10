@@ -615,7 +615,7 @@ function _eventbrite_sboc_webhook_callback(){
 
     if ($eb_webhook_user_id_received != $webhook_user_id_stored){
       watchdog(EBConsts::EBS_APPNAME, t('Webhook user id validation test failed. Received: @uid'),
-        array('@uid', $eb_webhook_user_id_received), WATCHDOG_ALERT);
+        array('@uid' => $eb_webhook_user_id_received), WATCHDOG_ALERT);
       return;
     }
 
