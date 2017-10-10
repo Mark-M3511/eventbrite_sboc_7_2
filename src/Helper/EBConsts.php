@@ -24,6 +24,7 @@ class EBConsts{
   const EBS_CONFIG_EVENT_ID = 'ebs_event_id';
   const EBS_CONFIG_AUTHTOKEN = 'ebs_authtoken';
   const EBS_AUTHTOKEN_TYPE = 'ebs_authtoken_type';
+  const EBS_CONFIG_WEBHOOK_USERT_ID = 'ebs_webhook_user_id';
   const EBS_CONFIG_AUTHTOKEN_TYPE = self::EBS_AUTHTOKEN_TYPE;
   const EBS_CONFIG_CHANGED_SINCE_DAYS = 'ebs_changed_since_days';
   const EBS_CONFIG_CHANGED_SINCE_HOURS = 'ebs_changed_since_hours';
@@ -40,14 +41,16 @@ class EBConsts{
   const EBS_FUNC_EMAIL_CALLBACK_2 = '_eventbrite_sboc_invoke_mail_internal';
   // webhook json api data
   const EBS_JSON_PARAM_API_URL = 'api_url';
+  // Eventbrite Webhook API
+  const EBS_WEBHOOK_TEST_URL_PATH = '{api-endpoint-to-fetch-object-details}';
+  const EBS_WEBHOOK_CONFIG_ACTION_ORDER_PLACED = 'order.placed';
+  const EBS_WEBHOOK_CONFIG_ACTION_ORDER_UPDATED = 'order.updated';
   // Title
   const EBS_APPLICATION_TITLE = 'Eventbrite SBOC v2';
   // Oauth
   const EBS_OAUTH2_SETTINGS_LABEL = 'ebv3';
   const EBS_EB_RESPONSE_TYPE_CODE = 'code';
   const EBS_EB_GRANT_TYPE_AUTH_CODE = 'authorization_code';
-  // Eventbrite Tests
-  const EBS_WEBHOOK_TEST_URL_PATH = '{api-endpoint-to-fetch-object-details}';
   // db table
   const EBS_DBTABLE_ATTENDEES = 'eventbrite_sboc_attendees';  
   // entity name

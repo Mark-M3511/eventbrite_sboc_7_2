@@ -19,14 +19,15 @@ function _eventbrite_sboc_form_event_setup($form, &$form_state){
     '#maxlength' => 128,
     '#required' => TRUE,
   );
-  
-//  $form['ebs_event_setup'][EBConsts::EBS_CONFIG_CHANGED_SINCE_DAYS] = array(
-//    '#type' => 'select',
-//    '#title' => t('Number of days of changed records to retrieve'),
-//    '#options' => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,),
-//    '#default_value' => variable_get(EBConsts::EBS_CONFIG_CHANGED_SINCE_DAYS, EBConsts::EBS_CONFIG_DEFAULT_CHANGED_SINCE_DAYS),
-//    '#required' => TRUE,
-//  );
+
+  $form['ebs_event_setup'][EBConsts::EBS_CONFIG_WEBHOOK_USERT_ID] = array(
+    '#type' => 'textfield',
+    '#title' => t('Webhook User ID'),
+    '#default_value' => variable_get(EBConsts::EBS_CONFIG_WEBHOOK_USERT_ID, ''),
+    '#size' => '80',
+    '#maxlength' => 128,
+    '#required' => TRUE,
+  );
 
   $form['ebs_event_setup'][EBConsts::EBS_CONFIG_CHANGED_SINCE_HOURS] = array(
     '#type' => 'select',
