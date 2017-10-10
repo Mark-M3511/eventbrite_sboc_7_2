@@ -610,19 +610,21 @@ function _eventbrite_sboc_webhook_callback(){
     $input_json = file_get_contents(EBConsts::EBS_PHP_INPUT_STREAM);
     $input_json_array = json_decode($input_json, TRUE);
 
-    $eb_webhook_user_id = !empty($input_json_array['config']['user_id']) ? $input_json_array['config']['user_id'] : '';
-    $webhook_user_id = variable_get(EBConsts::EBS_CONFIG_WEBHOOK_USERT_ID, '');
+    $eb_webhook_user_id_received = !empty($input_json_array['config']['user_id']) ? $input_json_array['config']['user_id'] : '';
+    $webhook_user_id_stored = variable_get(EBConsts::EBS_CONFIG_WEBHOOK_USERT_ID, '');
 
-    if ($eb_webhook_user_id != $webhook_user_id){
-      watchdog(EBConsts::EBS_APPNAME, t('Webhook user id validation test failed.'), array(), WATCHDOG_ALERT);
+    if ($eb_webhook_user_id_received != $webhook_user_id_stored){
+      watchdog(EBConsts::EBS_APPNAME, t('Webhook user id validation test failed. Received: @uid'),
+        array('@uid', $eb_webhook_user_id_received), WATCHDOG_ALERT);
       return;
     }
 
     $eb_webhook_type = !empty($input_json_array['config']['action']) ? $input_json_array['config']['action'] : '';
+    $url = $input_json_array[EBConsts::EBS_JSON_PARAM_API_URL];
+    watchdog(EBConsts::EBS_APPNAME, 'Incoming url => @url', array('@url' => $url,), WATCHDOG_INFO);
 
     switch($eb_webhook_type){
       case EBConsts::EBS_WEBHOOK_CONFIG_ACTION_ORDER_PLACED:
-        $url = $input_json_array[EBConsts::EBS_JSON_PARAM_API_URL];
         $attendees = _eventbrite_sboc_order($url);
         if (!empty($attendees)){
           $returned_attendee_list = _eventbrite_sboc_invoke_save($attendees);
