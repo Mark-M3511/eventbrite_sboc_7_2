@@ -48,6 +48,9 @@ class EBConsts{
   const EBS_EB_GRANT_TYPE_AUTH_CODE = 'authorization_code';
   // Eventbrite Tests
   const EBS_WEBHOOK_TEST_URL_PATH = '{api-endpoint-to-fetch-object-details}';
+  // Eventbrite Webhook API
+  const EBS_WEBHOOK_CONFIG_ACTION_ORDER_PLACED = 'order.placed';
+  const EBS_WEBHOOK_CONFIG_ACTION_ORDER_UPDATED = 'order.updated';
   // db table
   const EBS_DBTABLE_ATTENDEES = 'eventbrite_sboc_attendees';  
   // entity name
