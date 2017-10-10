@@ -609,11 +609,11 @@ function _eventbrite_sboc_webhook_callback(){
   try{
     $input_json = file_get_contents(EBConsts::EBS_PHP_INPUT_STREAM);
     $input_json_array = json_decode($input_json, TRUE);
-    $user_id = variable_get('ebsboc_eb_user_id', '');
 
-    $eb_user_id = !empty($input_json_array['config']['user_id']) ? $input_json_array['config']['user_id'] : '';
+    $eb_webhook_user_id = !empty($input_json_array['config']['user_id']) ? $input_json_array['config']['user_id'] : '';
+    $webhook_user_id = variable_get(EBConsts::EBS_CONFIG_WEBHOOK_USERT_ID, '');
 
-    if ($eb_user_id === $user_id){
+    if ($eb_webhook_user_id != $webhook_user_id){
       watchdog(EBConsts::EBS_APPNAME, t('Webhook user id validation test failed.'), array(), WATCHDOG_ALERT);
       return;
     }
