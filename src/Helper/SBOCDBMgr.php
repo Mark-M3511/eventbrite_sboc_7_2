@@ -109,7 +109,7 @@ class SBOCDBMgr implements iDBMgr{
       $a->language = $attendee->language;
 
       $a->save();
-    }catch(\Exception $e){
+    }catch(Exception $e){
       watchdog_exception(EBConsts::EBS_APP_NAME_MAIN, $e);
     }
 
@@ -141,7 +141,7 @@ class SBOCDBMgr implements iDBMgr{
       );
       $q->fields($values);
       $q->execute();
-    }catch(\Exception $e){
+    }catch(Exception $e){
       watchdog_exception(EBConsts::EBS_APP_NAME_MAIN, $e);
     }
 
@@ -242,7 +242,7 @@ class SBOCDBMgr implements iDBMgr{
   /**
    * @param $callback
    * @param $params
-   * @throws Exception
+   * @throws \Exception
    */
   public function executeCallback($callback, $params){
     if (function_exists($callback)){
@@ -251,7 +251,7 @@ class SBOCDBMgr implements iDBMgr{
         if ($callback_val === FALSE){
           throw new \Exception('Exception thrown in call to: '. $callback);
         }
-      }catch(\Exception $e){
+      }catch(Exception $e){
         watchdog_exception(EBConsts::EBS_APP_NAME_MAIN , $e);
       }
     }
@@ -316,7 +316,7 @@ class SBOCDBMgr implements iDBMgr{
       }
       $a->save();
       $this->updateTimestamps($attendee);
-    }catch(\Exception $e){
+    }catch(Exception $e){
       watchdog_exception(EBConsts::EBS_APP_NAME_MAIN, $e);
     }
 
@@ -365,7 +365,7 @@ class SBOCDBMgr implements iDBMgr{
     $attendees = array();
     try{
       $attendees = entity_load(EBConsts::EBS_ENTITY_TYPE_ATTENDEE, $ids);
-    }catch(\Exception $e){
+    }catch(Exception $e){
       watchdog_exception(EBConsts::EBS_APP_NAME_MAIN, $e);
     }
 
@@ -390,7 +390,7 @@ class SBOCDBMgr implements iDBMgr{
       foreach($recs as $rec){
         $retval[] = $rec->{EBConsts::EBS_FIELDS_EVENTBRITE_KEY};
       }
-    }catch(\Exception $e){
+    }catch(Exception $e){
       watchdog_exception(EBConsts::EBS_APP_NAME_MAIN, $e);
     }
     return $retval;
@@ -414,7 +414,7 @@ class SBOCDBMgr implements iDBMgr{
       foreach($recs as $rec){
         $retval[] = (int)$rec->{EBConsts::EBS_FIELDS_ENTITY_KEY};
       }
-    }catch(\Exception $e){
+    }catch(Exception $e){
       watchdog_exception(EBConsts::EBS_APP_NAME_MAIN, $e);
     }
 
@@ -448,7 +448,7 @@ class SBOCDBMgr implements iDBMgr{
           $ret_val = reset($nodes)->nid;
         }
       }
-    }catch(\Exception $e){
+    }catch(Exception $e){
       watchdog_exception(EBConsts::EBS_APP_NAME_MAIN, $e);
     }
 
@@ -484,7 +484,7 @@ class SBOCDBMgr implements iDBMgr{
           $region_name = EBConsts::EBS_UNSPECIFIED_REGION;
         }
       }
-    }catch(\Exception $e){
+    }catch(Exception $e){
       watchdog_exception(EBConsts::EBS_APP_NAME_MAIN, $e);
     }
 
@@ -512,7 +512,7 @@ class SBOCDBMgr implements iDBMgr{
           $ret_val[$node->nid] = check_plain($node->title);
         }
       }
-    }catch(\Exception $e){
+    }catch(Exception $e){
       watchdog_exception(EBConsts::EBS_APP_NAME_MAIN, $e);
     }
 
