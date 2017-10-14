@@ -38,7 +38,7 @@ function _eventbrite_sboc_form_event_setup($form, &$form_state){
   );
 
   $email_messages = array(EBConsts::EBS_CONFIG_EMAIL_MESSAGE_NONE => '--'. t('None'). '--');
-  $email_messages = array_merge($email_messages,(new SBOCDBMgr())->getEmailMessages());
+  $email_messages += (new SBOCDBMgr())->getEmailMessages();
 
   $form['ebs_event_setup'][EBConsts::EBS_CONFIG_EMAIL_MESSAGE_NODE_ID] = array(
     '#type' => 'select',
