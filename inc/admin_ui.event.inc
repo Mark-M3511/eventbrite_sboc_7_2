@@ -29,7 +29,7 @@ function _eventbrite_sboc_form_event_setup($form, &$form_state){
     '#required' => TRUE,
   );
 
-  $hours = range(0,23);
+  $hours = range(0, 23);
   $form['ebs_event_setup'][EBConsts::EBS_CONFIG_CHANGED_SINCE_HOURS] = array(
     '#type' => 'select',
     '#title' => t('Maximum age (in hours) used for selecting modified records'),
