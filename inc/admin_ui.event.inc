@@ -29,22 +29,24 @@ function _eventbrite_sboc_form_event_setup($form, &$form_state){
     '#required' => TRUE,
   );
 
+  $hours = range(0, 23);
   $form['ebs_event_setup'][EBConsts::EBS_CONFIG_CHANGED_SINCE_HOURS] = array(
     '#type' => 'select',
-    '#title' => t('Number of hours of changed records to retrieve'),
-    '#options' => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23),
+    '#title' => t('Maximum age (in hours) used for selecting modified records'),
+    '#options' => $hours,
     '#default_value' => variable_get(EBConsts::EBS_CONFIG_CHANGED_SINCE_HOURS, EBConsts::EBS_CONFIG_DEFAULT_CHANGED_SINCE_HOURS),
     '#required' => TRUE,
   );
-  
-  $email_messages = (new SBOCDBMgr())->getEmailMessages();
+
+  $email_messages = array(EBConsts::EBS_CONFIG_EMAIL_MESSAGE_NONE => '--'. t('No Message'). '--');
+  $email_messages += (new SBOCDBMgr())->getEmailMessages();
 
   $form['ebs_event_setup'][EBConsts::EBS_CONFIG_EMAIL_MESSAGE_NODE_ID] = array(
     '#type' => 'select',
     '#title' => t('Email Message 1'),
     '#description' => t('Usually used for the main welcome message (i.e. new registrations)'),
     '#options' => $email_messages,
-    '#default_value' => variable_get(EBConsts::EBS_CONFIG_EMAIL_MESSAGE_NODE_ID, EBConsts::EBS_EMAIL_NODE_ID),
+    '#default_value' => variable_get(EBConsts::EBS_CONFIG_EMAIL_MESSAGE_NODE_ID, EBConsts::EBS_CONFIG_EMAIL_MESSAGE_NONE),
     '#required' => TRUE,
   );
   
@@ -53,8 +55,7 @@ function _eventbrite_sboc_form_event_setup($form, &$form_state){
     '#title' => t('Email Message 2'),
     '#description' => t('Usually used for a secondary welcome message (i.e. existing registrations)'),
     '#options' => $email_messages,
-    '#default_value' => variable_get(EBConsts::EBS_CONFIG_EMAIL_MESSAGE_NODE_ID_2, 
-      variable_get(EBConsts::EBS_CONFIG_EMAIL_MESSAGE_NODE_ID, EBConsts::EBS_EMAIL_NODE_ID)),
+    '#default_value' => variable_get(EBConsts::EBS_CONFIG_EMAIL_MESSAGE_NODE_ID_2, EBConsts::EBS_CONFIG_EMAIL_MESSAGE_NONE),
     '#required' => TRUE,
   );
 
@@ -63,8 +64,7 @@ function _eventbrite_sboc_form_event_setup($form, &$form_state){
     '#title' => t('Email Message 3'),
     '#description' => t('Usually used for messages sent to SBOC (i.e. registration notes)'),
     '#options' => $email_messages,
-    '#default_value' => variable_get(EBConsts::EBS_CONFIG_EMAIL_MESSAGE_NODE_ID_3,
-      variable_get(EBConsts::EBS_CONFIG_EMAIL_MESSAGE_NODE_ID, EBConsts::EBS_EMAIL_NODE_ID)),
+    '#default_value' => variable_get(EBConsts::EBS_CONFIG_EMAIL_MESSAGE_NODE_ID_3, EBConsts::EBS_CONFIG_EMAIL_MESSAGE_NONE),
     '#required' => TRUE,
   );
   
