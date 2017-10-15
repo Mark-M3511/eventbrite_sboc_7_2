@@ -197,9 +197,18 @@ function eventbrite_sboc_help($path, $arg){
 		case 'admin/help#eventbrite_sboc':
     case 'admin/config/system/eventbrite_sboc':
       $output = <<<'HELP'
+        <h3>About this module</h3>
         <p>
         This module manages communication with Eventbrite and Mandrill services on behalf of Spelling Bee Of Canada (SBOC).
         Designed/Developed/Maintained by Holbrook Goodman Technologies.
+        </p>
+        <h3>OAuth Setup -- Help</h3>
+        <p>
+          <>
+            <li>Enter your Consumer Key or Client Id in the text box provided</li>
+            <li>Enter your Consumer Secret or Passphrase in the text box provided</li>
+          </ul>
+          Visit <a href="https://developer.eventbrite.com/" title="Eventbrite developer reference">eventbrite.com</a> to set up your developer account.
         </p>
 HELP;
 		  break;
