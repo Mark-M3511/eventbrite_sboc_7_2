@@ -595,8 +595,8 @@ function _eventbrite_sboc_fetch_order($order_num, $expansion = EBConsts::EBS_ORD
 
 
 /**
-* Helper function to retrieve Eventbrite attendee records from an order
-* @param string $url - a url typically supplied by Eventbrite via its wehhook API
+* Helper function to retrieve Eventbrite attendee records for an order
+* @param string $url - a url typically supplied by Eventbrite via its web hook API
 * @return  array of Attendee objects
 */
 function _eventbrite_sboc_order($url){
