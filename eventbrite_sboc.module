@@ -312,9 +312,7 @@ function _eventbrite_sboc_cron_update_attendees($save_changed_only = FALSE, $str
     $do = new \DateTime('now', $dt);
     // bof: Set interval
     // e.g. P10D  Period of 10 Days | PT2H Period of 2 Hours
-//    $days = variable_get(EBConsts::EBS_CONFIG_CHANGED_SINCE_DAYS, EBConsts::EBS_CONFIG_DEFAULT_CHANGED_SINCE_DAYS);
     $hours = variable_get(EBConsts::EBS_CONFIG_CHANGED_SINCE_HOURS, EBConsts::EBS_CONFIG_DEFAULT_CHANGED_SINCE_HOURS);
-//    $interval = format_string('P@intervalD', array('@interval' => $days,));
     $interval = format_string('PT@intervalH', array('@interval' => $hours,));
     $dur = new \DateInterval($interval);
     $do->sub($dur);
@@ -614,29 +612,30 @@ function _eventbrite_sboc_webhook_callback(){
     $webhook_user_id_stored = variable_get(EBConsts::EBS_CONFIG_WEBHOOK_USERT_ID, '');
 
     if (empty($webhook_user_id_stored) || ($eb_webhook_user_id_received != $webhook_user_id_stored)){
-      watchdog(EBConsts::EBS_APPNAME, t('Webhook user id validation test failed. Received: (@uid). Check Event Settings page for valid entry.'),
+      watchdog(EBConsts::EBS_APPNAME, t('Webhook user id validation failed. Received: (@uid). Check Event Settings page for valid entry.'),
         array('@uid' => $eb_webhook_user_id_received), WATCHDOG_ALERT);
       return;
     }
 
     $eb_webhook_type = !empty($input_json_array['config']['action']) ? $input_json_array['config']['action'] : '';
     $url = $input_json_array[EBConsts::EBS_JSON_PARAM_API_URL];
+    $attendees = _eventbrite_sboc_order($url);
 
-    switch($eb_webhook_type){
-      case EBConsts::EBS_WEBHOOK_CONFIG_ACTION_ORDER_PLACED:
-        $attendees = _eventbrite_sboc_order($url);
-        if (!empty($attendees)){
+    if (!empty($attendees)) {
+      switch ($eb_webhook_type) {
+        case EBConsts::EBS_WEBHOOK_CONFIG_ACTION_ORDER_PLACED:
           $returned_attendee_list = _eventbrite_sboc_invoke_save($attendees);
-          foreach($returned_attendee_list as $mod => $attendee_list){
-            _eventbrite_sboc_invoke_mail($attendee_list);
-            _eventbrite_sboc_invoke_mail_internal($attendee_list);
-          }
-        }
-        break;
-      case EBConsts::EBS_WEBHOOK_CONFIG_ACTION_ORDER_UPDATED:
-        break;
-      default:
-        break;
+          break;
+        case EBConsts::EBS_WEBHOOK_CONFIG_ACTION_ORDER_UPDATED:
+          $returned_attendee_list = _eventbrite_sboc_invoke_save($attendees, TRUE);
+          break;
+        default:
+          break;
+      }
+      foreach ($returned_attendee_list as $mod => $attendee_list) {
+        _eventbrite_sboc_invoke_mail($attendee_list);
+        _eventbrite_sboc_invoke_mail_internal($attendee_list);
+      }
     }
 
     watchdog(EBConsts::EBS_APPNAME, 'Incoming url => @url', array('@url' => $url,), WATCHDOG_INFO);
