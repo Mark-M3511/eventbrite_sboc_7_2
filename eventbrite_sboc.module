@@ -596,10 +596,9 @@ function _eventbrite_sboc_attendee($url){
   try{
     $ev = _eventbrite_sboc_init_event();
     $attendee = $ev->getOrderByUrl($url, EBConsts::EBS_ATTENDEE_EXPANSIONS);
-    _eventbrite_sboc_debug_output($attendees);
-    if (is_array($attendee) && !empty($attendee)){
+    if (is_object($attendee) && !empty($attendee)){
       $eba = new EBAttendees($ev);
-      $attendees = $eba->loadAttendeesFromArray($attendee);
+      $attendees = $eba->loadAttendeesFromArray(array('attendee' => get_object_vars($attendee)));
       _eventbrite_sboc_debug_output($attendees);
     }
   }catch(Exception $e){
