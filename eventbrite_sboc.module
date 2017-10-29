@@ -622,27 +622,27 @@ function _eventbrite_sboc_webhook_callback(){
     }
 
     $eb_webhook_type = !empty($input_json_array['config']['action']) ? $input_json_array['config']['action'] : '';
-    $attendees = _eventbrite_sboc_order($url);
 
-    if (!empty($attendees)) {
-      switch ($eb_webhook_type) {
-        case EBConsts::EBS_WEBHOOK_CONFIG_ACTION_ORDER_PLACED:
+    switch ($eb_webhook_type) {
+      case EBConsts::EBS_WEBHOOK_CONFIG_ACTION_ORDER_PLACED:
+        $attendees = _eventbrite_sboc_order($url);
+        if (!empty($attendees)) {
           $returned_attendee_list = _eventbrite_sboc_invoke_save($attendees);
-          break;
-        case EBConsts::EBS_WEBHOOK_CONFIG_ACTION_ORDER_UPDATED:
+          _eventbrite_sboc_process_mail($returned_attendee_list);
+        }
+        break;
+      case EBConsts::EBS_WEBHOOK_CONFIG_ACTION_ORDER_UPDATED:
+        $attendees = _eventbrite_sboc_order($url);
+        if (!empty($attendees)) {
           $returned_attendee_list = _eventbrite_sboc_invoke_save($attendees, TRUE);
-          break;
-        default:
-          break;
-      }
-      foreach ($returned_attendee_list as $mod => $attendee_list) {
-        _eventbrite_sboc_invoke_mail($attendee_list);
-        _eventbrite_sboc_invoke_mail_internal($attendee_list);
-      }
+          _eventbrite_sboc_process_mail($returned_attendee_list);
+        }
+        break;
+      default:
+        break;
     }
 
     watchdog(EBConsts::EBS_APPNAME, 'Incoming url => @url', array('@url' => $url,), WATCHDOG_INFO);
-    
   }catch(Exception $e){
     $url = !empty($url) ? $url : '<none>';
     $result = t($result, array('@url' => $url));
@@ -650,6 +650,17 @@ function _eventbrite_sboc_webhook_callback(){
   }
 
   return $result;
+}
+
+/**
+ * Process mail for attendees
+ * @param array $returned_attendee_list
+ */
+function _eventbrite_sboc_process_mail(array $returned_attendee_list = array()){
+  foreach ($returned_attendee_list as $mod => $attendee_list) {
+    _eventbrite_sboc_invoke_mail($attendee_list);
+    _eventbrite_sboc_invoke_mail_internal($attendee_list);
+  }
 }
 
 /**
