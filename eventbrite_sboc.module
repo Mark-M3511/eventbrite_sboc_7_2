@@ -195,34 +195,63 @@ function eventbrite_sboc_help($path, $arg){
 
   switch($path){
 		case 'admin/help#eventbrite_sboc':
-		  $output .= '<p>';
-      $output .= 'This module manages communication with Eventbrite and Mandrill services on behalf of ';
-      $output .= 'Spelling Bee Of Canada (SBOC). Designed/Developed/Maintained by Holbrook Goodman Technologies.';
-      $output .= '</p>';
+		  $output = <<<'HELP'
+        <h3>About this module</h3>
+        <p>
+          This module manages communication with Eventbrite and Mandrill services on behalf of Spelling Bee Of Canada (SBOC).
+          Designed/Developed/Maintained by Holbrook Goodman Technologies. 
+        </p>
+        <p>
+           Configure the module, <a href="/admin/config/system/eventbrite_sboc/" title="Eventbrite SBOC configuration page">here</a>.
+        </p>
+HELP;
+
+		  break;
+    case 'admin/config/system/eventbrite_sboc':
+      $output = <<<'HELP'
+        <h3>OAuth Setup -- Help</h3>
+        <p>
+          <ul>
+            <li>Enter your Consumer Key or Client Id in the text box provided</li>
+            <li>Enter your Consumer Secret or Passphrase in the text box provided</li>
+          </ul>
+          Visit <a href="https://developer.eventbrite.com/" title="Eventbrite developer reference" target="_blank">eventbrite.com</a> to set up your developer account.
+        </p>
+HELP;
 		  break;
     case 'admin/config/system/eventbrite_sboc/event':
-      $output .= '<h3>Event Setup -- Help</h3>';
-      $output .= '<p>';
-      $output .= '<ul>';
-      $output .= '<li>Enter the event id found by logging into eventbrite.com and looking at ';
-      $output .= 'the url e.g. eventbrite.com/myevent?eid=<span style="font-weight: bold;">999999999</span></li>';
-      $output .= '<li>Select the number of days, prior to the current day, to select records for when performing ';
-      $output .= 'background updates. (Recommended value is: <span style="font-weight: bold;">1</span>)</li>';
-      $output .= '<li>Select by title the confirmation email to be sent after each registration is processed. ';
-      $output .= '<span style="font-weight: bold;">Email Message 1</span> is sent the first time a new registration and user account are created. ';
-      $output .= '<span style="font-weight: bold;">Email Message 2</span> is sent when a registration is created or modified for an existing user.</li>';
-      $output .= '</ul>';
-      $output .= 'If you have entered the correct event id, information will be displayed about the event in the ';
-      $output .= '<span style="font-weight: bold;">EVENT INFORMATION</span> section';
-      $output .= '</p>';
+      $output = <<<'HELP'
+         <h3>Event Setup -- Help</h3>
+         <p>
+           <ul>
+             <li>
+               Enter the event id found by logging into eventbrite.com and looking 
+               at the url e.g. eventbrite.com/myevent?eid=<span style="font-weight: bold;">999999999</span>
+             </li>
+             <li>
+               Select the number of days, prior to the current day, to select records for when performing 
+               background updates. (Recommended value is: <span style="font-weight: bold;">1</span>)
+             </li>
+             <li>
+               Select by title the confirmation email to be sent after each registration is processed.
+               <span style="font-weight: bold;">Email Message 1</span> is sent the first time a new registration and user account are created.
+               <span style="font-weight: bold;">Email Message 2</span> is sent when a registration is created or modified for an existing user.
+             </li>
+           </ul>  
+           If you have entered the correct event id, information will be displayed about the event in the
+           <span style="font-weight: bold;">EVENT INFORMATION</span> section 
+         </p> 
+HELP;
       break;
     case 'admin/config/system/eventbrite_sboc/event/orders':
-      $output .= '<h3>Event Orders -- Help</h3>';
-      $output .= '<p>';
-      $output .= '<ul>';
-      $output .= '<li>Enter a valid order number to retrieve the order details from Eventbrite</li>';
-      $output .= '</ul>';
-      $output .= '</p>';
+      $output = <<<'HELP'
+         <h3>Event Orders -- Help</h3>
+         <p>
+           <ul>
+             <li>Enter a valid order number to retrieve the order details from Eventbrite</li> 
+           </ul>
+         </p>
+HELP;
       break;
 	  default:
 	    break;
@@ -566,8 +595,8 @@ function _eventbrite_sboc_fetch_order($order_num, $expansion = EBConsts::EBS_ORD
 
 
 /**
-* Helper function to retrieve Eventbrite attendee records from an order
-* @param string $url - a url typically supplied by Eventbrite via its wehhook API
+* Helper function to retrieve Eventbrite attendee records for an order
+* @param string $url - a url typically supplied by Eventbrite via its web hook API
 * @return  array of Attendee objects
 */
 function _eventbrite_sboc_order($url){
