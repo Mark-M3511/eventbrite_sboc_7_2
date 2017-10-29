@@ -595,11 +595,12 @@ function _eventbrite_sboc_attendee($url){
   $attendees = array();
   try{
     $ev = _eventbrite_sboc_init_event();
-    $order = $ev->getOrderByUrl($url, EBConsts::EBS_ATTENDEE_EXPANSIONS);
-    _eventbrite_sboc_debug_output($order);
-    if (is_array($order->attendees) && !empty($order->attendees)){
+    $attendee = $ev->getOrderByUrl($url, EBConsts::EBS_ATTENDEE_EXPANSIONS);
+    dpm($attendee);
+    _eventbrite_sboc_debug_output($attendee);
+    if (is_array($attendee->profile) && !empty($attendee->profile)){
       $eba = new EBAttendees($ev);
-      $attendees = $eba->loadAttendeesFromArray($order->attendees);
+      $attendees = $eba->loadAttendeesFromArray($attendee->profile);
     }
   }catch(Exception $e){
     watchdog_exception(EBConsts::EBS_APPNAME, $e);
