@@ -587,6 +587,28 @@ function _eventbrite_sboc_order($url){
 }
 
 /**
+ * Helper function to retrieve an Eventbrite attendee record
+ * @param string $url - a url typically supplied by Eventbrite via its wehhook API
+ * @return  array of Attendee objects
+ */
+function _eventbrite_sboc_attendee($url){
+  $attendees = array();
+  try{
+    $ev = _eventbrite_sboc_init_event();
+    $order = $ev->getOrderByUrl($url, EBConsts::EBS_ATTENDEE_EXPANSIONS);
+    if (is_array($order->attendees) && !empty($order->attendees)){
+      $eba = new EBAttendees($ev);
+      $attendees = $eba->loadAttendeesFromArray($order->attendees);
+    }
+  }catch(Exception $e){
+    watchdog_exception(EBConsts::EBS_APPNAME, $e);
+  }
+
+  return $attendees;
+}
+
+
+/**
 * Callback function to validate access to url resource which is the value of 
 * EBConsts::EBS_WEBHOOK_ORDER_PLACED
 * See class EBConsts
@@ -631,9 +653,8 @@ function _eventbrite_sboc_webhook_callback(){
           _eventbrite_sboc_process_mail($returned_attendee_list);
         }
         break;
-      case EBConsts::EBS_WEBHOOK_CONFIG_ACTION_ORDER_UPDATED:
       case EBConsts::EBS_WEBHOOK_CONFIG_ACTION_ATTENDED_UPDATED:
-        $attendees = _eventbrite_sboc_order($url);
+        $attendees = _eventbrite_sboc_attendee($url);
         if (!empty($attendees)) {
           $returned_attendee_list = _eventbrite_sboc_invoke_save($attendees, TRUE);
           _eventbrite_sboc_process_mail($returned_attendee_list);
