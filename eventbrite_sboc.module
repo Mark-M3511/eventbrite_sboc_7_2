@@ -600,7 +600,7 @@ function _eventbrite_sboc_attendee($url){
       $eba = new EBAttendees($ev);
       $var = get_object_vars($attendee);
       $attendees = $eba->loadAttendeesFromArray(array('attendee' => $var));
-      _eventbrite_sboc_debug_output($attendees);
+//      _eventbrite_sboc_debug_output($attendees);
     }
   }catch(Exception $e){
     watchdog_exception(EBConsts::EBS_APPNAME, $e);
