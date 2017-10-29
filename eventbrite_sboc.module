@@ -632,6 +632,7 @@ function _eventbrite_sboc_webhook_callback(){
         }
         break;
       case EBConsts::EBS_WEBHOOK_CONFIG_ACTION_ORDER_UPDATED:
+      case EBConsts::EBS_WEBHOOK_CONFIG_ACTION_ATTENDED_UPDATED:
         $attendees = _eventbrite_sboc_order($url);
         if (!empty($attendees)) {
           $returned_attendee_list = _eventbrite_sboc_invoke_save($attendees, TRUE);
