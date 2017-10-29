@@ -46,7 +46,7 @@ class EBConsts{
   const EBS_WEBHOOK_TEST_URL_PATH = '{api-endpoint-to-fetch-object-details}';
   const EBS_WEBHOOK_CONFIG_ACTION_ORDER_PLACED = 'order.placed';
   const EBS_WEBHOOK_CONFIG_ACTION_ORDER_UPDATED = 'order.updated';
-  const EBS_WEBHOOK_CONFIG_ACTION_ATTENDED_UPDATED = 'attendee.updated';
+  const EBS_WEBHOOK_CONFIG_ACTION_ATTENDEE_UPDATED = 'attendee.updated';
   // Title
   const EBS_APPLICATION_TITLE = 'Eventbrite SBOC v2';
   // Oauth
