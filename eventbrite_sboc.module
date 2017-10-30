@@ -724,7 +724,7 @@ function _eventbrite_sboc_debug_output($var){
   $msg = 'CALLED FROM: !function_name => DEBUG OUTPUT: !debug_msg';
   $args = array('!function_name' => $function_name, '!debug_msg' => '',);
 
-  $args['!debug_msg'] = gettype($var);
+  $args['!debug_msg'] = t('Variable is of type: !type', array('!type' => gettype($var)));
   watchdog(EBConsts::EBS_APP_NAME_MAIN, $msg, $args, WATCHDOG_INFO);
 
   if (is_object($var)){
