@@ -719,8 +719,9 @@ function _eventbrite_sboc_process_mail(array $returned_attendee_list = array()){
 
 function _eventbrite_sboc_debug_output($var){
   $function_name = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT, 2);
+  watchdog(EBConsts::EBS_APP_NAME_MAIN, 'Variable is of type: !type', array('!type' => gettype($var)), WATCHDOG_INFO);
   if (is_object($var)){
-    $var = get_object_vars($var);
+    $var = (array)$var;
   }
   $debug_msg = print_r($var, TRUE);
   $args = array('!function_name' => $function_name[1]['function'], '!debug_msg' => $debug_msg,);
