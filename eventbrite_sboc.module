@@ -629,7 +629,6 @@ function _eventbrite_sboc_attendee($url){
       $eba = new EBAttendees($ev);
       $var = get_object_vars($attendee);
       $attendees = $eba->loadAttendeesFromArray(array('attendee' => $var));
-//      _eventbrite_sboc_debug_output($attendees);
     }
   }catch(Exception $e){
     watchdog_exception(EBConsts::EBS_APPNAME, $e);
@@ -718,11 +717,20 @@ function _eventbrite_sboc_process_mail(array $returned_attendee_list = array()){
 **/
 
 function _eventbrite_sboc_debug_output($var){
-  $function_name = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT, 2);
+  $function_list = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT, 2);
+  $function_name = $function_list[1]['function'];
+
+  $msg = 'CALLED FROM: !function_name => DEBUG OUTPUT: !debug_msg';
+  $args = array('!function_name' => $function_name, '!debug_msg' => '',);
+
+  $type = strtoupper(gettype($var));
+  $args['!debug_msg'] = t('Variable is of type: !type', array('!type' => $type,));
+  watchdog(EBConsts::EBS_APP_NAME_MAIN, $msg, $args, WATCHDOG_INFO);
+
   if (is_object($var)){
-    $var = get_object_vars($var);
+    $var = (array)$var;
   }
-  $debug_msg = print_r($var, TRUE);
-  $args = array('!function_name' => $function_name[1]['function'], '!debug_msg' => $debug_msg,);
-  watchdog(EBConsts::EBS_APP_NAME_MAIN, 'CALLED FROM: !function_name => DEBUG OUTPUT: !debug_msg', $args, WATCHDOG_INFO);
+
+  $args['!debug_msg'] = print_r($var, TRUE);
+  watchdog(EBConsts::EBS_APP_NAME_MAIN, $msg, $args, WATCHDOG_INFO);
 }
