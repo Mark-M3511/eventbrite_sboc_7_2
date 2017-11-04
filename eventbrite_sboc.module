@@ -701,7 +701,8 @@ function _eventbrite_sboc_webhook_callback(){
         break;
     }
 
-    watchdog(EBConsts::EBS_APPNAME, 'Incoming url => @url', array('@url' => $url,), WATCHDOG_INFO);
+    watchdog(EBConsts::EBS_APPNAME, 'Action hook => @hook | Incoming url => @url',
+       array('@url' => $url, '@hook' => $eb_webhook_type,), WATCHDOG_INFO);
   }catch(Exception $e){
     $url = !empty($url) ? $url : '<none>';
     $result = t($result, array('@url' => $url));
