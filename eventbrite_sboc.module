@@ -628,7 +628,9 @@ function _eventbrite_sboc_attendee($url){
     if (is_object($attendee) && !empty($attendee)){
       $eba = new EBAttendees($ev);
       $var = get_object_vars($attendee);
-      $attendees = $eba->loadAttendeesFromArray(array('attendee' => $var));
+      if (!empty($var['answers']) && !empty($var['profile'])) {
+        $attendees = $eba->loadAttendeesFromArray(array('attendee' => $var));
+      }
     }
   }catch(Exception $e){
     watchdog_exception(EBConsts::EBS_APPNAME, $e);
