@@ -67,7 +67,7 @@ class EBConsts{
   const EBS_URL_EVENTBRITE_REST_API = self::EBS_EVENTBRITERESTAPIv3;
   const EBS_APPLICATIONDOMAIN_SITE_APP_DEV = 'http://dev1508.holbrookgoodman.com';
   const EBS_APPLICATIONDOMAIN_SITE_DEV = 'http://sboc2015.holbrookgoodman.com';
-  const EBS_APPLICATIONDOMAIN_SITE_LIVE = 'http://spellingbeeofcanada.ca';
+  const EBS_APPLICATIONDOMAIN_SITE_LIVE = 'https://spellingbeeofcanada.ca';
   const EBS_APPLICATIONDOMAIN = self::EBS_APPLICATIONDOMAIN_SITE_APP_DEV;
   const EBS_ENDPOINT_TOKEN = '/token';
   const EBS_ENDPOINT_AUTHORIZE = '/authorize';

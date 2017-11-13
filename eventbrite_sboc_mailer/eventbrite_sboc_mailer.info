@@ -12,7 +12,7 @@ dependencies[] = eventbrite_sboc
 dependencies[] = mandrill
 
 ;Version Info
-version = '7.x-2.4'
+version = '7.x-2.5'
 
 ;Project Update Info
 ;project status url = 'http://dev1508.holbrookgoodman.com/'
