@@ -630,6 +630,17 @@ function _eventbrite_sboc_attendee($url){
       $var = get_object_vars($attendee);
       if (!empty($var['answers']) && !empty($var['profile'])) {
         $attendees = $eba->loadAttendeesFromArray(array('attendee' => $var));
+      }else{
+        $err_desc = !empty($var['error_description']) ? $var['error_description'] : t('Unable to retrieve EB API error description');
+        $err_status_code = !empty($var['status_code']) ? $var['status_code'] : t('Unable to retrieve EB API error status code');
+        $err_error = !empty($var['error']) ? $var['error'] : t('Unable to retrieve EB API error');
+        $err_vars = array(
+          '@err_desc' => $err_desc,
+          '@err_status_code' => $err_status_code,
+          '@err_error' => $err_error,
+        );
+        $err_msg = 'Error: @err_error | Description: @err_desc | Status: @err_status_code';
+        watchdog(EBConsts::EBS_APPNAME, $err_msg, @$err_vars, WATCHDOG_INFO);
       }
     }
   }catch(Exception $e){
