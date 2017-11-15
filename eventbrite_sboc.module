@@ -699,7 +699,7 @@ function _eventbrite_sboc_webhook_callback(){
       case EBConsts::EBS_WEBHOOK_CONFIG_ACTION_ORDER_UPDATED:
         $attendees = _eventbrite_sboc_order($url);
         if (!empty($attendees)) {
-          /* Ignore reeturn value for this case */
+          /* Ignore return value for this case */
           _eventbrite_sboc_invoke_save($attendees, TRUE);
         }
         break;
