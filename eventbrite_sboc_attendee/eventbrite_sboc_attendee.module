@@ -105,6 +105,12 @@ function _eventbrite_sboc_create_user_login(array &$attendees){
       $u->attendee = $attendee;
       if (!$u->userExists($attendee) && $u->createUser($attendee)){
         $attendee->passwordResetUrl = $u->passwordResetUrl($u->user->uid);
+      } else {
+        if ($u->attendee->emailAddress != $u->user->mail){
+          // Update email address to match user name
+          $u->user->mail = $u->attendee->emailAddress;
+          user_save($u->user);
+        }
       }
       // Test password reset value
 //      _eventbrite_sboc_debug_output($u->passwordResetUrl($u->user->uid));

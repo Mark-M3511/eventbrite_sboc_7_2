@@ -41,13 +41,26 @@ class EBSBOCDrupalUser{
   public function userExists(EBAttendee $attendee){
     $ret_val = FALSE; 
     $this->attendee = $attendee;
-    $pc = array('mail' => array('value' => $this->attendee->{EBConsts::EBS_ENTITY_EMAIL_FIELD}, 'operation' => '=',),); 
-    $fc = array();
-    $user = self::searchUser($pc, $fc);
-    if (!empty($user)){
-       $this->user = reset($user);
-       $ret_val = TRUE;
-    } 
+    $values = array(
+      'value' => $this->attendee->{EBConsts::EBS_ENTITY_EMAIL_FIELD},
+      'operation' => '=',
+    );
+
+    $pc = array('mail' => $values);
+    $user = self::searchUser($pc, array());
+    $ret_val = !empty($user);
+
+    // Find user by name
+    if (!$ret_val){
+      $pc = array('name', $values);
+      $user = self::searchUser($pc, array());
+      $ret_val = !empty($user);
+    }
+
+    if ($ret_val){
+      $this->user = reset($user);
+    }
+
     return $ret_val;
   }
   
