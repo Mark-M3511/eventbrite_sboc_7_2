@@ -32,8 +32,20 @@ class EBSBOCDrupalUser{
   */
   protected function assembleFieldValues(){
     $fields = array(
-      'field_order_number' => array('und' => array(0 => array('value' => $this->attendee->orderId,),),),
-      'field_attendee_number' => array('und' => array(0 => array('value' => $this->attendee->attendeeId,),),), 
+      'field_order_number' => array(
+        'und' => array(
+          0 => array(
+              'value' => $this->attendee->orderId,
+            ),
+          ),
+        ),
+      'field_attendee_number' => array(
+        'und' => array(
+          0 => array(
+              'value' => $this->attendee->attendeeId,
+            ),
+          ),
+        ),
     ); 
     return $fields;
   }
@@ -89,6 +101,8 @@ class EBSBOCDrupalUser{
       $role = user_role_load_by_name(EBConsts::EBS_DRUPAL_ROLE_ENROLLED_USER);
       $roles = $this->user->roles + array($role->rid => $role->name,);
       $this->user = user_save($this->user, array('roles' => $roles,));
+      // Use Entity methods instead e.g. $emw = entity_metadata_wrapper('user', $uid);
+      // Followed by user_load($uid) to update stored object
       $fields = $this->assembleFieldValues();
       foreach($fields as $key => $value){
         $this->user = user_save($this->user, array($key => $value,));
