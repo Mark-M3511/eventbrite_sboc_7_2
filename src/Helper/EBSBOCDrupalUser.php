@@ -46,12 +46,12 @@ class EBSBOCDrupalUser{
       'operation' => '=',
     );
 
-    $user = self::searchUser(array('mail' => $values), array());
+    $user = self::searchUser(array('mail' => $values));
     $ret_val = !empty($user);
 
     // Find user by name
     if (!$ret_val){
-      $user = self::searchUser(array('name' => $values), array());
+      $user = self::searchUser(array('name' => $values));
       $ret_val = !empty($user);
     }
 
@@ -168,7 +168,7 @@ class EBSBOCDrupalUser{
   * Returns array of values
   * @return array ret_val
   */
-  public static function searchUser(array $property_condition, array $field_condition){
+  public static function searchUser(array $property_condition, array $field_condition = array()){
     $ret_val = $user_ids = array();
     try{
       $q = new \EntityFieldQuery();
