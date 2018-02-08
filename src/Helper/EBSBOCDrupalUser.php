@@ -46,14 +46,12 @@ class EBSBOCDrupalUser{
       'operation' => '=',
     );
 
-    $pc = array('mail' => $values);
-    $user = self::searchUser($pc, array());
+    $user = self::searchUser(array('mail' => $values), array());
     $ret_val = !empty($user);
 
     // Find user by name
     if (!$ret_val){
-      $pc = array('name', $values);
-      $user = self::searchUser($pc, array());
+      $user = self::searchUser(array('name' => $values), array());
       $ret_val = !empty($user);
     }
 
