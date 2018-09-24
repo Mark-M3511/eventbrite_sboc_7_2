@@ -180,7 +180,7 @@ class EBAttendees{
       $a->homePhone2 = $this->getAnswer($attendee['answers'], EBConsts::EBS_QA_117, EBConsts::EBS_EMPTY_STRING);
       $a->emailConsent = $this->getAnswer($attendee['answers'], EBConsts::EBS_QA_118, 0);
       $a->additionalInfo = $this->getAnswer($attendee['answers'], EBConsts::EBS_QA_119, EBConsts::EBS_EMPTY_STRING);
-      $a->language =  $this->getAnswer($attendee['answers'], EBConsts::EBS_QA_120, EBConsts::EBS_EMPTY_STRING);
+      $a->language = $this->getAnswer($attendee['answers'], EBConsts::EBS_QA_120, EBConsts::EBS_DEFAULT_LANGUAGE);
       
       $this->attendees[$a->attendeeId] = $a;
     }
