@@ -294,7 +294,7 @@ function eventbrite_sboc_attendee_schema(){
 	 );
    $keys_new = array(
       'indexes' => array(
-	       'eventbrite_sboc_attendees_ts_create_date' => array('ts_create_date'),
+	    'eventbrite_sboc_attendees_ts_create_date' => array('ts_create_date'),
       ),
    );
    db_add_field($table_name, 'ts_create_date', $schema_1, $keys_new);	
@@ -302,13 +302,13 @@ function eventbrite_sboc_attendee_schema(){
    
    // Add ts_change_date
    $schema_1 = array(
-	   'description' => 'Timestamp value for date and time attendee record was updated in this table.',          
+	 'description' => 'Timestamp value for date and time attendee record was updated in this table.',
      'type' => 'int',		   
      'not null' => FALSE,
 	 );
    $keys_new = array(
       'indexes' => array(
-	       'eventbrite_sboc_attendees_ts_change_date' => array('ts_change_date'),
+        'eventbrite_sboc_attendees_ts_change_date' => array('ts_change_date'),
       ),
    );
    db_add_field($table_name, 'ts_change_date', $schema_1, $keys_new);	
@@ -316,10 +316,10 @@ function eventbrite_sboc_attendee_schema(){
    
     // Add ts_email_send_date
    $schema_1 = array(
-	   'description' => 'Timestamp value for date and time attendee email was sent.',          
+     'description' => 'Timestamp value for date and time attendee email was sent.',
      'type' => 'int',		   
      'not null' => FALSE,
-	 );
+   );
    $keys_new = array(
       'indexes' => array(
 	       'eventbrite_sboc_attendees_ts_email_send_date' => array('ts_email_send_date'),
