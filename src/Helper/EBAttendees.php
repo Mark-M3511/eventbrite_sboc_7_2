@@ -262,8 +262,12 @@ class EBAttendees{
     return (new SBOCDBMgr())->getCategoryNodeId($category, $event_id, $language);
   }
   
-  public function getRegionNid($region_nid){
-    return (new SBOCDBMgr())->getRegionNid($region_nid);
+  public function getRegionNodeId($region_nid){
+    return (new SBOCDBMgr())->getRegionNodeId($region_nid);
+  }
+
+  public function getLinkNodeid($category, $event_id, $ticket_class_id, $language){
+    return (new SBOCDBMgr())->getLinkNodeid($category, $event_id, $ticket_class_id, $language);
   }
   
 }

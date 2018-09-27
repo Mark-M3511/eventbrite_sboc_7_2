@@ -492,6 +492,16 @@ class SBOCDBMgr implements iDBMgr{
   }
 
   /**
+   * @param $category
+   * @param $event_id
+   * @param $ticket_class_id
+   * @param $language
+   */
+  public function getLinkNodeId($category, $event_id, $ticket_class_id, $language){
+
+  }
+
+  /**
   * Returns a node ids and Node titles for email message content type
   *
   * @param none
