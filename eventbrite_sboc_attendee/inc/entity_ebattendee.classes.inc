@@ -355,6 +355,14 @@ class EBAttendeeMetadataController extends EntityDefaultMetadataController{
        'schema field' => 'language',
      );
 
+     $properties['link_id'] = array(
+       'label' => t('Link Id'),
+       'description' => t("Link id"),
+       'type' => 'integer',
+       'setter callback' => 'entity_property_verbatim_set',
+       'schema field' => 'link_id',
+     );
+
      return $info;
    }
 }
