@@ -443,6 +443,21 @@ class EntityAttendeeViewsController extends EntityDefaultViewsController {
       ),
     );
 
+    // link_nid matching node id (nid) in {node} table
+    $data['eventbrite_sboc_attendees']['link_nid'] = array(
+      'title' => t('Attendee Link'),
+      'help' => t('Conencts an external link to attendee registration'),
+      // Define a relationship to the {node} table
+      'relationship' => array(
+          'base' => 'node',
+          'base field' => 'nid',
+          'handler' => 'views_handler_relationship',
+          'label' => t('Attendee Region'),
+          'title' => t('Attendee Region'),
+          'help' => t('Links an attendee to a region'),
+      ),
+    );
+
    // For dates: http://www.rahulsingla.com/blog/2013/03/drupal-7-exposing-date-time-fields-in-custom-tables-to-views-3
 
     return $data;
