@@ -267,7 +267,7 @@ function eventbrite_sboc_attendee_schema(){
 	  'eventbrite_sboc_attendees_ts_create_date' => array('ts_create_date'),
 	  'eventbrite_sboc_attendees_ts_change_date' => array('ts_change_date'),
 	  'eventbrite_sboc_attendees_ts_email_send_date' => array('ts_email_send_date'),
-      'eventbrite_sboc_attendees_link_id' => array('link_nid'),
+      'eventbrite_sboc_attendees_link_nid' => array('link_nid'),
     ), 
   );
   
@@ -399,3 +399,37 @@ function eventbrite_sboc_attendee_update_7204() {
 
   return format_string($msg, array('%count' => $ctr, '%table_name' => $table_name,));
 }
+
+/**
+ * Eventbrite SBOC update #5
+ * Add new link_nid column to table 'eventbrite_sboc_attendees'
+ * Updated: 2018-09-27
+ */
+function eventbrite_sboc_attendee_update_7205() {
+  $init_val = 0;
+  $table_name = 'eventbrite_sboc_attendees';
+  $msg = "%count new column(s) added to table '%table_name'";
+  $ctr = 0;
+
+  // Add link_nid
+  $schema_1 = array(
+    'description' => 'Link Id corresponding to ticket type',
+    'type' => 'int',
+    'unsigned' => TRUE,
+    'not null' => TRUE,
+    'default' => $init_val,
+  );
+
+  $field_name = 'link_nid';
+  $keys_new = array(
+    'indexes' => array(
+      'eventbrite_sboc_attendees_link_nid' => array($field_name),
+    ),
+  );
+
+  db_add_field($table_name, $field_name, $schema_1, $keys_new);
+  $ctr++;
+
+  return format_string($msg, array('%count' => $ctr, '%table_name' => $table_name,));
+}
+
