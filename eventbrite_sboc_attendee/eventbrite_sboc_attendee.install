@@ -222,26 +222,32 @@ function eventbrite_sboc_attendee_schema(){
         'length' => 2500,
       ),      
       'ts_create_date' => array(
-	      'description' => 'Timestamp value for date and time attendee record was created in this table.',          
-        'type' => 'int',		   
+	    'description' => 'Timestamp value for date and time attendee record was created in this table.',
+        'type' => 'int',
         'not null' => FALSE,
-	    ),
-	    'ts_change_date' => array(
-	      'description' => 'Timestamp value for date and time attendee record was updated in this table.',          
-        'type' => 'int',		   
+	  ),
+	  'ts_change_date' => array(
+	    'description' => 'Timestamp value for date and time attendee record was updated in this table.',
+        'type' => 'int',
         'not null' => FALSE,
-	    ),
-	    'ts_email_send_date' => array(
-	      'description' => 'Timestamp value for date and time attendee email was sent.',          
-        'type' => 'int',		   
+	  ),
+	  'ts_email_send_date' => array(
+	    'description' => 'Timestamp value for date and time attendee email was sent.',
+        'type' => 'int',
         'not null' => FALSE,
-	    ),
+	  ),
       'language' => array(
         'description' => 'Language selected by registrant.',
         'type' => 'varchar',
         'length' => 10,
         'default' => 'en',
         'not null' => FALSE,
+      ),
+      'link_id' => array(
+        'description' => "Link Id corresponding to ticket type",
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
       ),
      ),  
     'primary key' => array('eid'),
@@ -260,7 +266,8 @@ function eventbrite_sboc_attendee_schema(){
 	    'eventbrite_sboc_attendees_region_nid' => array('region_nid'), 
 	    'eventbrite_sboc_attendees_ts_create_date' => array('ts_create_date'),
 	    'eventbrite_sboc_attendees_ts_change_date' => array('ts_change_date'),
-	    'eventbrite_sboc_attendees_ts_email_send_date' => array('ts_email_send_date'),	    
+	    'eventbrite_sboc_attendees_ts_email_send_date' => array('ts_email_send_date'),
+        'eventbrite_sboc_attendees_link_id' => array('link_id'),
     ), 
   );
   
