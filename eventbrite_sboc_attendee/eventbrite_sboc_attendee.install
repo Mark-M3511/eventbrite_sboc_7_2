@@ -243,7 +243,7 @@ function eventbrite_sboc_attendee_schema(){
         'default' => 'en',
         'not null' => FALSE,
       ),
-      'link_id' => array(
+      'link_nid' => array(
         'description' => "Link Id corresponding to ticket type",
         'type' => 'int',
         'unsigned' => TRUE,
@@ -267,7 +267,7 @@ function eventbrite_sboc_attendee_schema(){
 	    'eventbrite_sboc_attendees_ts_create_date' => array('ts_create_date'),
 	    'eventbrite_sboc_attendees_ts_change_date' => array('ts_change_date'),
 	    'eventbrite_sboc_attendees_ts_email_send_date' => array('ts_email_send_date'),
-        'eventbrite_sboc_attendees_link_id' => array('link_id'),
+        'eventbrite_sboc_attendees_link_id' => array('link_nid'),
     ), 
   );
   
