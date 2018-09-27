@@ -449,12 +449,12 @@ class EntityAttendeeViewsController extends EntityDefaultViewsController {
       'help' => t('Conencts an external link to attendee registration'),
       // Define a relationship to the {node} table
       'relationship' => array(
-          'base' => 'node',
-          'base field' => 'nid',
-          'handler' => 'views_handler_relationship',
-          'label' => t('Attendee Region'),
-          'title' => t('Attendee Region'),
-          'help' => t('Links an attendee to a region'),
+        'base' => 'node',
+        'base field' => 'nid',
+        'handler' => 'views_handler_relationship',
+        'label' => t('Attendee Region'),
+        'title' => t('Attendee Region'),
+        'help' => t('Links an attendee to a region'),
       ),
     );
 
