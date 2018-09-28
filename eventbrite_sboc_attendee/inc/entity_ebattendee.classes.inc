@@ -446,15 +446,15 @@ class EntityAttendeeViewsController extends EntityDefaultViewsController {
     // link_nid matching node id (nid) in {node} table
     $data['eventbrite_sboc_attendees']['link_nid'] = array(
       'title' => t('Attendee Link'),
-      'help' => t('Conencts an external link to attendee registration'),
+      'help' => t('Connects an external link to attendee registration'),
       // Define a relationship to the {node} table
       'relationship' => array(
         'base' => 'node',
         'base field' => 'nid',
         'handler' => 'views_handler_relationship',
-        'label' => t('Attendee Region'),
-        'title' => t('Attendee Region'),
-        'help' => t('Links an attendee to a region'),
+        'label' => t('Attendee Links'),
+        'title' => t('Attendee Links'),
+        'help' => t('Connects an attendee to a linked resource'),
       ),
     );
 
