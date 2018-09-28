@@ -355,6 +355,14 @@ class EBAttendeeMetadataController extends EntityDefaultMetadataController{
        'schema field' => 'language',
      );
 
+     $properties['link_id'] = array(
+       'label' => t('Link Id'),
+       'description' => t("Link id"),
+       'type' => 'integer',
+       'setter callback' => 'entity_property_verbatim_set',
+       'schema field' => 'link_id',
+     );
+
      return $info;
    }
 }
@@ -432,6 +440,21 @@ class EntityAttendeeViewsController extends EntityDefaultViewsController {
         'label' => t('Attendee Region'),
         'title' => t('Attendee Region'),
         'help' => t('Links an attendee to a region'),
+      ),
+    );
+
+    // link_nid matching node id (nid) in {node} table
+    $data['eventbrite_sboc_attendees']['link_nid'] = array(
+      'title' => t('Attendee Link'),
+      'help' => t('Connects an external link to attendee registration'),
+      // Define a relationship to the {node} table
+      'relationship' => array(
+        'base' => 'node',
+        'base field' => 'nid',
+        'handler' => 'views_handler_relationship',
+        'label' => t('Attendee Links'),
+        'title' => t('Attendee Links'),
+        'help' => t('Connects an attendee to a linked resource'),
       ),
     );
 

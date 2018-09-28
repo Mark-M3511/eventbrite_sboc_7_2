@@ -82,7 +82,7 @@ class SBOCDBMgr implements iDBMgr{
       $a->last_name = self::no_overflow($attendee->lastName,50);
       $a->first_name = self::no_overflow($attendee->firstName,50);
       $a->category = $attendee->category;
-      $a->category_nid = $attendee->categoryNid;
+//      $a->category_nid = $attendee->categoryNid;
       $a->order_type = $attendee->orderType;
       $a->reg_type = $attendee->regType;
       $a->region_name = $attendee->regionName;
@@ -105,8 +105,9 @@ class SBOCDBMgr implements iDBMgr{
       $a->additional_info = self::no_overflow($attendee->additionalInfo,2500);
       $a->ts_create_date = strtotime($attendee->createDate);
       $a->ts_change_date = strtotime($attendee->changeDate);
-      $a->category_nid = $this->getCategoryNodeId($a->category, $attendee->eventId, $attendee->language);
+      $a->category_nid = $this->getCategoryNodeId($attendee->category, $attendee->eventId, $attendee->language);
       $a->language = $attendee->language;
+      $a->link_nid = $this->getLinkNodeId($attendee->category, $attendee->eventId, $attendee->ticketClassId, $attendee->language);
 
       $a->save();
     }catch(Exception $e){
@@ -438,7 +439,7 @@ class SBOCDBMgr implements iDBMgr{
       $q->fieldCondition('field_participant_category', 'value', $category, '=');
       $q->fieldCondition('field_participant_language', 'value', $language, '=');
       $q->fieldCondition('field_eventbrite_event_id', 'value', $event_id, '=');
-      $q->propertyCondition('status', 1);
+//      $q->propertyCondition('status', 1);
       $q->propertyOrderBy('created', 'DESC');
       $result = $q->execute();
       if (!empty($result['node'])){
@@ -482,6 +483,40 @@ class SBOCDBMgr implements iDBMgr{
           }
         }else{
           $region_name = EBConsts::EBS_UNSPECIFIED_REGION;
+        }
+      }
+    }catch(Exception $e){
+      watchdog_exception(EBConsts::EBS_APP_NAME_MAIN, $e);
+    }
+
+    return $ret_val;
+  }
+
+  /**
+   * @param $category
+   * @param $event_id
+   * @param $ticket_class_id
+   * @param $language
+   */
+  public function getLinkNodeId($category, $event_id, $ticket_class_id, $language){
+    $node_ids = array();
+    $ret_val = 0;
+    try{
+      $q = new \EntityFieldQuery();
+      $q->entityCondition('entity_type', 'node');
+      $q->entityCondition('bundle', 'link_by_ticket_type');
+      $q->fieldCondition('field_participant_category', 'value', $category, '=');
+      $q->fieldCondition('field_participant_language', 'value', $language, '=');
+      $q->fieldCondition('field_eventbrite_event_id', 'value', $event_id, '=');
+      $q->fieldCondition('field_ticket_id', 'value', $ticket_class_id, '=');
+//      $q->propertyCondition('status', 1);
+      $q->propertyOrderBy('created', 'DESC');
+      $result = $q->execute();
+      if (!empty($result['node'])){
+        $node_ids = array_keys($result['node']);
+        $nodes = node_load_multiple($node_ids);
+        if (count($nodes) > 0){
+          $ret_val = reset($nodes)->nid;
         }
       }
     }catch(Exception $e){
