@@ -47,7 +47,7 @@ class EBAttendee{
   public $passwordResetUrl;
   public $changedFields;
   public $language;
-  public $link_nid;
+  public $linkNid;
 }
 
 class EBAttendees{
@@ -219,7 +219,7 @@ class EBAttendees{
       }
 
       if ($r->hasProperty("link_nid")){
-        $a->link_nid = $attendee->link_nid;
+        $a->linkNid = $attendee->link_nid;
       }
       
       $a->attendeeId = $attendee->attendee_id;

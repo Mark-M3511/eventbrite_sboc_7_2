@@ -82,7 +82,7 @@ class SBOCDBMgr implements iDBMgr{
       $a->last_name = self::no_overflow($attendee->lastName,50);
       $a->first_name = self::no_overflow($attendee->firstName,50);
       $a->category = $attendee->category;
-      $a->category_nid = $attendee->categoryNid;
+//      $a->category_nid = $attendee->categoryNid;
       $a->order_type = $attendee->orderType;
       $a->reg_type = $attendee->regType;
       $a->region_name = $attendee->regionName;
@@ -105,8 +105,9 @@ class SBOCDBMgr implements iDBMgr{
       $a->additional_info = self::no_overflow($attendee->additionalInfo,2500);
       $a->ts_create_date = strtotime($attendee->createDate);
       $a->ts_change_date = strtotime($attendee->changeDate);
-      $a->category_nid = $this->getCategoryNodeId($a->category, $attendee->eventId, $attendee->language);
+      $a->category_nid = $this->getCategoryNodeId($attendee->category, $attendee->eventId, $attendee->language);
       $a->language = $attendee->language;
+      $a->link_nid = $this->getLinkNodeId($attendee->category, $attendee->eventId, $attendee->ticketClassId, $attendee->language);
 
       $a->save();
     }catch(Exception $e){
