@@ -398,7 +398,7 @@ class EntityAttendeeViewsController extends EntityDefaultViewsController {
       ),
     );
 
-    // category_nid matching node id (nid) in {node} table
+    // uid matching node id (nid) in {node} table
     $data['eventbrite_sboc_attendees']['uid'] = array(
       'title' => t('Attendee User Id'),
       'help' => t('Links an attendee to a registered system user'),

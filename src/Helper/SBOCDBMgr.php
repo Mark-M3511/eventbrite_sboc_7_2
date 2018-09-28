@@ -512,6 +512,7 @@ class SBOCDBMgr implements iDBMgr{
 //      $q->propertyCondition('status', 1);
       $q->propertyOrderBy('created', 'DESC');
       $result = $q->execute();
+      _eventbrite_sboc_debug_output($result['node']);
       if (!empty($result['node'])){
         $node_ids = array_keys($result['node']);
         $nodes = node_load_multiple($node_ids);
