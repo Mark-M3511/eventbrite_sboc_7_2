@@ -438,7 +438,7 @@ class SBOCDBMgr implements iDBMgr{
       $q->fieldCondition('field_participant_category', 'value', $category, '=');
       $q->fieldCondition('field_participant_language', 'value', $language, '=');
       $q->fieldCondition('field_eventbrite_event_id', 'value', $event_id, '=');
-      $q->propertyCondition('status', 1);
+//      $q->propertyCondition('status', 1);
       $q->propertyOrderBy('created', 'DESC');
       $result = $q->execute();
       if (!empty($result['node'])){
@@ -498,7 +498,31 @@ class SBOCDBMgr implements iDBMgr{
    * @param $language
    */
   public function getLinkNodeId($category, $event_id, $ticket_class_id, $language){
+    $node_ids = array();
+    $ret_val = 0;
+    try{
+      $q = new \EntityFieldQuery();
+      $q->entityCondition('entity_type', 'node');
+      $q->entityCondition('bundle', 'link_by_ticket_type');
+      $q->fieldCondition('field_participant_category', 'value', $category, '=');
+      $q->fieldCondition('field_participant_language', 'value', $language, '=');
+      $q->fieldCondition('field_eventbrite_event_id', 'value', $event_id, '=');
+      $q->fieldCondition('field_ticket_id', 'value', $ticket_class_id, '=');
+//      $q->propertyCondition('status', 1);
+      $q->propertyOrderBy('created', 'DESC');
+      $result = $q->execute();
+      if (!empty($result['node'])){
+        $node_ids = array_keys($result['node']);
+        $nodes = node_load_multiple($node_ids);
+        if (count($nodes) > 0){
+          $ret_val = reset($nodes)->nid;
+        }
+      }
+    }catch(Exception $e){
+      watchdog_exception(EBConsts::EBS_APP_NAME_MAIN, $e);
+    }
 
+    return $ret_val;
   }
 
   /**
