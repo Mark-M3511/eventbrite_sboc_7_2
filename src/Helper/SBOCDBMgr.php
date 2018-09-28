@@ -501,6 +501,8 @@ class SBOCDBMgr implements iDBMgr{
   public function getLinkNodeId($category, $event_id, $ticket_class_id, $language){
     $node_ids = array();
     $ret_val = 0;
+    $args = func_get_args();
+    _eventbrite_sboc_debug_output($args);
     try{
       $q = new \EntityFieldQuery();
       $q->entityCondition('entity_type', 'node');
