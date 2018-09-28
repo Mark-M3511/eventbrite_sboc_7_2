@@ -133,9 +133,8 @@ function _eventbrite_sboc_link_to_region(array $attendees){
   $db = new SBOCDBMgr();
   try{
     foreach($attendees as $id => $attendee){
-      $region_nid = $db->getRegionNodeId($attendee->regionName);
       $aw = entity_metadata_wrapper(EBConsts::EBS_ENTITY_TYPE_NAME, $attendee->attendeeId); 
-      $aw->region_nid = $region_nid;
+      $aw->region_nid = $db->getRegionNodeId($attendee->regionName);;
       $aw->save();
     } 
   }catch(Exception $e){
