@@ -109,8 +109,6 @@ class SBOCDBMgr implements iDBMgr{
       $a->language = $attendee->language;
       $a->link_nid = $this->getLinkNodeId($attendee->category, $attendee->eventId, $attendee->ticketClassId, $attendee->language);
 
-       _eventbrite_sboc_debug_output($a);
-
       $a->save();
     }catch(Exception $e){
       watchdog_exception(EBConsts::EBS_APP_NAME_MAIN, $e);
@@ -516,7 +514,7 @@ class SBOCDBMgr implements iDBMgr{
 //      $q->propertyCondition('status', 1);
       $q->propertyOrderBy('created', 'DESC');
       $result = $q->execute();
-      _eventbrite_sboc_debug_output($result['node']);
+
       if (!empty($result['node'])){
         $node_ids = array_keys($result['node']);
         $nodes = node_load_multiple($node_ids);
