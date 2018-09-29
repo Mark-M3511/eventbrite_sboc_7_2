@@ -222,20 +222,20 @@ function eventbrite_sboc_attendee_schema(){
         'length' => 2500,
       ),      
       'ts_create_date' => array(
-	      'description' => 'Timestamp value for date and time attendee record was created in this table.',          
-        'type' => 'int',		   
+	    'description' => 'Timestamp value for date and time attendee record was created in this table.',
+        'type' => 'int',
         'not null' => FALSE,
-	    ),
-	    'ts_change_date' => array(
-	      'description' => 'Timestamp value for date and time attendee record was updated in this table.',          
-        'type' => 'int',		   
+	  ),
+	  'ts_change_date' => array(
+	    'description' => 'Timestamp value for date and time attendee record was updated in this table.',
+        'type' => 'int',
         'not null' => FALSE,
-	    ),
-	    'ts_email_send_date' => array(
-	      'description' => 'Timestamp value for date and time attendee email was sent.',          
-        'type' => 'int',		   
+	  ),
+	  'ts_email_send_date' => array(
+	    'description' => 'Timestamp value for date and time attendee email was sent.',
+        'type' => 'int',
         'not null' => FALSE,
-	    ),
+	  ),
       'language' => array(
         'description' => 'Language selected by registrant.',
         'type' => 'varchar',
@@ -243,24 +243,31 @@ function eventbrite_sboc_attendee_schema(){
         'default' => 'en',
         'not null' => FALSE,
       ),
+      'link_nid' => array(
+        'description' => "Link Id corresponding to ticket type",
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
      ),  
     'primary key' => array('eid'),
     'indexes' => array(
       'eventbrite_sboc_attendee_id' => array('attendee_id'), 
       'eventbrite_sboc_event_id' => array('event_id'),
-	    'eventbrite_sboc_order_id' => array('order_id'),
-	    'eventbrite_sboc_attendees_reg_type' => array('reg_type'),
-	    'eventbrite_sboc_attendees_region_name' => array('region_name'),
-	    'eventbrite_sboc_attendees_email_address' => array('email_address'),
-	    'eventbrite_sboc_attendees_change_date' => array('change_date'),
-	    'eventbrite_sboc_attendees_create_date' => array('create_date'),
-	    'eventbrite_sboc_attendees_ticket_class_id' => array('ticket_class_id'),
-	    'eventbrite_sboc_attendees_uid' => array('uid'),	
-	    'eventbrite_sboc_attendees_category_nid' => array('category_nid'),  
-	    'eventbrite_sboc_attendees_region_nid' => array('region_nid'), 
-	    'eventbrite_sboc_attendees_ts_create_date' => array('ts_create_date'),
-	    'eventbrite_sboc_attendees_ts_change_date' => array('ts_change_date'),
-	    'eventbrite_sboc_attendees_ts_email_send_date' => array('ts_email_send_date'),	    
+	  'eventbrite_sboc_order_id' => array('order_id'),
+	  'eventbrite_sboc_attendees_reg_type' => array('reg_type'),
+	  'eventbrite_sboc_attendees_region_name' => array('region_name'),
+	  'eventbrite_sboc_attendees_email_address' => array('email_address'),
+	  'eventbrite_sboc_attendees_change_date' => array('change_date'),
+	  'eventbrite_sboc_attendees_create_date' => array('create_date'),
+	  'eventbrite_sboc_attendees_ticket_class_id' => array('ticket_class_id'),
+	  'eventbrite_sboc_attendees_uid' => array('uid'),
+	  'eventbrite_sboc_attendees_category_nid' => array('category_nid'),
+	  'eventbrite_sboc_attendees_region_nid' => array('region_nid'),
+	  'eventbrite_sboc_attendees_ts_create_date' => array('ts_create_date'),
+	  'eventbrite_sboc_attendees_ts_change_date' => array('ts_change_date'),
+	  'eventbrite_sboc_attendees_ts_email_send_date' => array('ts_email_send_date'),
+      'eventbrite_sboc_attendees_link_nid' => array('link_nid'),
     ), 
   );
   
@@ -287,7 +294,7 @@ function eventbrite_sboc_attendee_schema(){
 	 );
    $keys_new = array(
       'indexes' => array(
-	       'eventbrite_sboc_attendees_ts_create_date' => array('ts_create_date'),
+	    'eventbrite_sboc_attendees_ts_create_date' => array('ts_create_date'),
       ),
    );
    db_add_field($table_name, 'ts_create_date', $schema_1, $keys_new);	
@@ -295,13 +302,13 @@ function eventbrite_sboc_attendee_schema(){
    
    // Add ts_change_date
    $schema_1 = array(
-	   'description' => 'Timestamp value for date and time attendee record was updated in this table.',          
+	 'description' => 'Timestamp value for date and time attendee record was updated in this table.',
      'type' => 'int',		   
      'not null' => FALSE,
 	 );
    $keys_new = array(
       'indexes' => array(
-	       'eventbrite_sboc_attendees_ts_change_date' => array('ts_change_date'),
+        'eventbrite_sboc_attendees_ts_change_date' => array('ts_change_date'),
       ),
    );
    db_add_field($table_name, 'ts_change_date', $schema_1, $keys_new);	
@@ -309,10 +316,10 @@ function eventbrite_sboc_attendee_schema(){
    
     // Add ts_email_send_date
    $schema_1 = array(
-	   'description' => 'Timestamp value for date and time attendee email was sent.',          
+     'description' => 'Timestamp value for date and time attendee email was sent.',
      'type' => 'int',		   
      'not null' => FALSE,
-	 );
+   );
    $keys_new = array(
       'indexes' => array(
 	       'eventbrite_sboc_attendees_ts_email_send_date' => array('ts_email_send_date'),
@@ -392,3 +399,37 @@ function eventbrite_sboc_attendee_update_7204() {
 
   return format_string($msg, array('%count' => $ctr, '%table_name' => $table_name,));
 }
+
+/**
+ * Eventbrite SBOC update #5
+ * Add new link_nid column to table 'eventbrite_sboc_attendees'
+ * Updated: 2018-09-27
+ */
+function eventbrite_sboc_attendee_update_7205() {
+  $init_val = 0;
+  $table_name = 'eventbrite_sboc_attendees';
+  $msg = "%count new column(s) added to table '%table_name'";
+  $ctr = 0;
+
+  // Add link_nid
+  $schema_1 = array(
+    'description' => 'Link Id corresponding to ticket type',
+    'type' => 'int',
+    'unsigned' => TRUE,
+    'not null' => TRUE,
+    'default' => $init_val,
+  );
+
+  $field_name = 'link_nid';
+  $keys_new = array(
+    'indexes' => array(
+      'eventbrite_sboc_attendees_link_nid' => array($field_name),
+    ),
+  );
+
+  db_add_field($table_name, $field_name, $schema_1, $keys_new);
+  $ctr++;
+
+  return format_string($msg, array('%count' => $ctr, '%table_name' => $table_name,));
+}
+
