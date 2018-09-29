@@ -14,7 +14,7 @@ dependencies[] = eventbrite_sboc
 files[] = inc/entity_ebattendee.classes.inc
 
 ;Version Info
-version = '7.x-2.6'
+version = '7.x-2.8'
 
 ;Project Update Info
 ;project status url = 'http://dev1508.holbrookgoodman.com/'
