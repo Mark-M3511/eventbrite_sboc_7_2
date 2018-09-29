@@ -439,7 +439,7 @@ class SBOCDBMgr implements iDBMgr{
       $q->fieldCondition('field_participant_category', 'value', $category, '=');
       $q->fieldCondition('field_participant_language', 'value', $language, '=');
       $q->fieldCondition('field_eventbrite_event_id', 'value', $event_id, '=');
-//      $q->propertyCondition('status', 1);
+      $q->propertyCondition('status', 1);
       $q->propertyOrderBy('created', 'DESC');
       $result = $q->execute();
       if (!empty($result['node'])){
@@ -511,7 +511,7 @@ class SBOCDBMgr implements iDBMgr{
       $q->fieldCondition('field_participant_language', 'value', $language, '=');
       $q->fieldCondition('field_eventbrite_event_id', 'value', $event_id, '=');
       $q->fieldCondition('field_ticket_id', 'value', $ticket_class_id, '=');
-//      $q->propertyCondition('status', 1);
+      $q->propertyCondition('status', 1);
       $q->propertyOrderBy('created', 'DESC');
       $result = $q->execute();
 
