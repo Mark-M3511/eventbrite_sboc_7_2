@@ -567,10 +567,23 @@ function attendee_order_load($order_num){
 }
 
 
-
+/**
+ * @param $order - Attendee Order number
+ * @return string - Output from dpm() or informational message
+ */
 function _eventbrite_sboc_display_order($order){
-  dpm($order, 'Order & Attendee');
-  return 'Response from: '. __FUNCTION__;
+  $result = '';
+  $args = array(
+    '!func' => __FUNCTION__,
+  );
+  if (module_exists('devel')) {
+    dpm($order, t('Order & Attendee'));
+  }else{
+    $result = t("Response from !func is empty. 'Devel' module may not be enabled.", $args);
+    drupal_set_message($result);
+  }
+
+  return $result;
 }
 
 /**
