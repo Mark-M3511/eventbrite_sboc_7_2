@@ -572,15 +572,16 @@ function attendee_order_load($order_num){
  * @return string - Output from dpm() or informational message
  */
 function _eventbrite_sboc_display_order($order){
-  $result = '';
+  $result = t('System message available!');
   $args = array(
     '!func' => __FUNCTION__,
   );
   if (module_exists('devel')) {
     dpm($order, t('Order & Attendee'));
+    $result = t('Order details available.');
   }else{
-    $result = t("Response from !func is empty. 'Devel' module may not be enabled.", $args);
-    drupal_set_message($result);
+    $msg = t("Response from !func is empty. 'Devel' module may not be enabled.", $args);
+    drupal_set_message($msg);
   }
 
   return $result;
