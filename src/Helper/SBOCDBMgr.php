@@ -284,7 +284,7 @@ class SBOCDBMgr implements iDBMgr{
     foreach($pf_map as $property => $field){
       switch($property){
         case 'emailSent':
-          if ($attendeeFromSource->{$property} != 1){
+          if ((int)$attendeeSaved->{$field} != 1){
             $attendeeFromSource->changedFields[$property] = array(
               'old' => $attendeeSaved->{$field},
               'new' => -1, // another attempt -- if successful will be set to 1
