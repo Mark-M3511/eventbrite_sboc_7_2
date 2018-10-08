@@ -274,6 +274,7 @@ class SBOCDBMgr implements iDBMgr{
       'additionalInfo' => 'additional_info',
       'regionName' => 'region_name',
       'category' => 'category',
+      'emailSent' => 'email_sent',
     );
 
     if (!is_array($attendeeFromSource->changedFields)) {
@@ -281,14 +282,27 @@ class SBOCDBMgr implements iDBMgr{
     }
 
     foreach($pf_map as $property => $field){
-      if ($attendeeFromSource->{$property} != $attendeeSaved->{$field}) {
-        $attendeeFromSource->changedFields[$property] = array(
-          'old' => $attendeeSaved->{$field},
-          'new' => $attendeeFromSource->{$property},
-        );
+      switch($property){
+        case 'emailSent':
+          if ($attendeeFromSource->{$property} != 1){
+            $attendeeFromSource->changedFields[$property] = array(
+              'old' => $attendeeSaved->{$field},
+              'new' => -1, // another attempt -- if successful will be set to 1
+            );
+          }
+          break;
+        default:
+          if ($attendeeFromSource->{$property} != $attendeeSaved->{$field}){
+            $attendeeFromSource->changedFields[$property] = array(
+              'old' => $attendeeSaved->{$field},
+              'new' => $attendeeFromSource->{$property},
+            );
+          }
+          break;
       }
     }
   }
+
   /**
   * Writes an attendee data stored in an object to the database.
   *
