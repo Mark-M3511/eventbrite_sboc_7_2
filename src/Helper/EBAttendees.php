@@ -47,6 +47,7 @@ class EBAttendee{
   public $passwordResetUrl;
   public $changedFields;
   public $language;
+  public $linkNid;
 }
 
 class EBAttendees{
@@ -134,7 +135,7 @@ class EBAttendees{
       $a->homePhone2 = $this->getAnswer($attendee['answers'], EBConsts::EBS_QA_117, EBConsts::EBS_EMPTY_STRING);
       $a->emailConsent = $this->getAnswer($attendee['answers'], EBConsts::EBS_QA_118, 0);
       $a->additionalInfo = $this->getAnswer($attendee['answers'], EBConsts::EBS_QA_119, EBConsts::EBS_EMPTY_STRING);
-      $a->language =  $this->getAnswer($attendee['answers'], EBConsts::EBS_QA_120, EBConsts::EBS_EMPTY_STRING);
+      $a->language = $this->getAnswer($attendee['answers'], EBConsts::EBS_QA_120, EBConsts::EBS_DEFAULT_LANGUAGE);
       
       $this->attendees[$a->attendeeId] = $a;
     }
@@ -180,7 +181,7 @@ class EBAttendees{
       $a->homePhone2 = $this->getAnswer($attendee['answers'], EBConsts::EBS_QA_117, EBConsts::EBS_EMPTY_STRING);
       $a->emailConsent = $this->getAnswer($attendee['answers'], EBConsts::EBS_QA_118, 0);
       $a->additionalInfo = $this->getAnswer($attendee['answers'], EBConsts::EBS_QA_119, EBConsts::EBS_EMPTY_STRING);
-      $a->language =  $this->getAnswer($attendee['answers'], EBConsts::EBS_QA_120, EBConsts::EBS_EMPTY_STRING);
+      $a->language = $this->getAnswer($attendee['answers'], EBConsts::EBS_QA_120, EBConsts::EBS_DEFAULT_LANGUAGE);
       
       $this->attendees[$a->attendeeId] = $a;
     }
@@ -215,6 +216,10 @@ class EBAttendees{
       
       if ($r->hasProperty('email_send_date')){
         $a->emailSendDate = $attendee->email_send_date;
+      }
+
+      if ($r->hasProperty("link_nid")){
+        $a->linkNid = $attendee->link_nid;
       }
       
       $a->attendeeId = $attendee->attendee_id;
@@ -257,8 +262,12 @@ class EBAttendees{
     return (new SBOCDBMgr())->getCategoryNodeId($category, $event_id, $language);
   }
   
-  public function getRegionNid($region_nid){
-    return (new SBOCDBMgr())->getRegionNid($region_nid);
+  public function getRegionNodeId($region_nid){
+    return (new SBOCDBMgr())->getRegionNodeId($region_nid);
+  }
+
+  public function getLinkNodeid($category, $event_id, $ticket_class_id, $language){
+    return (new SBOCDBMgr())->getLinkNodeid($category, $event_id, $ticket_class_id, $language);
   }
   
 }

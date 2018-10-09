@@ -150,6 +150,7 @@ class EBConsts{
   const EBS_UNSPECIFIED_DOB = 1;
   const EBS_EMPTY_STRING = '';
   const EBS_UNSPECIFIED_PROV = 'ON';
+  const EBS_DEFAULT_LANGUAGE = 'en';
   // files
 //  const EBS_ENTITY_PROPS_FILE = 'inc/entity_ebattendee.properties.inc';
   const EBS_ENTITY_CLASS_FILE = 'inc/entity_ebattendee.classes.inc'; 

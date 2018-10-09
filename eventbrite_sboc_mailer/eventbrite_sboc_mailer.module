@@ -95,7 +95,7 @@ function eventbrite_sboc_mailer_mandrill_mail_alter(&$mandrill_params, $message)
     );
   }
   if (isset($message['mandrill_template_content'])) {
-    $message['mandrill_template_content']+= $mandrill_params['args']['template_content'];
+    $message['mandrill_template_content'] += $mandrill_params['args']['template_content'];
   }
   /*** eof: Taken from mandrill_template.module ***/
 }
@@ -143,7 +143,7 @@ function eventbrite_sboc_mailer_mandrill_mailsend_result($result) {
          $values = array(
            'email_send_date' => $a->emailSendDate,
            'email_sent' => $a->emailSent,
-           );
+         );
          $a = _eventbrite_sboc_invoke_save_withvalues(array($a), $values);
        }
     }
