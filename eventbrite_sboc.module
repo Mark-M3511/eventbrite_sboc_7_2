@@ -574,13 +574,14 @@ function attendee_order_load($order_num){
 function _eventbrite_sboc_display_order($order){
   $result = t('System message available!');
   $args = array(
-    '!func' => __FUNCTION__,
+    '!system' => variable_get('site_name', t('Site not named')),
+    '!module_name' => 'Devel',
   );
   if (module_exists('devel')) {
     dpm($order, t('Order & Attendee'));
     $result = t('Order details available.');
   }else{
-    $msg = t("Response from !func is empty. 'Devel' module may not be enabled.", $args);
+    $msg = t("Response cannot be completed at '!system'. '!module_name' module may not be enabled.", $args);
     drupal_set_message($msg);
   }
 
