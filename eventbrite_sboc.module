@@ -567,10 +567,26 @@ function attendee_order_load($order_num){
 }
 
 
-
+/**
+ * @param $order - Attendee Order number
+ * @return string - Output from dpm() or informational message
+ */
 function _eventbrite_sboc_display_order($order){
-  dpm($order, 'Order & Attendee');
-  return 'Response from: '. __FUNCTION__;
+  $result = t('System message available!');
+  $args = array(
+    '!system' => variable_get('site_name', t('Site not named')),
+    '!module_name' => 'Devel',
+  );
+
+  if (module_exists('devel')) {
+    dpm($order, t('Order & Attendee'));
+    $result = t('Order details available.');
+  }else{
+    $msg = t("Response cannot be completed at '!system'. '!module_name' module may not be enabled.", $args);
+    drupal_set_message($msg);
+  }
+
+  return $result;
 }
 
 /**

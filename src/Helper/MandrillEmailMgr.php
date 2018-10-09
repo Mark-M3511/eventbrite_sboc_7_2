@@ -62,7 +62,7 @@ class MandrillEmailMgr implements iEmailMgr{
     
     $global_merge_vars[] = array(
       'name' => 'subject',
-	    'content' => check_plain($message['params']['subject']),
+	  'content' => check_plain($message['params']['subject']),
     );
 
     $global_merge_vars[] = array(
@@ -98,8 +98,8 @@ class MandrillEmailMgr implements iEmailMgr{
         $vars[] = array(
           'name' => $field,
           'content' => check_plain($value),
-	      );
-	    }
+	    );
+	  }
     }
 
     $rcpt = (!empty($message['params']['to'])) ? $message['params']['to'] : $fields['email_address'];
