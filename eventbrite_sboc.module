@@ -577,6 +577,7 @@ function _eventbrite_sboc_display_order($order){
     '!system' => variable_get('site_name', t('Site not named')),
     '!module_name' => 'Devel',
   );
+
   if (module_exists('devel')) {
     dpm($order, t('Order & Attendee'));
     $result = t('Order details available.');
