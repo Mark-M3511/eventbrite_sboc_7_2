@@ -76,7 +76,7 @@ class EBAttendees{
             break;
           case EBConsts::EBS_QA_120:
             $ret_val = drupal_strtolower(drupal_substr($answer['answer'], 0, 2));
-            $ret_val = empty($ret_val) ? 'en' : $ret_val;
+            $ret_val = empty($ret_val) ? $default : $ret_val;
             break;
           default:
             break;
