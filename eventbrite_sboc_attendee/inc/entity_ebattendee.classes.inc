@@ -24,7 +24,7 @@ class EBAttendeeEntityController extends EntityAPIController{
     return $attendees_ids;
   }
 
-  public function save($entity){
+  public function save($entity, DatabaseTransaction $transaction = NULL){
     $retval = parent::save($entity);
     return $retval;
   }
